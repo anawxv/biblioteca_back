@@ -1,0 +1,15 @@
+package model;
+
+public class Funcionario extends Usuario {
+
+    private int idFuncionario;
+    private String cargo;
+
+    public void registrarEmprestimo(Cliente cliente, Livro livro) {
+        // implementação futura
+    }
+
+    public void registrarDevolucao(Emprestimo emprestimo) {
+        // implementação futura
+    }
+}

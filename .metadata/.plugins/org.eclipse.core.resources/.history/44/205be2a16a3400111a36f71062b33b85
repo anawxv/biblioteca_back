@@ -1,0 +1,18 @@
+package model;
+
+public class TesteDAO {
+	public static void main(String[] args) {
+	    
+	    Livro l1 = new Livro("Girls Like Girls", "Hayley Kiyoko", "Romance");
+
+	   
+	    LivroDAO dao = new LivroDAO();
+
+	  
+	    System.out.println("Enviando livro para o banco de dados...");
+	    dao.cadastrar(l1);
+	    
+	    System.out.println("Teste finalizado. Olhe o SQL Server!");
+	}
+
+}

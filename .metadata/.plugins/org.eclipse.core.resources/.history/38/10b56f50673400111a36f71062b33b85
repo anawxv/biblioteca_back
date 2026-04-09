@@ -1,0 +1,28 @@
+package model;
+
+import java.util.Date;
+
+public class Emprestimo {
+
+    private int idEmprestimo;
+    private Cliente cliente;
+    private Livro livro;
+    private Date dataEmprestimo;
+    private Date dataPrevistaDevolucao;
+    private Date dataDevolucao;
+
+    public void realizar(Cliente cliente, Livro livro) {
+        this.cliente = cliente;
+        this.livro = livro;
+        this.dataEmprestimo = new Date();
+    }
+
+    public void finalizar() {
+        this.dataDevolucao = new Date();
+        livro.marcarDisponivel();
+    }
+
+    public boolean verificarAtraso(Date dataAtual) {
+        return dataDevolucao == null && dataAtual.after(dataPrevistaDevolucao);
+    }
+}

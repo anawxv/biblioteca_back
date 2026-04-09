@@ -1,0 +1,56 @@
+package model;
+
+import java.util.Date;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        // 1. Criamos a nossa Biblioteca
+        Biblioteca minhaBiblioteca = new Biblioteca("Biblioteca Central", "Rua das Flores, 123", "11 9999-8888");
+
+    
+        Livro l1 = new Livro("Java para Iniciantes", "Herbert Schildt", "Programação");
+        Livro l2 = new Livro("O Pragmatic Programmer", "Andrew Hunt", "Engenharia de Software");
+        
+      
+        minhaBiblioteca.getAcervo().add(l1);
+        minhaBiblioteca.getAcervo().add(l2);
+
+        Cliente cliente = new Cliente("Maria Silva", "maria@email.com", "senha123", "98888-7777");
+        Funcionario func = new Funcionario("João Dev", "joao@biblioteca.com", "admin123", "97777-6666", "Bibliotecário");
+
+        System.out.println("--- Sistema da Biblioteca " + minhaBiblioteca.getNome() + " iniciado ---");
+
+   
+        System.out.println("\nBuscando livro 'Java'...");
+        Livro livroEncontrado = minhaBiblioteca.buscarLivro("Java para Iniciantes");
+        if (livroEncontrado != null) {
+            System.out.println("Encontrado: " + livroEncontrado.getTitulo() + " | Autor: " + livroEncontrado.getAutor());
+        }
+
+    
+        System.out.println("\nRegistrando empréstimo...");
+        Emprestimo emp = new Emprestimo(cliente, l1);
+        func.registrarEmprestimo(cliente, l1); 
+        
+        System.out.println("Status do livro após empréstimo: " + (l1.isStatus() ? "Disponível" : "Indisponível"));
+        System.out.println("Data prevista de devolução: " + emp.getDataPrevistaDevolucao());
+
+       
+        boolean atrasado = emp.verificarAtraso(new Date());
+        System.out.println("Está em atraso? " + (atrasado ? "Sim" : "Não"));
+
+       
+        System.out.println("\nLivros atualmente disponíveis no acervo:");
+        List<Livro> disponiveis = minhaBiblioteca.listarLivrosDisponivel();
+        for (Livro l : disponiveis) {
+            System.out.println("- " + l.getTitulo());
+        }
+
+       
+        System.out.println("\nProcessando devolução...");
+        func.registrarDevolucao(emp);
+        emp.finalizar();
+        System.out.println("Status do livro após devolução: " + (l1.isStatus() ? "Disponível" : "Indisponível"));
+    }
+}

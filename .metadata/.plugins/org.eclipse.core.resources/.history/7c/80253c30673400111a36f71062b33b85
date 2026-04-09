@@ -1,0 +1,21 @@
+package model;
+
+public abstract class Usuario {
+
+    protected int idUsuario;
+    protected String nome;
+    protected String email;
+    protected String senha;
+    protected String telefone;
+
+    public boolean autenticar(String email, String senha) {
+        return this.email.equals(email) && this.senha.equals(senha);
+    }
+
+    public void atualizarDados(String nome, String email, String telefone, String senha) {
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+        this.senha = senha;
+    }
+}

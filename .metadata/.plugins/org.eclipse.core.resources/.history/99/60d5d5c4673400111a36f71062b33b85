@@ -1,0 +1,45 @@
+package model;
+
+public class Livro {
+    
+    private int idLivro;
+    private String titulo;
+    private String autor;
+    private String categoria;
+    private boolean status;
+
+    public Livro(String titulo, String autor, String categoria) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.categoria = categoria;
+        this.status = true; 
+    }
+
+    public void marcarEmprestado() {
+        this.status = false;
+    }
+
+    public void marcarDisponivel() {
+        this.status = true;
+    }
+    
+    public void editarInformacoes(String titulo, String autor, String categoria) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.categoria = categoria;
+
+    public int getIdLivro() { return idLivro; }
+    public void setIdLivro(int idLivro) { this.idLivro = idLivro; }
+
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+
+    public String getAutor() { return autor; }
+    public void setAutor(String autor) { this.autor = autor; }
+
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
+
+    public boolean isStatus() { return status; }
+    public void setStatus(boolean status) { this.status = status; }
+}
