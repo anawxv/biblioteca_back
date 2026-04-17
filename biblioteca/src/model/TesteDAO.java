@@ -14,7 +14,7 @@ public class TesteDAO {
 	    System.out.println("Enviando livro para o banco de dados...");
 	    dao.cadastrar(l1);
 	    
-	    System.out.println("Teste finalizado. Olhe o SQL Server!");
+	    System.out.println("Teste finalizado.");
 	}
 
 }
