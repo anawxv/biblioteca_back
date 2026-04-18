@@ -1,13 +1,8 @@
-USE [BibliotecaDB]
-GO
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Livro')
-BEGIN
-    CREATE TABLE Livro (
-        idLivro INT PRIMARY KEY IDENTITY(1,1),
-        titulo VARCHAR(150) NOT NULL,
-        autor VARCHAR(100) NOT NULL,
-        categoria VARCHAR(50),
-        emprestado BIT DEFAULT 0
-    );
-END
-GO
+INSERT INTO cliente (nome, cpf, telefone, email)
+VALUES ('Maria', '111.222.333-44', '119999999', 'maria@email.com');
+
+INSERT INTO funcionario (nome, cpf, cargo)
+VALUES ('Carlos', '555.666.777-88', 'Bibliotecario');
+
+INSERT INTO livro (titulo, isbn, ano, quantidade)
+VALUES ('Banco de Dados 101', '123456789', 2024, 5);
