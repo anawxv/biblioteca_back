@@ -1,25 +1,16 @@
-USE [BibliotecaDB];
-GO
-DROP TABLE IF EXISTS Emprestimo;
-DROP TABLE IF EXISTS Livro;
-GO
-
-
-CREATE TABLE Livro (
-    idLivro INT PRIMARY KEY IDENTITY(1,1),
-    titulo VARCHAR(150) NOT NULL,
-    autor VARCHAR(100) NOT NULL,
-    categoria VARCHAR(50),
-    emprestado BIT DEFAULT 0
+INSERT INTO emprestimo (
+    id_cliente,
+    id_livro,
+    id_funcionario,
+    data_emprestimo,
+    data_prevista,
+    status
+)
+VALUES (
+    1,
+    1,
+    1,
+    CURRENT_DATE,
+    CURRENT_DATE + INTERVAL '7 days',
+    'EM_ANDAMENTO'
 );
-GO
-
-
-CREATE TABLE Emprestimo (
-    idEmprestimo INT PRIMARY KEY IDENTITY(1,1),
-    id_cliente INT, 
-    id_livro INT FOREIGN KEY REFERENCES Livro(idLivro),
-    data_emprestimo DATE,
-    data_devolucao DATE
-);
-GO
