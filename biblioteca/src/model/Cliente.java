@@ -9,8 +9,8 @@ public class Cliente extends Usuario {
     private List<Emprestimo> historicoEmprestimos;
 
     public Cliente(String nome, String email, String senha, String telefone) {
-        super(nome, email, senha, telefone); // Passa para o pai
-        this.historicoEmprestimos = new ArrayList<>(); // Inicializa a lista para não dar erro
+        super(nome, email, senha, telefone); 
+        this.historicoEmprestimos = new ArrayList<>(); 
     }
 
     public void solicitarEmprestimo(Livro livro) {
