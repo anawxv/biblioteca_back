@@ -37,7 +37,7 @@ public class Emprestimo {
     }
     
 
-    // Getters e Setters
+
     public int getIdEmprestimo() { return idEmprestimo; }
     public void setIdEmprestimo(int idEmprestimo) { this.idEmprestimo = idEmprestimo; }
     public Cliente getCliente() { return cliente; }
