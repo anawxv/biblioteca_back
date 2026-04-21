@@ -3,30 +3,26 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import conexao.Conexao;
+import conexao.Conexao; 
 import model.Livro;
 
 public class LivroDAO {
+    public void salvar(Livro livro) {
+        String sql = "INSERT INTO livro (titulo, isbn, ano, quantidade) VALUES (?, ?, ?, ?)";
 
-    public void cadastrar(Livro livro) {
-    
-    	String sql = "INSERT INTO Livro (titulo, autor, categoria, emprestado) VALUES (?, ?, ?, ?)";
-        
-        try (Connection conn = Conexao.getConnection(); 
+        try (Connection conn = Conexao.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-          
-            stmt.setString(1, livro.getTitulo());
-            stmt.setString(2, livro.getAutor());
-            stmt.setString(3, livro.getCategoria());
-            
-            stmt.setBoolean(4, !livro.isStatus()); 
 
-            stmt.execute();
-            System.out.println("✅ Sucesso! O livro '" + livro.getTitulo() + "' foi guardado no banco.");
-            
+            stmt.setString(1, livro.getTitulo());
+            stmt.setString(2, livro.getIsbn());
+            stmt.setInt(3, livro.getAno());
+            stmt.setInt(4, livro.getQuantidade());
+
+            stmt.executeUpdate();
+            System.out.println("Sucesso: Livro '" + livro.getTitulo() + "' salvo no banco!");
+
         } catch (SQLException e) {
-            System.out.println("❌ Erro ao salvar no banco: " + e.getMessage());
+            System.err.println("Erro ao salvar no banco: " + e.getMessage());
         }
     }
 }

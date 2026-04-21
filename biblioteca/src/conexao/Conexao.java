@@ -7,11 +7,11 @@ import java.sql.SQLException;
 public class Conexao {
 
   
-    private static final String URL =  "jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=BibliotecaDB;trustServerCertificate=true";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=BibliotecaDB;encrypt=true;trustServerCertificate=true;";
 
     public static Connection getConnection() {
     	try {
-            return DriverManager.getConnection(URL, "usuario_biblioteca", "Senha123");
+    		return DriverManager.getConnection(URL, "usuario_biblioteca", "Senha123");
         } catch (SQLException e) {
             System.out.println("Erro na conexão: " + e.getMessage());
             return null;

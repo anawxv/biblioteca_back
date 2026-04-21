@@ -1,0 +1,53 @@
+package model;
+
+import java.text.SimpleDateFormat; 
+//import java.util.Date;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+    	
+    	
+    	
+       
+        Biblioteca minhaBiblioteca = new Biblioteca("Biblioteca das Girls", "Rua das Cores, 2026", "11 9999-8888");
+
+     
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+       
+        Livro l1 = new Livro("Girls Like Girls", "Hayley Kiyoko", "Romance");
+        Livro l2 = new Livro("Vermelho, Branco e Sangue Azul", "Casey McQuiston", "Romance");
+        
+        minhaBiblioteca.getAcervo().add(l1);
+        minhaBiblioteca.getAcervo().add(l2);
+
+
+        Cliente cliente = new Cliente("Pedro Tofani", "tofani@email.com", "senha123", "98888-7777");
+        Funcionario func = new Funcionario("João Victor", "joao@biblioteca.com", "admin123", "97777-6666", "Bibliotecário");
+
+        System.out.println("--- " + minhaBiblioteca.getNome() + " ---");
+
+      
+        System.out.println("\nRegistrando empréstimo...");
+        Emprestimo emp = new Emprestimo(cliente, l1);
+        
+        System.out.println("O livro '" + l1.getTitulo() + "' foi pego por: " + emp.getCliente().getNome());
+        System.out.println("Status atual: " + (l1.isStatus() ? "Disponível" : "Indisponível"));
+        
+     
+        System.out.println("Data prevista de devolução: " + sdf.format(emp.getDataPrevistaDevolucao()));
+
+        
+        System.out.println("\nLivros ainda disponíveis no acervo:");
+        List<Livro> disponiveis = minhaBiblioteca.listarLivrosDisponivel();
+        for (Livro l : disponiveis) {
+            System.out.println("- " + l.getTitulo() + " (Autoria: " + l.getAutor() + ")");
+        }
+
+  
+        System.out.println("\n--- Processando devolução ---");
+        func.registrarDevolucao(emp);
+        System.out.println("O livro '" + l1.getTitulo() + "' agora está: " + (l1.isStatus() ? "Disponível" : "Indisponível"));
+    }
+}

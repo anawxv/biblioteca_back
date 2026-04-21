@@ -1,0 +1,37 @@
+package model;
+
+public class Livro {
+    private int idLivro;
+    private String titulo;
+    private String isbn;
+    private int ano;
+    private int quantidade;
+    private boolean status;
+
+    public Livro(String titulo, String isbn, int ano, int quantidade) {
+        this.titulo = titulo;
+        this.isbn = isbn;
+        this.ano = ano;
+        this.quantidade = quantidade;
+        this.status = true;
+    }
+    public String getTitulo() { return titulo; }
+    public String getIsbn() { return isbn; }
+    public int getAno() { return ano; }
+    public int getQuantidade() { return quantidade; }
+    public boolean isStatus() { return status; }
+    public void setStatus(boolean status) { this.status = status; }
+
+	public int getIdLivro() {
+		return idLivro;}
+
+	public void setIdLivro(int idLivro) {
+		this.idLivro = idLivro;}
+	
+    public void marcarEmprestado() {
+        this.status = false;
+    }
+    public void marcarDisponivel() {
+        this.status = true;
+    }
+}

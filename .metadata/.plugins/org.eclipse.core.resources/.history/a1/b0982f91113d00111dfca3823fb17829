@@ -1,0 +1,36 @@
+public class Main {
+    public static void main(String[] args) {
+
+        Biblioteca minhaBiblioteca = new Biblioteca("Biblioteca das Girls", "Rua das Cores, 2026", "11 9999-8888");
+
+        // 1. Criando os objetos (Mudei o ISBN só para não dar erro se você rodar 2 vezes)
+        Livro l1 = new Livro("Girls Like Girls", "ISBN-NOVO-01", 2024, 5);
+        Livro l2 = new Livro("Vermelho, Branco e Sangue Azul", "ISBN-NOVO-02", 2020, 3);
+        
+        Cliente cliente = new Cliente("Pedro Tofani", "tofani@email.com", "senha123", "98888-7777");
+        Funcionario func = new Funcionario("João Victor", "joao@biblioteca.com", "admin123", "97777-6666", "Bibliotecário");
+
+        // 2. Instanciando os DAOs
+        LivroDAO lDao = new LivroDAO();
+        UsuarioDAO uDao = new UsuarioDAO();
+
+        System.out.println("--- Iniciando persistência no Banco de Dados ---");
+ 
+        // 3. Salvando no Banco (Agora na tabela 'usuario' que criamos)
+        lDao.salvar(l1);
+        lDao.salvar(l2);
+
+        uDao.salvar(cliente, "Cliente");
+        uDao.salvar(func, "Funcionario");
+
+        // 4. Lógica de Empréstimo (Apenas console por enquanto)
+        System.out.println("\n--- " + minhaBiblioteca.getNome() + " ---");
+        System.out.println("Registrando empréstimo...");
+        
+        Emprestimo emp = new Emprestimo(cliente, l1);
+        
+        System.out.println("O livro '" + l1.getTitulo() + "' foi pego por: " + emp.getCliente().getNome());
+        System.out.println("Funcionário responsável: " + func.getNome());
+        System.out.println("Status final: Tudo salvo na tabela ÚNICA de usuários!");
+    }
+}

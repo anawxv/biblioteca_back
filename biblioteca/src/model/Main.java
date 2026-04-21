@@ -1,53 +1,43 @@
 package model;
 
-import java.text.SimpleDateFormat; 
-//import java.util.Date;
-import java.util.List;
+import dao.EmprestimoDAO;
+import dao.LivroDAO;
+import dao.UsuarioDAO; 
 
 public class Main {
     public static void main(String[] args) {
-    	
-    	
-    	
-       
+
         Biblioteca minhaBiblioteca = new Biblioteca("Biblioteca das Girls", "Rua das Cores, 2026", "11 9999-8888");
 
-     
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-       
-        Livro l1 = new Livro("Girls Like Girls", "Hayley Kiyoko", "Romance");
-        Livro l2 = new Livro("Vermelho, Branco e Sangue Azul", "Casey McQuiston", "Romance");
+        Livro l1 = new Livro("Girls Like Girls", "ISBN-NOVO-01", 2024, 5);
+        Livro l2 = new Livro("Vermelho, Branco e Sangue Azul", "ISBN-NOVO-02", 2020, 3);
         
-        minhaBiblioteca.getAcervo().add(l1);
-        minhaBiblioteca.getAcervo().add(l2);
-
-
         Cliente cliente = new Cliente("Pedro Tofani", "tofani@email.com", "senha123", "98888-7777");
         Funcionario func = new Funcionario("João Victor", "joao@biblioteca.com", "admin123", "97777-6666", "Bibliotecário");
 
-        System.out.println("--- " + minhaBiblioteca.getNome() + " ---");
+        LivroDAO lDao = new LivroDAO();
+        UsuarioDAO uDao = new UsuarioDAO();
 
-      
-        System.out.println("\nRegistrando empréstimo...");
+        System.out.println("--- Iniciando persistência no Banco de Dados ---");
+ 
+        lDao.salvar(l1);
+        lDao.salvar(l2);
+
+        uDao.salvar(cliente, "Cliente");
+        uDao.salvar(func, "Funcionario");
+
+        System.out.println("\n--- " + minhaBiblioteca.getNome() + " ---");
+        System.out.println("Registrando empréstimo...");
+        
         Emprestimo emp = new Emprestimo(cliente, l1);
         
         System.out.println("O livro '" + l1.getTitulo() + "' foi pego por: " + emp.getCliente().getNome());
-        System.out.println("Status atual: " + (l1.isStatus() ? "Disponível" : "Indisponível"));
+        System.out.println("Funcionário responsável: " + func.getNome());
+        System.out.println("Status final: Salvo na tabela de usuários!");
         
-     
-        System.out.println("Data prevista de devolução: " + sdf.format(emp.getDataPrevistaDevolucao()));
+        EmprestimoDAO eDao = new EmprestimoDAO();
+     eDao.salvar(1, 1); 
 
-        
-        System.out.println("\nLivros ainda disponíveis no acervo:");
-        List<Livro> disponiveis = minhaBiblioteca.listarLivrosDisponivel();
-        for (Livro l : disponiveis) {
-            System.out.println("- " + l.getTitulo() + " (Autoria: " + l.getAutor() + ")");
-        }
-
-  
-        System.out.println("\n--- Processando devolução ---");
-        func.registrarDevolucao(emp);
-        System.out.println("O livro '" + l1.getTitulo() + "' agora está: " + (l1.isStatus() ? "Disponível" : "Indisponível"));
+     System.out.println("concluido");
     }
 }

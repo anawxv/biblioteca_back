@@ -1,20 +1,22 @@
 package model;
 
 public class Livro {
-    
     private int idLivro;
     private String titulo;
-    private String autor;
-    private String categoria;
+    private String isbn;
+    private int ano;
+    private int quantidade;
     private boolean status;
 
-    public Livro(String titulo, String autor, String categoria) {
+    public Livro(String titulo, String isbn, int ano, int quantidade) {
         this.titulo = titulo;
-        this.autor = autor;
-        this.categoria = categoria;
+        this.isbn = isbn;
+        this.ano = ano;
+        this.quantidade = quantidade;
         this.status = true; 
     }
 
+   
     public void marcarEmprestado() {
         this.status = false;
     }
@@ -22,25 +24,53 @@ public class Livro {
     public void marcarDisponivel() {
         this.status = true;
     }
-    
-    public void editarInformacoes(String titulo, String autor, String categoria) {
+
+    // --- Getters e Setters ---
+    public int getIdLivro() {
+        return idLivro;
+    }
+
+    public void setIdLivro(int idLivro) {
+        this.idLivro = idLivro;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
         this.titulo = titulo;
-        this.autor = autor;
-        this.categoria = categoria;
-        }
+    }
 
-    public int getIdLivro() { return idLivro; }
-    public void setIdLivro(int idLivro) { this.idLivro = idLivro; }
+    public String getIsbn() {
+        return isbn;
+    }
 
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
 
-    public String getAutor() { return autor; }
-    public void setAutor(String autor) { this.autor = autor; }
+    public int getAno() {
+        return ano;
+    }
 
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
+    public void setAno(int ano) {
+        this.ano = ano;
+    }
 
-    public boolean isStatus() { return status; }
-    public void setStatus(boolean status) { this.status = status; }
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 }

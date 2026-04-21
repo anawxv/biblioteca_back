@@ -1,3 +1,5 @@
-2026/04/09-19:32:39.759 eac Reusing MANIFEST C:\Users\Rodrigo\Desktop\livia\LOO\Biblioteca\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database/MANIFEST-000001
-2026/04/09-19:32:39.761 eac Recovering log #3
-2026/04/09-19:32:39.761 eac Reusing old log C:\Users\Rodrigo\Desktop\livia\LOO\Biblioteca\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database/000003.log 
+2026/04/20-17:19:07.836 6ed0 Log #3: 1 ops saved to Table #4 OK
+2026/04/20-17:19:07.854 6ed0 Archiving C:\Users\maria da conceicao\OneDrive\Área de Trabalho\biblioteca\biblioteca_back\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database/000003.log: OK
+2026/04/20-17:19:07.855 6ed0 Table #4: 1 entries OK
+2026/04/20-17:19:07.865 6ed0 Archiving C:\Users\maria da conceicao\OneDrive\Área de Trabalho\biblioteca\biblioteca_back\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database/MANIFEST-000001: OK
+2026/04/20-17:19:07.902 6ed0 **** Repaired leveldb C:\Users\maria da conceicao\OneDrive\Área de Trabalho\biblioteca\biblioteca_back\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Site Characteristics Database; recovered 1 files; 130 bytes. Some data may have been lost. ****

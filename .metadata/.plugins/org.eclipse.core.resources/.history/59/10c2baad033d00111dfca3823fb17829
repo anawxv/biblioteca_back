@@ -1,0 +1,29 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import conexao.Conexao;
+import model.Livro;
+
+public class LivroDAO {
+
+    public void salvar(Livro livro) {
+        String sql = "INSERT INTO livro (titulo, isbn, ano, quantidade) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, livro.getTitulo());
+            stmt.setString(2, livro.getIsbn());
+            stmt.setInt(3, livro.getAno());
+            stmt.setInt(4, livro.getQuantidade());
+
+            stmt.executeUpdate();
+            System.out.println("Livro salvo com sucesso no SQL Server!");
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao salvar livro: " + e.getMessage());
+        }
+    }
+}

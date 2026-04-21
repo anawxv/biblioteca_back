@@ -1,0 +1,43 @@
+package model;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import dao.LivroDAO;
+import dao.UsuarioDAO; 
+
+public class Main {
+    public static void main(String[] args) {
+
+  
+        Biblioteca minhaBiblioteca = new Biblioteca("Biblioteca das Girls", "Rua das Cores, 2026", "11 9999-8888");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        Livro l1 = new Livro("Girls Like Girls", "123456", 2024, 5);
+        Livro l2 = new Livro("Vermelho, Branco e Sangue Azul", "789101", 2020, 3);
+        Cliente cliente = new Cliente("Pedro Tofani", "tofani@email.com", "senha123", "98888-7777");
+        Funcionario func = new Funcionario("João Victor", "joao@biblioteca.com", "admin123", "97777-6666", "Bibliotecário");
+
+        LivroDAO lDao = new LivroDAO();
+        UsuarioDAO uDao = new UsuarioDAO();
+
+        System.out.println("--- Iniciando persistência no Banco de Dados ---");
+ 
+        lDao.salvar(l1);
+        lDao.salvar(l2);
+
+        uDao.salvar(cliente, "Cliente");
+        uDao.salvar(func, "Funcionario");
+
+        minhaBiblioteca.getAcervo().add(l1);
+        minhaBiblioteca.getAcervo().add(l2);
+
+        System.out.println("\n--- " + minhaBiblioteca.getNome() + " ---");
+        System.out.println("Registrando empréstimo...");
+        
+        Emprestimo emp = new Emprestimo(cliente, l1);
+        
+        System.out.println("O livro '" + l1.getTitulo() + "' foi pego por: " + emp.getCliente().getNome());
+        System.out.println("Funcionário responsável: " + func.getNome());
+        System.out.println("Status final: Dados salvos com sucesso no SQL Server.");
+    }
+}

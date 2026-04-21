@@ -2,9 +2,7 @@ package model;
 
 public class Funcionario extends Usuario {
 
-    private int idFuncionario;
     private String cargo;
-
     public Funcionario(String nome, String email, String senha, String telefone, String cargo) {
         super(nome, email, senha, telefone);
         this.cargo = cargo;
@@ -12,17 +10,18 @@ public class Funcionario extends Usuario {
 
     public void registrarEmprestimo(Cliente cliente, Livro livro) {
         if (livro.isStatus()) { 
-            System.out.println("Funcionário " + nome + " registrando empréstimo para " + cliente.getNome());
+            System.out.println("Funcionário " + this.getNome() + " registrando empréstimo para " + cliente.getNome());
         }
     }
+
     public void registrarDevolucao(Emprestimo emprestimo) {
-       
         emprestimo.finalizar();
-        System.out.println("Devolução registrada pelo funcionário: " + this.nome);
+        System.out.println("Devolução registrada pelo funcionário: " + this.getNome());
     }
+
 
     public String getCargo() { return cargo; }
     public void setCargo(String cargo) { this.cargo = cargo; }
-    public int getIdFuncionario() { return idFuncionario; }
-    public void setIdFuncionario(int idFuncionario) { this.idFuncionario = idFuncionario; }
+    
+
 }
