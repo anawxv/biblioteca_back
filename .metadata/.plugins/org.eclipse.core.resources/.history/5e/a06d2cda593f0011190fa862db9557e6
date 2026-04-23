@@ -1,0 +1,75 @@
+package model;
+
+import dao.EmprestimoDAO;
+import dao.LivroDAO;
+import dao.UsuarioDAO; 
+
+public class Main {
+    public static void main(String[] args) {
+
+        Biblioteca minhaBiblioteca = new Biblioteca("Biblioteca das Girls", "Rua das Cores, 2026", "11 9999-8888");
+
+        Livro l1 = new Livro("Girls Like Girls", "ISBN-NOVO-01", 2024, 5);
+        Livro l2 = new Livro("Vermelho, Branco e Sangue Azul", "ISBN-NOVO-02", 2020, 3);
+        
+        Cliente cliente = new Cliente("Pedro Tofani", "tofani@email.com", "senha123", "98888-7777");
+        Funcionario func = new Funcionario("João Victor", "joao@biblioteca.com", "admin123", "97777-6666", "Bibliotecário");
+
+        LivroDAO lDao = new LivroDAO();
+        UsuarioDAO uDao = new UsuarioDAO();
+
+        System.out.println("--- Iniciando persistência no Banco de Dados ---");
+ 
+        lDao.salvar(l1);
+        lDao.salvar(l2);
+
+        uDao.salvar(cliente, "Cliente");
+        uDao.salvar(func, "Funcionario");
+
+        System.out.println("\n--- " + minhaBiblioteca.getNome() + " ---");
+        System.out.println("Registrando empréstimo...");
+        
+        Emprestimo emp = new Emprestimo(cliente, l1);
+        
+        System.out.println("O livro '" + l1.getTitulo() + "' foi pego por: " + emp.getCliente().getNome());
+        System.out.println("Funcionário responsável: " + func.getNome());
+        System.out.println("Status final: Salvo na tabela de usuários!");
+        
+        EmprestimoDAO eDao = new EmprestimoDAO();
+     eDao.salvar(1, 1); 
+
+     System.out.println("concluido");
+    
+    
+        // 1. Instanciar os DAOs
+        LivroDAO livroDao = new LivroDAO();
+        // (Supondo que você criou esses DAOs para Autor e Categoria)
+        
+        System.out.println("--- INICIANDO TESTES DO CRUD ---");
+
+        // TESTE CREATE (Salvar)
+        Livro novoLivro = new Livro("Java para Iniciantes", "978-85", 2024, 10);
+        // Se você já tiver o ID do autor e categoria no banco:
+        // novoLivro.setIdAutor(1); 
+        // novoLivro.setIdCategoria(1);
+        
+        livroDao.salvar(novoLivro);
+        System.out.println("Livro salvo com ID: " + novoLivro.getIdLivro());
+
+        // TESTE READ (Listar)
+        System.out.println("\nListando livros do banco:");
+        livroDao.listarTodos().forEach(l -> {
+            System.out.println("- " + l.getTitulo() + " (ISBN: " + l.getIsbn() + ")");
+        });
+
+        // TESTE UPDATE (Atualizar)
+        novoLivro.setTitulo("Java Avançado e Pragmático");
+        livroDao.atualizar(novoLivro);
+        System.out.println("\nLivro atualizado com sucesso!");
+
+        // TESTE DELETE (Excluir) - Opcional para teste
+        // livroDao.excluir(novoLivro.getIdLivro());
+        // System.out.println("\nLivro removido para limpar o teste.");
+    }
+}
+

@@ -1,43 +1,56 @@
 package model;
 
-import dao.EmprestimoDAO;
-import dao.LivroDAO;
-import dao.UsuarioDAO; 
+import dao.*;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        AutorDAO autorDao = new AutorDAO();
+        CategoriaDAO catDao = new CategoriaDAO();
+        LivroDAO livroDao = new LivroDAO();
+        UsuarioDAO usuarioDao = new UsuarioDAO();
+        EmprestimoDAO emprestimoDao = new EmprestimoDAO(); 
 
-        Biblioteca minhaBiblioteca = new Biblioteca("Biblioteca das Girls", "Rua das Cores, 2026", "11 9999-8888");
+        System.out.println("=== TESTES DO SISTEMA BIBLIOTECA ===");
 
-        Livro l1 = new Livro("Girls Like Girls", "ISBN-NOVO-01", 2024, 5);
-        Livro l2 = new Livro("Vermelho, Branco e Sangue Azul", "ISBN-NOVO-02", 2020, 3);
-        
-        Cliente cliente = new Cliente("Pedro Tofani", "tofani@email.com", "senha123", "98888-7777");
-        Funcionario func = new Funcionario("João Victor", "joao@biblioteca.com", "admin123", "97777-6666", "Bibliotecário");
+        // 1. Cadastrar Autor e Categoria 
+        int idAutor = autorDao.salvar("Casey McQuiston");
+        int idCategoria = catDao.salvar("Romance Contemporâneo");
+        System.out.println("Autor e Categoria criados com sucesso!");
 
-        LivroDAO lDao = new LivroDAO();
-        UsuarioDAO uDao = new UsuarioDAO();
+        // 2. CREATE LIVRO
+        Livro l1 = new Livro("Vermelho, Branco e Sangue Azul", "ISBN-123", 2020, 5);
+        livroDao.salvar(l1, idAutor, idCategoria); 
+        System.out.println("Livro salvo com ID: " + l1.getIdLivro());
 
-        System.out.println("--- Iniciando persistência no Banco de Dados ---");
+        // 3. CREATE USUÁRIO
+        Cliente c = new Cliente("Ana", "ana@email.com", "123", "119999");
+        usuarioDao.salvar(c, "Cliente");
+        System.out.println("Cliente cadastrado com ID: " + c.getIdUsuario());
+
+        // 4. REGISTRAR EMPRÉSTIMO 
+        System.out.println("\n--- REGISTRANDO EMPRÉSTIMO ---");
+        emprestimoDao.salvar(c.getIdUsuario(), l1.getIdLivro());
  
-        lDao.salvar(l1);
-        lDao.salvar(l2);
+        // 5. READ 
+        System.out.println("\n--- LISTAGEM DE LIVROS NO BANCO ---");
+        List<Livro> livros = livroDao.listarTodos();
+        for (Livro livro : livros) {
+            System.out.println("Livro: " + livro.getTitulo() + " | Quantidade: " + livro.getQuantidade());
+        }
 
-        uDao.salvar(cliente, "Cliente");
-        uDao.salvar(func, "Funcionario");
+        System.out.println("\n--- TESTANDO BUSCA POR 'Romance' ---");
+        livroDao.buscarPorQualquerCoisa("Romance").forEach(l -> {
+            System.out.println("Resultado encontrado: " + l.getTitulo());
+        });
 
-        System.out.println("\n--- " + minhaBiblioteca.getNome() + " ---");
-        System.out.println("Registrando empréstimo...");
+        System.out.println("\nTESTES CONCLUÍDOS");
         
-        Emprestimo emp = new Emprestimo(cliente, l1);
-        
-        System.out.println("O livro '" + l1.getTitulo() + "' foi pego por: " + emp.getCliente().getNome());
-        System.out.println("Funcionário responsável: " + func.getNome());
-        System.out.println("Status final: Salvo na tabela de usuários!");
-        
-        EmprestimoDAO eDao = new EmprestimoDAO();
-     eDao.salvar(1, 1); 
-
-     System.out.println("concluido");
+        /* * DELETE - Removi do fluxo principal para você conseguir ver o dado no SQL.
+         * Se você deletar o livro logo após criar, o Empréstimo pode dar erro de 
+         * chave estrangeira ou você não verá nada no SELECT do banco.
+         */
+        // int idParaExcluir = l1.getIdLivro(); 
+        // livroDao.excluir(idParaExcluir);
     }
 }

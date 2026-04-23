@@ -1,0 +1,32 @@
+package dao;
+
+import java.sql.*;
+import conexao.Conexao;
+import model.Emprestimo;
+
+public class EmprestimoDAO {
+    // Inicia o empréstimo no banco
+    public void salvar(int idUsuario, int idLivro) {
+        String sql = "INSERT INTO emprestimo (id_usuario, id_livro, data_prevista_devolucao) VALUES (?, ?, DATEADD(day, 10, GETDATE()))";
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idUsuario);
+            stmt.setInt(2, idLivro);
+            stmt.executeUpdate();
+            System.out.println("Empréstimo registrado no sistema!");
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    // Registra a devolução e calcula a multa
+    public void finalizarEmprestimo(int idEmprestimo, Emprestimo emp) {
+        String sql = "UPDATE emprestimo SET data_devolucao = GETDATE(), valor_multa = ? WHERE id_emprestimo = ?";
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            emp.finalizar(); // Chama a lógica de cálculo de multa no Java
+            stmt.setDouble(1, emp.getValorMulta());
+            stmt.setInt(2, idEmprestimo);
+            stmt.executeUpdate();
+            System.out.println("Devolução concluída. Multa: R$ " + emp.getValorMulta());
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+}

@@ -1,0 +1,52 @@
+package model;
+
+import dao.*;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        AutorDAO autorDao = new AutorDAO();
+        CategoriaDAO catDao = new CategoriaDAO();
+        LivroDAO livroDao = new LivroDAO();
+        UsuarioDAO usuarioDao = new UsuarioDAO();
+
+        System.out.println("TESTES DO SISTEMA BIBLIOTECA");
+
+        // 1. Cadastrar Autor e Categoria 
+        int idAutor = autorDao.salvar("Casey McQuiston");
+        int idCategoria = catDao.salvar("Romance Contemporâneo");
+        System.out.println("Autor e Categoria criados com sucesso!");
+
+        //CREATE
+        Livro l1 = new Livro("Vermelho, Branco e Sangue Azul", "ISBN-123", 2020, 5);
+        livroDao.salvar(l1, idAutor, idCategoria); 
+        System.out.println("Livro salvo com ID: " + l1.getIdLivro());
+
+        // CREATE
+        Cliente c = new Cliente("Ana", "ana@email.com", "123", "119999");
+        usuarioDao.salvar(c, "Cliente");
+        System.out.println("Cliente cadastrado!");
+ 
+        //READ
+        System.out.println("\n--- LISTAGEM DE LIVROS NO BANCO ---");
+        List<Livro> livros = livroDao.listarTodos();
+        for (Livro livro : livros) {
+            System.out.println("Livro: " + livro.getTitulo() + " | Quantidade: " + livro.getQuantidade());
+        }
+
+        // 5. Testar a busca por termo 
+        System.out.println("\n--- TESTANDO BUSCA POR 'Romance' ---");
+        livroDao.buscarPorQualquerCoisa("Romance").forEach(l -> {
+            System.out.println("Resultado encontrado: " + l.getTitulo());
+        });
+
+        System.out.println("\nTESTES CONCLUÍDOS");
+    
+    //DELETE
+    System.out.println("\n--- EXCLUINDO LIVRO ---");
+    int idParaExcluir = l1.getIdLivro(); // Pega o ID 
+    livroDao.excluir(idParaExcluir);
+    System.out.println("Listagem após exclusão:");
+    livroDao.listarTodos().forEach(l -> System.out.println("- " + l.getTitulo()));
+}
+}

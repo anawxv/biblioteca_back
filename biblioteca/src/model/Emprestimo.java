@@ -45,4 +45,8 @@ public class Emprestimo {
     public Date getDataEmprestimo() { return dataEmprestimo; }
     public Date getDataPrevistaDevolucao() { return dataPrevistaDevolucao; }
     public Date getDataDevolucao() { return dataDevolucao; }
+    private double valorMulta;
+    public double getValorMulta() {
+        return valorMulta;
+    }
 }

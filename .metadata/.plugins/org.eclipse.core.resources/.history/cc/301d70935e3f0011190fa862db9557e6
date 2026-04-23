@@ -1,0 +1,34 @@
+package dao;
+
+import java.sql.*;
+import conexao.Conexao;
+import model.Usuario;
+
+public class UsuarioDAO {
+    // CREATE
+    public void salvar(Usuario usuario, String tipo) {
+        String sql = "INSERT INTO usuario (nome, email, senha, telefone, tipo) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, usuario.getNome());
+            stmt.setString(2, usuario.getEmail());
+            stmt.setString(3, usuario.getSenha());
+            stmt.setString(4, usuario.getTelefone());
+            stmt.setString(5, tipo);
+            stmt.executeUpdate();
+            
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) usuario.setIdUsuario(rs.getInt(1));
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    // DELETE (Para completar o seu CRUD)
+    public void excluir(int id) {
+        String sql = "DELETE FROM usuario WHERE id_usuario = ?";
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+}

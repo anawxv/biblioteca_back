@@ -1,0 +1,30 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import conexao.Conexao;
+import model.Usuario;
+
+public class UsuarioDAO {
+	public void salvar(Usuario usuario, String tipo) {
+	   
+	    String sql = "INSERT INTO usuario (nome, email, senha, telefone, tipo) VALUES (?, ?, ?, ?, ?)";
+
+	    try (Connection conn = Conexao.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, usuario.getNome());
+	        stmt.setString(2, usuario.getEmail());
+	        stmt.setString(3, usuario.getSenha());
+	        stmt.setString(4, usuario.getTelefone());
+	        stmt.setString(5, tipo);
+
+	        stmt.executeUpdate();
+	        System.out.println("Sucesso: " + tipo + " " + usuario.getNome() + " salvo na tabela mãe!");
+
+	    } catch (SQLException e) {
+	        System.err.println("Erro ao salvar usuario: " + e.getMessage());
+	    }
+	}
+    }

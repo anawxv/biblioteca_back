@@ -1,0 +1,44 @@
+package model;
+
+import dao.AutorDAO;
+import dao.CategoriaDAO;
+import dao.LivroDAO;
+import dao.UsuarioDAO;
+import dao.EmprestimoDAO;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        LivroDAO lDao = new LivroDAO();
+        UsuarioDAO uDao = new UsuarioDAO();
+        AutorDAO autorDao = new AutorDAO();
+        CategoriaDAO catDao = new CategoriaDAO();
+        
+        System.out.println("--- Preparando Base (Autor e Categoria) ---");
+        int idAutor = autorDao.salvar("Casey McQuiston");
+        int idCat = catDao.salvar("Romance");
+
+        System.out.println("--- Testando CRUD de Livros ---");
+        
+        // CREATE
+        Livro l1 = new Livro("Vermelho, Branco e Sangue Azul", "ISBN-123", 2020, 3);
+        lDao.salvar(l1, idAutor, idCat); 
+        
+        // READ
+        System.out.println("\nLivros no banco:");
+        List<Livro> lista = lDao.listarTodos();
+        for (Livro l : lista) {
+            System.out.println("ID: " + l.getIdLivro() + " | Título: " + l.getTitulo());
+        }
+
+        // UPDATE
+        l1.setTitulo("Vermelho, Branco e Sangue Azul - Ed. Especial");
+        lDao.atualizar(l1);
+
+        // TESTE DE BUSCA 
+        System.out.println("\nTestando Busca por termo 'Romance':");
+        lDao.buscarPorQualquerCoisa("Romance").forEach(l -> System.out.println("Achado: " + l.getTitulo()));
+
+        System.out.println("\n--- Fim dos Testes ---");
+    }
+}
