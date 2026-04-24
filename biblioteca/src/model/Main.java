@@ -11,7 +11,7 @@ public class Main {
         UsuarioDAO usuarioDao = new UsuarioDAO();
         EmprestimoDAO emprestimoDao = new EmprestimoDAO(); 
 
-        System.out.println("=== TESTES DO SISTEMA BIBLIOTECA ===");
+        System.out.println("TESTES DO SISTEMA BIBLIOTECA");
 
         // 1. Cadastrar Autor e Categoria 
         int idAutor = autorDao.salvar("Casey McQuiston");
@@ -24,22 +24,22 @@ public class Main {
         System.out.println("Livro salvo com ID: " + l1.getIdLivro());
 
         // 3. CREATE USUÁRIO
-        Cliente c = new Cliente("Ana", "ana@email.com", "123", "119999");
+        Cliente c = new Cliente("João", "joaovictor@email.com", "123", "119999");
         usuarioDao.salvar(c, "Cliente");
         System.out.println("Cliente cadastrado com ID: " + c.getIdUsuario());
 
         // 4. REGISTRAR EMPRÉSTIMO 
-        System.out.println("\n--- REGISTRANDO EMPRÉSTIMO ---");
+        System.out.println("\n REGISTRANDO EMPRÉSTIMO");
         emprestimoDao.salvar(c.getIdUsuario(), l1.getIdLivro());
  
         // 5. READ 
-        System.out.println("\n--- LISTAGEM DE LIVROS NO BANCO ---");
+        System.out.println("\n LISTAGEM DE LIVROS NO BANCO");
         List<Livro> livros = livroDao.listarTodos();
         for (Livro livro : livros) {
             System.out.println("Livro: " + livro.getTitulo() + " | Quantidade: " + livro.getQuantidade());
         }
 
-        System.out.println("\n--- TESTANDO BUSCA POR 'Romance' ---");
+        System.out.println("\n TESTANDO BUSCA POR 'Romance'");
         livroDao.buscarPorQualquerCoisa("Romance").forEach(l -> {
             System.out.println("Resultado encontrado: " + l.getTitulo());
         });
