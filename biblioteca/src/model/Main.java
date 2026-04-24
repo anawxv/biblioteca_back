@@ -46,10 +46,6 @@ public class Main {
 
         System.out.println("\nTESTES CONCLUÍDOS");
         
-        /* * DELETE - Removi do fluxo principal para você conseguir ver o dado no SQL.
-         * Se você deletar o livro logo após criar, o Empréstimo pode dar erro de 
-         * chave estrangeira ou você não verá nada no SELECT do banco.
-         */
         // int idParaExcluir = l1.getIdLivro(); 
         // livroDao.excluir(idParaExcluir);
     }
