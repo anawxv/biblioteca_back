@@ -1,0 +1,9 @@
+CREATE INDEX idx_usuario_email ON usuario(email);
+CREATE INDEX idx_livro_titulo ON livro(titulo);
+CREATE INDEX idx_livro_autor ON livro(autor);
+CREATE INDEX idx_livro_isbn ON livro(isbn);
+CREATE INDEX idx_livro_categoria ON livro(id_categoria);
+CREATE INDEX idx_emprestimo_cliente ON emprestimo(id_cliente);
+CREATE INDEX idx_emprestimo_livro ON emprestimo(id_livro);
+CREATE INDEX idx_emprestimo_status ON emprestimo(status);
+CREATE INDEX idx_multa_paga ON multa(paga);
