@@ -3,7 +3,11 @@ package model;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Emprestimo {
+public class Emprestimo { 
+	
+	public Emprestimo() {
+	 
+	}
 
     private int idEmprestimo;
     private Cliente cliente;
@@ -49,4 +53,19 @@ public class Emprestimo {
     public double getValorMulta() {
         return valorMulta;
     }
+
+	public void setDataPrevista(java.sql.Date date) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setDataDevolucao(java.sql.Date date) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setValorMulta(double double1) {
+		// TODO Auto-generated method stub
+		
+	}
 }
