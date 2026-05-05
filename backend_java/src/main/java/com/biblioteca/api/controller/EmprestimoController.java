@@ -1,4 +1,4 @@
-﻿package com.biblioteca.api.controller;
+package com.biblioteca.api.controller;
 
 import com.biblioteca.api.dto.ApiDtos;
 import com.biblioteca.api.service.EmprestimoService;

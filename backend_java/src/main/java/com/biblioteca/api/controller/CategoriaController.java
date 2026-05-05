@@ -1,4 +1,4 @@
-﻿package com.biblioteca.api.controller;
+package com.biblioteca.api.controller;
 
 import com.biblioteca.api.service.CategoriaService;
 import org.springframework.http.ResponseEntity;

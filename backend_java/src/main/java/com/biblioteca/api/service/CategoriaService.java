@@ -1,4 +1,4 @@
-﻿package com.biblioteca.api.service;
+package com.biblioteca.api.service;
 
 import com.biblioteca.api.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;

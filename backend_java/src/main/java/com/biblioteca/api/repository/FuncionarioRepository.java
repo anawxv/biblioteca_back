@@ -1,4 +1,4 @@
-﻿package com.biblioteca.api.repository;
+package com.biblioteca.api.repository;
 
 import com.biblioteca.api.model.Funcionario;
 import org.springframework.data.jpa.repository.EntityGraph;

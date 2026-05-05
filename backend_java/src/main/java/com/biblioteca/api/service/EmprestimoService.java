@@ -1,4 +1,4 @@
-﻿package com.biblioteca.api.service;
+package com.biblioteca.api.service;
 
 import com.biblioteca.api.dto.ApiDtos;
 import com.biblioteca.api.exception.BusinessException;

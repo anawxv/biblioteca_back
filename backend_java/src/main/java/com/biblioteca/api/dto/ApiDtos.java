@@ -1,5 +1,6 @@
-﻿package com.biblioteca.api.dto;
+package com.biblioteca.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -22,6 +23,7 @@ public final class ApiDtos {
             @Email(message = "Informe um e-mail valido.")
             String email,
             @NotBlank(message = "Senha e obrigatoria.")
+            @JsonAlias("password")
             String senha
     ) {
     }
@@ -47,15 +49,19 @@ public final class ApiDtos {
     public record CreateUserRequest(
             @NotBlank(message = "Nome e obrigatorio.")
             @Size(max = 120, message = "Nome deve ter no maximo 120 caracteres.")
+            @JsonAlias("nome")
             String name,
             @NotBlank(message = "E-mail e obrigatorio.")
             @Email(message = "Informe um e-mail valido.")
             String email,
             @NotBlank(message = "Senha e obrigatoria.")
+            @JsonAlias("senha")
             String password,
             @Size(max = 20, message = "Telefone deve ter no maximo 20 caracteres.")
+            @JsonAlias("telefone")
             String phone,
             @NotBlank(message = "Tipo de usuario e obrigatorio.")
+            @JsonAlias({"tipo_usuario", "tipoUsuario"})
             String role
     ) {
     }
@@ -68,21 +74,31 @@ public final class ApiDtos {
 
     public record BookRequest(
             @NotBlank(message = "Titulo e obrigatorio.")
+            @JsonAlias("titulo")
             String title,
             @NotBlank(message = "Autor e obrigatorio.")
+            @JsonAlias("autor")
             String author,
             String isbn,
+            @JsonAlias({"descricao", "description"})
             String description,
+            @JsonAlias({"ano_publicacao", "anoPublicacao"})
             Integer publishedYear,
+            @JsonAlias("paginas")
             Integer pages,
+            @JsonAlias("editora")
             String publisher,
             @NotNull(message = "Quantidade total e obrigatoria.")
             @Min(value = 0, message = "Quantidade total nao pode ser negativa.")
+            @JsonAlias({"quantidade_total", "quantidadeTotal"})
             Integer quantityTotal,
             @Min(value = 0, message = "Quantidade disponivel nao pode ser negativa.")
+            @JsonAlias({"quantidade_disponivel", "quantidadeDisponivel"})
             Integer availableQuantity,
             @NotNull(message = "Categoria e obrigatoria.")
+            @JsonAlias({"id_categoria", "idCategoria", "categoriaId"})
             Integer categoryId,
+            @JsonAlias({"imagem_capa", "imagemCapa"})
             String coverImage
     ) {
     }
@@ -109,12 +125,16 @@ public final class ApiDtos {
 
     public record LoanRequest(
             @NotNull(message = "Cliente e obrigatorio.")
+            @JsonAlias({"id_cliente", "idCliente", "clientId"})
             Integer clienteId,
             @NotNull(message = "Livro e obrigatorio.")
+            @JsonAlias({"id_livro", "idLivro", "bookId"})
             Integer livroId,
+            @JsonAlias({"id_funcionario", "idFuncionario"})
             Integer funcionarioId,
             @Min(value = 1, message = "Prazo minimo de 1 dia.")
             @Max(value = 60, message = "Prazo maximo de 60 dias.")
+            @JsonAlias({"prazo_dias", "prazo"})
             Integer prazoDias,
             String observacao
     ) {

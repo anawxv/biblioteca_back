@@ -1,4 +1,4 @@
-﻿package com.biblioteca.api.exception;
+package com.biblioteca.api.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

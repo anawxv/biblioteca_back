@@ -1,4 +1,4 @@
-﻿package com.biblioteca.api.repository;
+package com.biblioteca.api.repository;
 
 import com.biblioteca.api.model.Multa;
 import org.springframework.data.jpa.repository.JpaRepository;

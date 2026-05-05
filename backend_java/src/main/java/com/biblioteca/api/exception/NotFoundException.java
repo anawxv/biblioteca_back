@@ -1,4 +1,4 @@
-﻿package com.biblioteca.api.exception;
+package com.biblioteca.api.exception;
 
 public class NotFoundException extends RuntimeException {
 
