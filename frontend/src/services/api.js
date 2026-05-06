@@ -83,6 +83,18 @@ function normalizeRole(role) {
   return normalized === "funcionario" ? "funcionario" : "cliente";
 }
 
+function pickCategoryName(value) {
+  if (!value) {
+    return "";
+  }
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  return value.name ?? value.nome ?? value.category ?? value.categoria ?? "";
+}
+
 function normalizeUser(payload = {}) {
   const user = payload.user || payload;
   return {
@@ -117,7 +129,7 @@ export function normalizeBook(book = {}) {
     id: book.id ?? book.idLivro,
     title: book.title ?? book.titulo,
     author: book.author ?? book.autor,
-    category: book.category ?? book.categoria ?? "",
+    category: pickCategoryName(book.category ?? book.categoria ?? book.categoriaLivro),
     isbn: book.isbn ?? "",
     pages: book.pages ?? book.paginas ?? "",
     description: book.description ?? book.descricao ?? "",
@@ -169,6 +181,20 @@ function normalizeChartPoint(item = {}) {
     label: item.label,
     value: Number(item.value ?? item.total ?? 0),
   };
+}
+
+function asArray(payload, keys = []) {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  for (const key of keys) {
+    if (Array.isArray(payload?.[key])) {
+      return payload[key];
+    }
+  }
+
+  return [];
 }
 
 function normalizeDashboard(payload = {}) {
@@ -283,7 +309,7 @@ export async function cadastrarUsuario(dados) {
 
 export async function listarLivros() {
   const response = await request("/livros", {}, () => mockServer.listarLivros());
-  return (response || []).map(normalizeBook);
+  return asArray(response, ["livros", "items", "content"]).map(normalizeBook);
 }
 
 export async function buscarLivros(busca) {
@@ -292,7 +318,7 @@ export async function buscarLivros(busca) {
     {},
     () => mockServer.buscarLivros(busca),
   );
-  return (response || []).map(normalizeBook);
+  return asArray(response, ["livros", "items", "content"]).map(normalizeBook);
 }
 
 export async function detalharLivro(id) {
@@ -302,7 +328,16 @@ export async function detalharLivro(id) {
 
 export async function listarCategorias() {
   const response = await request("/categorias", {}, () => mockServer.listarCategorias());
-  return (response || CATEGORY_NAMES).map(normalizeCategory);
+  const categories = (asArray(response, ["categorias", "items", "content"]).length
+    ? asArray(response, ["categorias", "items", "content"])
+    : CATEGORY_NAMES
+  ).map(normalizeCategory);
+  const existing = new Set(categories.map((category) => String(category.name || "").toLowerCase()));
+  const missing = CATEGORY_NAMES
+    .filter((name) => !existing.has(name.toLowerCase()))
+    .map((name) => ({ id: CATEGORY_NAMES.indexOf(name) + 1, name }));
+
+  return [...categories, ...missing];
 }
 
 export async function solicitarEmprestimo(dados) {
@@ -317,7 +352,8 @@ export async function solicitarEmprestimo(dados) {
         observacao: dados.observacao,
       }),
     },
-    () => mockServer.solicitarEmprestimo(dados),
+    null,
+    [],
   );
   return normalizeLoan(response);
 }
@@ -330,8 +366,8 @@ export async function listarMeusEmprestimos(idCliente) {
   );
 
   return {
-    ativos: (response?.ativos || []).map(normalizeLoan),
-    historico: (response?.historico || []).map(normalizeLoan),
+    ativos: asArray(response?.ativos ?? response, ["ativos"]).map(normalizeLoan),
+    historico: asArray(response?.historico, ["historico"]).map(normalizeLoan),
   };
 }
 
@@ -339,7 +375,8 @@ export async function devolverLivro(idEmprestimo) {
   const response = await request(
     `/emprestimos/${idEmprestimo}/devolver`,
     { method: "POST" },
-    () => mockServer.devolverLivro(idEmprestimo),
+    null,
+    [],
   );
   return normalizeLoan(response);
 }
@@ -356,20 +393,22 @@ export async function adicionarLivro(dados) {
       method: "POST",
       body: JSON.stringify(toBookPayload(dados)),
     },
-    () => mockServer.adicionarLivro(dados),
+    null,
+    [],
   );
   return normalizeBook(response);
 }
 
 export async function excluirLivro(idLivro) {
-  return request(
+  await request(
     `/livros/${idLivro}`,
     {
       method: "DELETE",
     },
-    () => mockServer.excluirLivro(idLivro),
+    null,
     [],
   );
+  return { success: true };
 }
 
 export function registrarEmprestimo(dados) {
@@ -387,7 +426,7 @@ export async function listarLivrosMaisEmprestados() {
     {},
     () => mockServer.listarLivrosMaisEmprestados(),
   );
-  return (response || []).map(normalizeBook);
+  return asArray(response, ["livros", "items", "content"]).map(normalizeBook);
 }
 
 export async function listarLivrosRecentes() {
@@ -396,7 +435,7 @@ export async function listarLivrosRecentes() {
     {},
     () => mockServer.listarLivrosRecentes(),
   );
-  return (response || []).map(normalizeBook);
+  return asArray(response, ["livros", "items", "content"]).map(normalizeBook);
 }
 
 export async function listarGenerosMaisConsumidos() {
@@ -405,58 +444,92 @@ export async function listarGenerosMaisConsumidos() {
     {},
     () => mockServer.listarGenerosMaisConsumidos(),
   );
-  return (response || []).map(normalizeChartPoint);
+  return asArray(response, ["generos", "items", "content"]).map(normalizeChartPoint);
 }
 
 export async function listarClientes(search = "") {
-  // Endpoint futuro sugerido: GET /api/usuarios?tipo=CLIENTE&busca=
-  return mockServer.listarClientes(search);
+  const query = search ? `?busca=${encodeURIComponent(search)}` : "";
+  const response = await request(`/clientes${query}`, {}, () => mockServer.listarClientes(search));
+  return asArray(response, ["clientes", "usuarios", "items", "content"]).map(normalizeUser);
 }
 
 export async function listarEmprestimosAtivos(search = "") {
-  // Endpoint futuro sugerido: GET /api/emprestimos?status=ATIVO&busca=
-  return mockServer.listarEmprestimosAtivos(search);
+  const query = search ? `?busca=${encodeURIComponent(search)}` : "";
+  const response = await request(
+    `/emprestimos/ativos${query}`,
+    {},
+    () => mockServer.listarEmprestimosAtivos(search),
+  );
+  return asArray(response, ["emprestimos", "ativos", "items", "content"]).map(normalizeLoan);
 }
 
 export async function listarEmprestimosRecentes() {
-  const dashboard = await listarDashboard();
-  return dashboard.recentLoans;
+  const response = await request(
+    "/emprestimos/recentes",
+    {},
+    async () => {
+      const dashboard = await listarDashboard();
+      return dashboard.recentLoans;
+    },
+  );
+  return asArray(response, ["emprestimos", "recentes", "items", "content"]).map(normalizeLoan);
 }
 
 export async function listarEmprestimosAtrasados(search = "") {
-  // Endpoint futuro sugerido: GET /api/emprestimos/atrasados?busca=
-  const loans = await mockServer.listarEmprestimosAtivos(search);
-  return loans.map(normalizeLoan).filter((loan) => loan.status === "Atrasado");
+  const query = search ? `?busca=${encodeURIComponent(search)}` : "";
+  const response = await request(
+    `/emprestimos/atrasados${query}`,
+    {},
+    async () => {
+      const loans = await mockServer.listarEmprestimosAtivos(search);
+      return loans.map(normalizeLoan).filter((loan) => loan.status === "Atrasado");
+    },
+  );
+  return asArray(response, ["emprestimos", "atrasados", "items", "content"]).map(normalizeLoan);
 }
 
 export async function listarLivrosIndisponiveis(search = "") {
-  // Endpoint futuro sugerido: GET /api/livros?disponibilidade=indisponivel&busca=
-  const books = await listarLivros();
-  const normalizedSearch = String(search || "").toLowerCase();
-  return books.filter((book) => {
-    const unavailable = book.status !== "disponivel" || Number(book.availableQuantity) <= 0;
-    const matches =
-      !normalizedSearch ||
-      [book.title, book.author, book.category].some((field) =>
-        String(field || "").toLowerCase().includes(normalizedSearch),
-      );
-    return unavailable && matches;
-  });
+  const query = search ? `?busca=${encodeURIComponent(search)}` : "";
+  const response = await request(
+    `/livros/indisponiveis${query}`,
+    {},
+    async () => {
+      const books = await listarLivros();
+      const normalizedSearch = String(search || "").toLowerCase();
+      return books.filter((book) => {
+        const unavailable = book.status !== "disponivel" || Number(book.availableQuantity) <= 0;
+        const matches =
+          !normalizedSearch ||
+          [book.title, book.author, book.category].some((field) =>
+            String(field || "").toLowerCase().includes(normalizedSearch),
+          );
+        return unavailable && matches;
+      });
+    },
+    [400, 404, 500, 502, 503],
+  );
+  return asArray(response, ["livros", "indisponiveis", "items", "content"]).map(normalizeBook);
 }
 
 export async function listarMultasPendentes() {
-  // Endpoint futuro sugerido: GET /api/multas?status=PENDENTE
-  const activeLoans = await mockServer.listarEmprestimosAtivos("");
-  return activeLoans
-    .map(normalizeLoan)
-    .filter((loan) => loan.status === "Atrasado")
-    .map((loan) =>
-      normalizeFine({
-        emprestimo: loan,
-        valor: Math.max(2.5, 2.5 * Math.ceil((Date.now() - new Date(loan.dueDate).getTime()) / 86400000)),
-        paga: false,
-      }),
-    );
+  const response = await request(
+    "/multas/pendentes",
+    {},
+    async () => {
+      const activeLoans = await mockServer.listarEmprestimosAtivos("");
+      return activeLoans
+        .map(normalizeLoan)
+        .filter((loan) => loan.status === "Atrasado")
+        .map((loan) =>
+          normalizeFine({
+            emprestimo: loan,
+            valor: Math.max(2.5, 2.5 * Math.ceil((Date.now() - new Date(loan.dueDate).getTime()) / 86400000)),
+            paga: false,
+          }),
+        );
+    },
+  );
+  return asArray(response, ["multas", "pendentes", "items", "content"]).map(normalizeFine);
 }
 
 export async function marcarMultaComoPaga() {
@@ -465,6 +538,5 @@ export async function marcarMultaComoPaga() {
 }
 
 export async function listarHistoricoLivros() {
-  // Endpoint futuro sugerido: GET /api/livros/historico
-  return [];
+  return request("/livros/historico", {}, () => [], [400, 404, 500, 502, 503]);
 }

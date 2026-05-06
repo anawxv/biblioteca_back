@@ -1,5 +1,12 @@
 const CACHE_NAME = "biblioteca-pwa-v1";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/icon.svg"];
+const APP_SHELL = [
+  "/",
+  "/offline.html",
+  "/manifest.webmanifest",
+  "/icons/icon.svg",
+  "/icons/icon-192.svg",
+  "/icons/icon-512.svg",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -31,6 +38,18 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
         return response;
       })
-      .catch(() => caches.match(request).then((cached) => cached || caches.match("/"))),
+      .catch(() =>
+        caches.match(request).then((cached) => {
+          if (cached) {
+            return cached;
+          }
+
+          if (request.mode === "navigate") {
+            return caches.match("/offline.html");
+          }
+
+          return caches.match("/");
+        }),
+      ),
   );
 });

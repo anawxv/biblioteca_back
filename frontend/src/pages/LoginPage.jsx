@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 function SocialButton({ label, icon, onClick }) {
   return (
-    <button className="social-icon" onClick={onClick} type="button" aria-label={label}>
+    <button className={`social-icon social-icon--${label.toLowerCase().split(" ").pop()}`} onClick={onClick} type="button" aria-label={label}>
       {icon}
     </button>
   );
@@ -44,13 +44,22 @@ export function LoginPage() {
       const destination = location.state?.from || roleDestination;
       navigate(destination, { replace: true });
     } catch (error) {
-      setFeedback(error.message?.startsWith("Este usuário") ? error.message : "E-mail ou senha incorretos.");
+      const message = error.message || "";
+      setFeedback(message.startsWith("Este usuário") || message.startsWith("Tipo de acesso") ? message : "E-mail ou senha incorretos.");
     } finally {
       setSubmitting(false);
     }
   }
 
-  function showSocialWarning() {
+  function loginComGoogle() {
+    setFeedback("Login social ainda não configurado.");
+  }
+
+  function loginComFacebook() {
+    setFeedback("Login social ainda não configurado.");
+  }
+
+  function loginComApple() {
     setFeedback("Login social ainda não configurado.");
   }
 
@@ -60,7 +69,13 @@ export function LoginPage() {
 
       <section className="panel">
         <div className="register-role-note">
-          Entrando como <strong>{preferredRole === "funcionario" ? "funcionário" : "cliente"}</strong>
+          {preferredRole ? (
+            <>
+              Entrando como <strong>{preferredRole === "funcionario" ? "funcionário" : "cliente"}</strong>
+            </>
+          ) : (
+            "Escolha cliente ou funcionário na tela inicial antes de entrar."
+          )}
         </div>
 
         <form className="form-grid" onSubmit={handleSubmit}>
@@ -95,9 +110,9 @@ export function LoginPage() {
         </div>
 
         <div className="social-row">
-          <SocialButton label="Entrar com Google" icon="G" onClick={showSocialWarning} />
-          <SocialButton label="Entrar com Facebook" icon="f" onClick={showSocialWarning} />
-          <SocialButton label="Entrar com Apple" icon="●" onClick={showSocialWarning} />
+          <SocialButton label="Entrar com Google" icon="G" onClick={loginComGoogle} />
+          <SocialButton label="Entrar com Facebook" icon="f" onClick={loginComFacebook} />
+          <SocialButton label="Entrar com Apple" icon="" onClick={loginComApple} />
         </div>
       </section>
     </main>

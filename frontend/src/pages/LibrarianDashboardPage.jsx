@@ -12,6 +12,7 @@ import {
   listarDashboard,
   listarEmprestimosAtrasados,
   listarEmprestimosAtivos,
+  listarEmprestimosRecentes,
   listarGenerosMaisConsumidos,
   listarHistoricoLivros,
   listarLivros,
@@ -29,9 +30,9 @@ const sections = [
   { id: "dashboard", label: "Dashboard" },
 ];
 
-export function LibrarianDashboardPage() {
+export function LibrarianDashboardPage({ initialSection = "livros" }) {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("livros");
+  const [activeSection, setActiveSection] = useState(initialSection);
   const [activeMetric, setActiveMetric] = useState("");
   const [dashboard, setDashboard] = useState(null);
   const [genres, setGenres] = useState([]);
@@ -63,6 +64,7 @@ export function LibrarianDashboardPage() {
         unavailableBooksResponse,
         pendingFinesResponse,
         historyResponse,
+        recentLoansResponse,
       ] = await Promise.all([
         listarDashboard(),
         listarGenerosMaisConsumidos(),
@@ -74,9 +76,9 @@ export function LibrarianDashboardPage() {
         listarLivrosIndisponiveis(""),
         listarMultasPendentes(),
         listarHistoricoLivros(),
+        listarEmprestimosRecentes(),
       ]);
 
-      setDashboard(dashboardResponse);
       setGenres(genresResponse);
       setTopBooks(topBooksResponse);
       setBooks(booksResponse);
@@ -86,6 +88,10 @@ export function LibrarianDashboardPage() {
       setUnavailableBooks(unavailableBooksResponse);
       setPendingFines(pendingFinesResponse);
       setBookHistory(historyResponse);
+      setDashboard({
+        ...dashboardResponse,
+        recentLoans: recentLoansResponse.length ? recentLoansResponse : dashboardResponse.recentLoans,
+      });
     } catch (error) {
       setFeedback(error.message);
     } finally {
@@ -96,6 +102,12 @@ export function LibrarianDashboardPage() {
   useEffect(() => {
     loadPanel();
   }, []);
+
+  useEffect(() => {
+    setActiveSection(initialSection);
+    setActiveMetric("");
+    setQuery("");
+  }, [initialSection]);
 
   async function handleBookSearch(value) {
     setQuery(value);

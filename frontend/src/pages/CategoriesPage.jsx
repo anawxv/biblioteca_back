@@ -46,7 +46,7 @@ export function CategoriesPage() {
         <section className="category-grid">
           {categories.map((category) => (
             <button
-              key={category.id}
+              key={`${category.id}-${category.name}`}
               className="category-card"
               onClick={() => navigate(`/cliente/catalogo?categoria=${encodeURIComponent(category.name)}`)}
               type="button"

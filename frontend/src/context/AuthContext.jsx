@@ -7,14 +7,27 @@ const AUTH_KEY = "biblioteca-auth";
 const FAVORITES_KEY = "biblioteca-favorites";
 const ROLE_KEY = "biblioteca-role";
 
-function normalizeRole(role) {
+function normalizeUserRole(role) {
   return String(role || "").toLowerCase() === "funcionario" ? "funcionario" : "cliente";
+}
+
+function normalizePreferredRole(role) {
+  if (!role) {
+    return null;
+  }
+
+  const normalized = String(role).toLowerCase();
+  if (normalized === "cliente" || normalized === "funcionario") {
+    return normalized;
+  }
+
+  return null;
 }
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState([]);
-  const [preferredRole, setPreferredRole] = useState("cliente");
+  const [preferredRole, setPreferredRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +41,7 @@ export function AuthProvider({ children }) {
         if (parsedAuth?.user?.id && parsedAuth?.user?.role) {
           setUser({
             ...parsedAuth.user,
-            role: normalizeRole(parsedAuth.user.role),
+            role: normalizeUserRole(parsedAuth.user.role),
           });
         }
       } catch {
@@ -41,7 +54,7 @@ export function AuthProvider({ children }) {
     }
 
     if (storedRole) {
-      setPreferredRole(normalizeRole(storedRole));
+      setPreferredRole(normalizePreferredRole(storedRole));
     }
 
     setLoading(false);
@@ -52,7 +65,7 @@ export function AuthProvider({ children }) {
       ...payload,
       user: {
         ...payload.user,
-        role: normalizeRole(payload.user.role),
+        role: normalizeUserRole(payload.user.role),
       },
     };
     localStorage.setItem(AUTH_KEY, JSON.stringify(normalizedPayload));
@@ -60,9 +73,13 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (credentials) => {
+    if (!preferredRole) {
+      throw new Error("Tipo de acesso nao identificado. Volte e escolha cliente ou funcionario.");
+    }
+
     const response = await loginRequest(credentials);
-    const responseRole = normalizeRole(response.user.role);
-    const expectedRole = normalizeRole(preferredRole);
+    const responseRole = normalizeUserRole(response.user.role);
+    const expectedRole = normalizePreferredRole(preferredRole);
 
     if (responseRole !== expectedRole) {
       throw new Error(
@@ -84,7 +101,11 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (payload) => {
-    const role = normalizeRole(payload.role || preferredRole);
+    const role = normalizePreferredRole(payload.role || preferredRole);
+    if (!role) {
+      throw new Error("Tipo de cadastro nao identificado. Volte e escolha cliente ou funcionario.");
+    }
+
     return cadastrarUsuario({
       ...payload,
       role,
@@ -132,7 +153,13 @@ export function AuthProvider({ children }) {
   };
 
   const definePreferredRole = (role) => {
-    const normalizedRole = normalizeRole(role);
+    const normalizedRole = normalizePreferredRole(role);
+    if (!normalizedRole) {
+      localStorage.removeItem(ROLE_KEY);
+      setPreferredRole(null);
+      return;
+    }
+
     localStorage.setItem(ROLE_KEY, normalizedRole);
     setPreferredRole(normalizedRole);
   };

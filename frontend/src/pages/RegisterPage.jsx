@@ -27,27 +27,17 @@ function formatPhone(value) {
 
 function validateRequired(form, preferredRole) {
   if (!preferredRole) {
-    return "Escolha Sou cliente ou Sou funcionário na tela inicial antes de cadastrar.";
+    return "Tipo de cadastro não identificado. Volte e escolha cliente ou funcionário.";
   }
 
-  if (!form.name.trim()) {
-    return "Informe o nome.";
-  }
-
-  if (!form.email.trim()) {
-    return "Informe o e-mail.";
-  }
-
-  if (!form.password.trim()) {
-    return "Informe a senha.";
-  }
-
-  if (!form.confirmPassword.trim()) {
-    return "Confirme a senha.";
-  }
-
-  if (!form.phone.trim()) {
-    return "Informe o telefone.";
+  if (
+    !form.name.trim() ||
+    !form.email.trim() ||
+    !form.password.trim() ||
+    !form.confirmPassword.trim() ||
+    !form.phone.trim()
+  ) {
+    return "Preencha todos os campos obrigatórios.";
   }
 
   return "";
@@ -127,7 +117,13 @@ export function RegisterPage() {
 
       <section className="panel">
         <div className="register-role-note">
-          Cadastro como <strong>{preferredRole === "funcionario" ? "funcionário" : "cliente"}</strong>
+          {preferredRole ? (
+            <>
+              Cadastro como <strong>{preferredRole === "funcionario" ? "funcionário" : "cliente"}</strong>
+            </>
+          ) : (
+            "Escolha cliente ou funcionário na tela inicial antes de cadastrar."
+          )}
         </div>
 
         <form className="form-grid" onSubmit={handleSubmit}>

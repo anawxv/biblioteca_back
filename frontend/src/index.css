@@ -375,6 +375,21 @@ strong {
   border: 1px solid rgba(255, 102, 179, 0.12);
 }
 
+.social-icon--google {
+  color: #db4437;
+}
+
+.social-icon--facebook {
+  color: #1877f2;
+  font-family: Arial, sans-serif;
+  font-size: 1.35rem;
+}
+
+.social-icon--apple {
+  color: #111111;
+  font-size: 1.3rem;
+}
+
 .demo-card {
   padding: 16px;
   border-radius: var(--radius-md);

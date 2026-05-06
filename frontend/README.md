@@ -30,6 +30,8 @@ Gere o build:
 npm run build
 ```
 
+Para testar como app instalável, rode o projeto e abra o menu do navegador na página da aplicação. O manifest PWA já usa o nome Biblioteca, tema rosa, modo standalone e tela offline amigável.
+
 ## Ambiente
 
 Crie um arquivo `.env` baseado em `.env.example`:
@@ -82,5 +84,21 @@ A integração fica em `src/services/api.js` e expõe:
 - `listarLivrosMaisEmprestados()`
 - `listarLivrosRecentes()`
 - `listarGenerosMaisConsumidos()`
+- `listarMultasPendentes()`
+- `listarEmprestimosAtrasados()`
+- `listarLivrosIndisponiveis()`
+- `listarClientes()`
+- `listarHistoricoLivros()`
+- `listarEmprestimosRecentes()`
 
-Os mocks continuam apenas como fallback temporário quando a API não está disponível.
+Os mocks continuam apenas como fallback visual temporário para consultas quando a API não está disponível. Ações de escrita, como login, cadastro, empréstimo, devolução, criação e exclusão de livro, chamam a API real e não simulam sucesso.
+
+## Fluxo de teste recomendado
+
+1. Abra `/` e escolha `Sou cliente` ou `Sou funcionário`.
+2. Valide login sem e-mail/senha.
+3. Cadastre um usuário com telefone de 10 ou 11 dígitos.
+4. Entre com um usuário real retornado pelo back-end.
+5. No cliente, teste catálogo, categorias, detalhes, empréstimos e perfil.
+6. No funcionário, teste painel, gerenciar livros, controlar empréstimos, recentes e dashboard.
+7. Teste PWA em modo build/preview ou pelo navegador com o projeto rodando.

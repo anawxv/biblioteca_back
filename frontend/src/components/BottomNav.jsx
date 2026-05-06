@@ -9,9 +9,9 @@ const customerItems = [
 
 const adminItems = [
   { to: "/funcionario/painel", label: "Painel", icon: "⌂" },
-  { to: "/funcionario/adicionar-livro", label: "Adicionar", icon: "+" },
-  { to: "/funcionario/remover-livro", label: "Remover", icon: "−" },
-  { to: "/funcionario/registrar-devolucao", label: "Devolução", icon: "↺" },
+  { to: "/funcionario/gerenciar-livros", label: "Livros", icon: "▦" },
+  { to: "/funcionario/controlar-emprestimos", label: "Empréstimos", icon: "◫" },
+  { to: "/funcionario/dashboard", label: "Dashboard", icon: "○" },
 ];
 
 export function BottomNav({ isAdmin = false }) {

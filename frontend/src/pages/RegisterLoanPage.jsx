@@ -119,6 +119,10 @@ export function RegisterLoanPage() {
             <small>
               {selectedClient.pendingFine > 0
                 ? `Bloqueado por multa pendente de ${currency(selectedClient.pendingFine)}`
+                : selectedClient.blocked
+                  ? "Cliente bloqueado"
+                  : selectedClient.active === false
+                    ? "Cliente inativo"
                 : "Cliente apto para empréstimo"}
             </small>
           </div>
@@ -149,6 +153,8 @@ export function RegisterLoanPage() {
             !selectedBook ||
             selectedBook.status !== "disponivel" ||
             selectedClient.pendingFine > 0 ||
+            selectedClient.blocked ||
+            selectedClient.active === false ||
             submitting
           }
           onClick={handleRegister}

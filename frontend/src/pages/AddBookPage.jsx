@@ -68,7 +68,7 @@ export function AddBookPage() {
 
         <select className="input" value={form.categoryId} onChange={(event) => updateField("categoryId", Number(event.target.value))}>
           {categories.map((category) => (
-            <option key={category.id} value={category.id}>
+            <option key={`${category.id}-${category.name}`} value={category.id}>
               {category.name}
             </option>
           ))}

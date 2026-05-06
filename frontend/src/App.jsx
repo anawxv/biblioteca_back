@@ -48,14 +48,14 @@ export default function App() {
 
         <Route element={<ProtectedRoute allowedRoles={["funcionario"]} />}>
           <Route path="/funcionario/painel" element={<LibrarianDashboardPage />} />
-          <Route path="/funcionario/dashboard" element={<LibrarianDashboardPage />} />
-          <Route path="/funcionario/gerenciar-livros" element={<AddBookPage />} />
+          <Route path="/funcionario/dashboard" element={<LibrarianDashboardPage initialSection="dashboard" />} />
+          <Route path="/funcionario/gerenciar-livros" element={<LibrarianDashboardPage initialSection="livros" />} />
           <Route path="/funcionario/adicionar-livro" element={<AddBookPage />} />
           <Route path="/funcionario/remover-livro" element={<RemoveBookPage />} />
-          <Route path="/funcionario/controlar-emprestimos" element={<RegisterLoanPage />} />
+          <Route path="/funcionario/controlar-emprestimos" element={<LibrarianDashboardPage initialSection="emprestimos" />} />
           <Route path="/funcionario/registrar-emprestimo" element={<RegisterLoanPage />} />
           <Route path="/funcionario/registrar-devolucao" element={<RegisterReturnPage />} />
-          <Route path="/funcionario/emprestimos-recentes" element={<LibrarianDashboardPage />} />
+          <Route path="/funcionario/emprestimos-recentes" element={<LibrarianDashboardPage initialSection="recentes" />} />
         </Route>
 
         <Route path="/catalogo" element={<Navigate to="/cliente/catalogo" replace />} />

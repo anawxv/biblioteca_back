@@ -5,6 +5,7 @@ import { BookCard } from "../components/BookCard";
 import { EmptyState } from "../components/EmptyState";
 import { HeroIllustration } from "../components/HeroIllustration";
 import {
+  buscarLivros,
   listarCategorias,
   listarLivros,
   listarLivrosMaisEmprestados,
@@ -61,6 +62,20 @@ export function CatalogPage() {
     const category = searchParams.get("categoria") || "";
     setSelectedCategory(category);
   }, [searchParams]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(async () => {
+      setFeedback("");
+      try {
+        const response = query.trim() ? await buscarLivros(query) : await listarLivros();
+        setBooks(response);
+      } catch (error) {
+        setFeedback(error.message);
+      }
+    }, 220);
+
+    return () => clearTimeout(timeoutId);
+  }, [query]);
 
   const filteredBooks = useMemo(() => {
     const normalizedQuery = normalize(query);
@@ -120,7 +135,7 @@ export function CatalogPage() {
       <section className="pill-row">
         {categories.map((category) => (
           <button
-            key={category.id}
+            key={`${category.id}-${category.name}`}
             className={`tag-pill${selectedCategory === category.name ? " tag-pill--active" : ""}`}
             onClick={() => filterByCategory(category)}
             type="button"
