@@ -9,6 +9,7 @@ import com.biblioteca.api.model.Usuario;
 import com.biblioteca.api.repository.ClienteRepository;
 import com.biblioteca.api.repository.FuncionarioRepository;
 import com.biblioteca.api.repository.UsuarioRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,15 +19,18 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final ClienteRepository clienteRepository;
     private final FuncionarioRepository funcionarioRepository;
+    private final EntityManager entityManager;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             ClienteRepository clienteRepository,
-            FuncionarioRepository funcionarioRepository
+            FuncionarioRepository funcionarioRepository,
+            EntityManager entityManager
     ) {
         this.usuarioRepository = usuarioRepository;
         this.clienteRepository = clienteRepository;
         this.funcionarioRepository = funcionarioRepository;
+        this.entityManager = entityManager;
     }
 
     @Transactional
@@ -54,14 +58,16 @@ public class UsuarioService {
             cliente.setIdCliente(usuarioSalvo.getIdUsuario());
             cliente.setUsuario(usuarioSalvo);
             cliente.setLimiteEmprestimos(3);
-            clienteRepository.saveAndFlush(cliente);
+            entityManager.persist(cliente);
+            entityManager.flush();
         } else {
             Funcionario funcionario = new Funcionario();
             funcionario.setIdFuncionario(usuarioSalvo.getIdUsuario());
             funcionario.setUsuario(usuarioSalvo);
             funcionario.setCargo("BIBLIOTECARIO");
             funcionario.setAdministrador(false);
-            funcionarioRepository.saveAndFlush(funcionario);
+            entityManager.persist(funcionario);
+            entityManager.flush();
         }
 
         return new ApiDtos.RegisterResponse(

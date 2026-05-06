@@ -6,10 +6,14 @@ public enum TipoUsuario {
 
     public static TipoUsuario fromInput(String value) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("Tipo de usuario e obrigatorio.");
+            throw new IllegalArgumentException("Preencha todos os campos obrigatorios.");
         }
 
-        return TipoUsuario.valueOf(value.trim().toUpperCase());
+        try {
+            return TipoUsuario.valueOf(value.trim().toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("Tipo de usuario invalido.");
+        }
     }
 
     public String toApiValue() {
