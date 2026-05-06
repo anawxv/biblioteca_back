@@ -18,55 +18,58 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final ClienteRepository clienteRepository;
     private final FuncionarioRepository funcionarioRepository;
-    private final AuthService authService;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             ClienteRepository clienteRepository,
-            FuncionarioRepository funcionarioRepository,
-            AuthService authService
+            FuncionarioRepository funcionarioRepository
     ) {
         this.usuarioRepository = usuarioRepository;
         this.clienteRepository = clienteRepository;
         this.funcionarioRepository = funcionarioRepository;
-        this.authService = authService;
     }
 
     @Transactional
     public ApiDtos.RegisterResponse cadastrar(ApiDtos.CreateUserRequest request) {
-        if (usuarioRepository.existsByEmailIgnoreCase(request.email())) {
-            throw new BusinessException("Ja existe um usuario cadastrado com este e-mail.");
-        }
-
         TipoUsuario tipoUsuario = TipoUsuario.fromInput(request.role());
+        String email = request.email().trim().toLowerCase();
+
+        if (usuarioRepository.existsByEmailIgnoreCase(email)) {
+            throw new BusinessException("Este e-mail ja esta cadastrado.");
+        }
 
         Usuario usuario = new Usuario();
         usuario.setNome(request.name().trim());
-        usuario.setEmail(request.email().trim().toLowerCase());
+        usuario.setEmail(email);
         usuario.setSenhaHash(request.password());
-        usuario.setTelefone(request.phone());
+        usuario.setTelefone(request.phone().trim());
         usuario.setTipoUsuario(tipoUsuario);
         usuario.setAtivo(true);
         usuario.setBloqueado(false);
 
-        Usuario usuarioSalvo = usuarioRepository.save(usuario);
+        Usuario usuarioSalvo = usuarioRepository.saveAndFlush(usuario);
 
         if (tipoUsuario == TipoUsuario.CLIENTE) {
             Cliente cliente = new Cliente();
+            cliente.setIdCliente(usuarioSalvo.getIdUsuario());
             cliente.setUsuario(usuarioSalvo);
             cliente.setLimiteEmprestimos(3);
-            clienteRepository.save(cliente);
+            clienteRepository.saveAndFlush(cliente);
         } else {
             Funcionario funcionario = new Funcionario();
+            funcionario.setIdFuncionario(usuarioSalvo.getIdUsuario());
             funcionario.setUsuario(usuarioSalvo);
             funcionario.setCargo("BIBLIOTECARIO");
             funcionario.setAdministrador(false);
-            funcionarioRepository.save(funcionario);
+            funcionarioRepository.saveAndFlush(funcionario);
         }
 
         return new ApiDtos.RegisterResponse(
-                "Cadastro realizado com sucesso.",
-                authService.toUserSummary(usuarioSalvo)
+                "Usuario cadastrado com sucesso.",
+                usuarioSalvo.getIdUsuario(),
+                usuarioSalvo.getNome(),
+                usuarioSalvo.getEmail(),
+                usuarioSalvo.getTipoUsuario().name()
         );
     }
 }

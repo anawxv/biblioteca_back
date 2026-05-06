@@ -5,18 +5,14 @@ import { adicionarLivro, listarCategorias } from "../services/api";
 const initialForm = {
   title: "",
   author: "",
-  category: "Romance",
+  categoryId: 1,
   isbn: "",
   pages: "",
   description: "",
   publishedYear: "",
   publisher: "",
-  shelf: "",
   quantity: "1",
   coverImage: "",
-  status: "disponivel",
-  coverStart: "#FF66B3",
-  coverEnd: "#FF4DA6",
 };
 
 export function AddBookPage() {
@@ -26,7 +22,12 @@ export function AddBookPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    listarCategorias().then(setCategories);
+    listarCategorias().then((response) => {
+      setCategories(response);
+      if (response[0]) {
+        setForm((current) => ({ ...current, categoryId: response[0].id }));
+      }
+    });
   }, []);
 
   function updateField(field, value) {
@@ -42,12 +43,12 @@ export function AddBookPage() {
     setFeedback(null);
 
     try {
-      await adicionarLivro({
-        ...form,
-        coverColors: [form.coverStart, form.coverEnd],
-      });
+      await adicionarLivro(form);
       setFeedback({ type: "success", message: "Livro salvo com sucesso." });
-      setForm(initialForm);
+      setForm({
+        ...initialForm,
+        categoryId: categories[0]?.id || 1,
+      });
     } catch (error) {
       setFeedback({ type: "error", message: error.message });
     } finally {
@@ -62,31 +63,22 @@ export function AddBookPage() {
       <form className="panel form-grid" onSubmit={handleSubmit}>
         <input className="input" placeholder="Título" value={form.title} onChange={(event) => updateField("title", event.target.value)} />
         <input className="input" placeholder="Autor" value={form.author} onChange={(event) => updateField("author", event.target.value)} />
-        <select className="input" value={form.category} onChange={(event) => updateField("category", event.target.value)}>
+        <input className="input" placeholder="ISBN" value={form.isbn} onChange={(event) => updateField("isbn", event.target.value)} />
+        <textarea className="input textarea" placeholder="Descrição" value={form.description} onChange={(event) => updateField("description", event.target.value)} />
+
+        <select className="input" value={form.categoryId} onChange={(event) => updateField("categoryId", Number(event.target.value))}>
           {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
+            <option key={category.id} value={category.id}>
+              {category.name}
             </option>
           ))}
         </select>
-        <input className="input" placeholder="ISBN" value={form.isbn} onChange={(event) => updateField("isbn", event.target.value)} />
+
         <input className="input" min="1" placeholder="Páginas" type="number" value={form.pages} onChange={(event) => updateField("pages", event.target.value)} />
-        <input className="input" placeholder="Ano de publicação" value={form.publishedYear} onChange={(event) => updateField("publishedYear", event.target.value)} />
+        <input className="input" placeholder="Ano" type="number" value={form.publishedYear} onChange={(event) => updateField("publishedYear", event.target.value)} />
         <input className="input" placeholder="Editora" value={form.publisher} onChange={(event) => updateField("publisher", event.target.value)} />
-        <input className="input" placeholder="Estante / localização" value={form.shelf} onChange={(event) => updateField("shelf", event.target.value)} />
         <input className="input" min="1" placeholder="Quantidade total" type="number" value={form.quantity} onChange={(event) => updateField("quantity", event.target.value)} />
         <input className="input" placeholder="Imagem da capa (URL)" value={form.coverImage} onChange={(event) => updateField("coverImage", event.target.value)} />
-        <textarea className="input textarea" placeholder="Descrição" value={form.description} onChange={(event) => updateField("description", event.target.value)} />
-        <div className="color-fields">
-          <label>
-            Cor da capa 1
-            <input className="color-input" type="color" value={form.coverStart} onChange={(event) => updateField("coverStart", event.target.value)} />
-          </label>
-          <label>
-            Cor da capa 2
-            <input className="color-input" type="color" value={form.coverEnd} onChange={(event) => updateField("coverEnd", event.target.value)} />
-          </label>
-        </div>
 
         {feedback ? (
           <div className={`alert alert--${feedback.type === "success" ? "success" : "error"}`}>

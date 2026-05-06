@@ -4,11 +4,16 @@ import { useAuth } from "../context/AuthContext";
 
 export function LandingPage() {
   const navigate = useNavigate();
-  const { definePreferredRole } = useAuth();
+  const { definePreferredRole, logout } = useAuth();
 
   function start(role) {
+    logout();
     definePreferredRole(role);
     navigate("/login");
+  }
+
+  function register() {
+    navigate("/cadastro");
   }
 
   return (
@@ -17,8 +22,7 @@ export function LandingPage() {
         <HeroIllustration />
         <h1 className="brand-title">BIBLIOTECA</h1>
         <p className="hero-copy">
-          Organize seus empréstimos de livros de forma simples. Faça login para
-          começar.
+          Organize seus empréstimos de livros de forma simples. Faça login para começar.
         </p>
         <div className="stack-buttons">
           <button className="button button--outline" onClick={() => start("funcionario")} type="button">
@@ -29,7 +33,7 @@ export function LandingPage() {
           </button>
         </div>
         <p className="helper-line">
-          Não tem uma conta? <Link to="/cadastro">Cadastre-se agora</Link>
+          Não tem uma conta? <Link onClick={register} to="/cadastro">Cadastre-se agora</Link>
         </p>
       </section>
     </main>

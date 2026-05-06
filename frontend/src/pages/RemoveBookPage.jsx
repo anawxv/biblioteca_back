@@ -8,9 +8,21 @@ export function RemoveBookPage() {
   const [books, setBooks] = useState([]);
   const [query, setQuery] = useState("");
   const [feedback, setFeedback] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  async function loadBooks() {
+    setLoading(true);
+    try {
+      setBooks(await listarLivros());
+    } catch (error) {
+      setFeedback({ type: "error", message: error.message });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    listarLivros().then(setBooks);
+    loadBooks();
   }, []);
 
   async function handleDelete(bookId) {
@@ -29,7 +41,7 @@ export function RemoveBookPage() {
 
   const filteredBooks = books.filter((book) =>
     [book.title, book.author, book.category].some((field) =>
-      field.toLowerCase().includes(query.toLowerCase()),
+      String(field || "").toLowerCase().includes(query.toLowerCase()),
     ),
   );
 
@@ -54,7 +66,9 @@ export function RemoveBookPage() {
       ) : null}
 
       <section className="list-panel">
-        {filteredBooks.length ? (
+        {loading ? (
+          <div className="panel">Carregando livros...</div>
+        ) : filteredBooks.length ? (
           filteredBooks.map((book) => (
             <article className="list-item" key={book.id}>
               <BookCover book={book} />

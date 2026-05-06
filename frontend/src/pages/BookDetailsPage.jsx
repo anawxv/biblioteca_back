@@ -48,6 +48,8 @@ export function BookDetailsPage() {
     );
   }
 
+  const available = book.status === "disponivel";
+
   return (
     <main className="page">
       <TopBar title={book.title} />
@@ -58,18 +60,18 @@ export function BookDetailsPage() {
           <div className="inline-badges">
             <span className="tag-pill tag-pill--active">{book.category}</span>
             <span className={`status-badge status-badge--${book.status}`}>
-              {book.status === "disponivel" ? "Disponível" : "Indisponível"}
+              {available ? "Disponível" : "Indisponível"}
             </span>
           </div>
 
           <div className="detail-list">
             <div>
               <span>ISBN</span>
-              <strong>{book.isbn}</strong>
+              <strong>{book.isbn || "-"}</strong>
             </div>
             <div>
               <span>Páginas</span>
-              <strong>{book.pages}</strong>
+              <strong>{book.pages || "-"}</strong>
             </div>
             <div>
               <span>Autor</span>
@@ -77,7 +79,7 @@ export function BookDetailsPage() {
             </div>
           </div>
 
-          <p className="details-panel__description">{book.description}</p>
+          <p className="details-panel__description">{book.description || "Sem descrição cadastrada."}</p>
 
           {feedback ? (
             <div className={`alert alert--${feedback.type === "success" ? "success" : "error"}`}>
@@ -95,15 +97,11 @@ export function BookDetailsPage() {
             </button>
             <button
               className="button"
-              disabled={book.status !== "disponivel" || submitting}
+              disabled={!available || submitting}
               onClick={handleRequestLoan}
               type="button"
             >
-              {book.status !== "disponivel"
-                ? "Indisponível no momento"
-                : submitting
-                  ? "Solicitando..."
-                  : "Solicitar empréstimo"}
+              {!available ? "Indisponível no momento" : submitting ? "Solicitando..." : "Solicitar empréstimo"}
             </button>
           </div>
         </div>

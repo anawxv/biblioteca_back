@@ -3,20 +3,25 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TopBar } from "../components/TopBar";
 import { useAuth } from "../context/AuthContext";
 
+function SocialButton({ label, icon, onClick }) {
+  return (
+    <button className="social-icon" onClick={onClick} type="button" aria-label={label}>
+      {icon}
+    </button>
+  );
+}
+
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, preferredRole, user } = useAuth();
-  const [form, setForm] = useState({
-    email: preferredRole === "funcionario" ? "ana@biblioteca.com" : "joaosilva@gmail.com",
-    password: "123456",
-  });
+  const [form, setForm] = useState({ email: "", senha: "" });
   const [feedback, setFeedback] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (user) {
-      navigate(user.role === "funcionario" ? "/funcionario" : "/catalogo", {
+      navigate(user.role === "funcionario" ? "/funcionario/painel" : "/cliente/catalogo", {
         replace: true,
       });
     }
@@ -24,19 +29,29 @@ export function LoginPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setSubmitting(true);
     setFeedback("");
+
+    if (!form.email.trim() || !form.senha.trim()) {
+      setFeedback("Informe e-mail e senha para entrar.");
+      return;
+    }
+
+    setSubmitting(true);
 
     try {
       const response = await login(form);
-      const destination =
-        location.state?.from || (response.user.role === "funcionario" ? "/funcionario" : "/catalogo");
+      const roleDestination = response.user.role === "funcionario" ? "/funcionario/painel" : "/cliente/catalogo";
+      const destination = location.state?.from || roleDestination;
       navigate(destination, { replace: true });
     } catch (error) {
-      setFeedback(error.message);
+      setFeedback(error.message?.startsWith("Este usuário") ? error.message : "E-mail ou senha incorretos.");
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function showSocialWarning() {
+    setFeedback("Login social ainda não configurado.");
   }
 
   return (
@@ -44,6 +59,10 @@ export function LoginPage() {
       <TopBar title="Bem-vindo de volta à Biblioteca!" />
 
       <section className="panel">
+        <div className="register-role-note">
+          Entrando como <strong>{preferredRole === "funcionario" ? "funcionário" : "cliente"}</strong>
+        </div>
+
         <form className="form-grid" onSubmit={handleSubmit}>
           <input
             className="input"
@@ -54,10 +73,10 @@ export function LoginPage() {
           />
           <input
             className="input"
-            onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+            onChange={(event) => setForm((current) => ({ ...current, senha: event.target.value }))}
             placeholder="Senha"
             type="password"
-            value={form.password}
+            value={form.senha}
           />
 
           {feedback ? <div className="alert alert--error">{feedback}</div> : null}
@@ -75,16 +94,10 @@ export function LoginPage() {
           <span>ou</span>
         </div>
 
-        <div className="social-row" aria-hidden="true">
-          <span className="social-icon">G</span>
-          <span className="social-icon">f</span>
-          <span className="social-icon"></span>
-        </div>
-
-        <div className="demo-card">
-          <strong>Acesso rápido</strong>
-          <p>Cliente: joaosilva@gmail.com / 123456</p>
-          <p>Funcionária: ana@biblioteca.com / 123456</p>
+        <div className="social-row">
+          <SocialButton label="Entrar com Google" icon="G" onClick={showSocialWarning} />
+          <SocialButton label="Entrar com Facebook" icon="f" onClick={showSocialWarning} />
+          <SocialButton label="Entrar com Apple" icon="●" onClick={showSocialWarning} />
         </div>
       </section>
     </main>

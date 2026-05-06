@@ -33,8 +33,10 @@ public class AuthService {
         }
 
         return new ApiDtos.AuthResponse(
-                "mock-session-" + usuario.getIdUsuario(),
-                toUserSummary(usuario)
+                usuario.getIdUsuario(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getTipoUsuario().name()
         );
     }
 

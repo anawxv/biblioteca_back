@@ -11,10 +11,19 @@ export function MyLoansPage() {
   const [tab, setTab] = useState("ativos");
   const [loans, setLoans] = useState({ ativos: [], historico: [] });
   const [feedback, setFeedback] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   async function loadLoans() {
-    const response = await listarMeusEmprestimos(user.id);
-    setLoans(response);
+    setLoading(true);
+
+    try {
+      const response = await listarMeusEmprestimos(user.id);
+      setLoans(response);
+    } catch (error) {
+      setFeedback({ type: "error", message: error.message });
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -23,8 +32,8 @@ export function MyLoansPage() {
 
   async function handleReturn(loanId) {
     try {
-      await devolverLivro(loanId);
-      setFeedback({ type: "success", message: "Livro devolvido com sucesso." });
+      const response = await devolverLivro(loanId);
+      setFeedback({ type: "success", message: response.message || "Livro devolvido com sucesso." });
       await loadLoans();
     } catch (error) {
       setFeedback({ type: "error", message: error.message });
@@ -61,14 +70,16 @@ export function MyLoansPage() {
       ) : null}
 
       <section className="loans-list">
-        {currentLoans.length ? (
+        {loading ? (
+          <div className="panel">Carregando empréstimos...</div>
+        ) : currentLoans.length ? (
           currentLoans.map((loan) => (
             <article className="loan-card" key={loan.id}>
               <BookCover book={loan.book} />
               <div className="loan-card__content">
                 <strong>{loan.book.title}</strong>
                 <span>{loan.book.author}</span>
-                <small>Data de empréstimo: {formatDate(loan.borrowedAt)}</small>
+                <small>Data do empréstimo: {formatDate(loan.borrowedAt)}</small>
                 <small>Data prevista: {formatDate(loan.dueDate)}</small>
                 {loan.returnedAt ? <small>Devolvido em: {formatDate(loan.returnedAt)}</small> : null}
 

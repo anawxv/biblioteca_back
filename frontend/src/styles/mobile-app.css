@@ -1,0 +1,23 @@
+@media (display-mode: standalone) {
+  body {
+    background: #ffffff;
+  }
+
+  .desktop-shell {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@media (max-width: 520px) {
+  .desktop-shell {
+    padding: 0;
+  }
+
+  .app-shell {
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}

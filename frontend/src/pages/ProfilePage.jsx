@@ -5,10 +5,33 @@ import { TopBar } from "../components/TopBar";
 import { useAuth } from "../context/AuthContext";
 import { getInitials, maskPassword } from "../utils/formatters";
 
+const MAX_PROFILE_IMAGE_SIZE = 2 * 1024 * 1024;
+const ALLOWED_PROFILE_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+export function validarImagemPerfil(file) {
+  if (!file || !ALLOWED_PROFILE_IMAGE_TYPES.includes(file.type)) {
+    return false;
+  }
+
+  if (file.size > MAX_PROFILE_IMAGE_SIZE) {
+    return false;
+  }
+
+  const suspiciousName = /(\.exe|\.bat|\.cmd|\.js|\.html|\.svg)$/i.test(file.name);
+  if (suspiciousName) {
+    return false;
+  }
+
+  // Futuro: chamar moderação real no back-end/API para nudez, conteúdo sexual ou ofensivo.
+  return true;
+}
+
 export function ProfilePage() {
   const navigate = useNavigate();
-  const { logout, updateProfile, user } = useAuth();
+  const { logout, updateProfile, updateProfilePhoto, user } = useAuth();
   const [editing, setEditing] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState(user.photoUrl || "");
+  const [feedback, setFeedback] = useState("");
   const [form, setForm] = useState({
     name: user.name,
     email: user.email,
@@ -21,12 +44,34 @@ export function ProfilePage() {
       email: user.email,
       phone: user.phone,
     });
+    setPhotoPreview(user.photoUrl || "");
   }, [user]);
 
   function handleSave(event) {
     event.preventDefault();
     updateProfile(form);
+    if (photoPreview) {
+      updateProfilePhoto(photoPreview);
+    }
     setEditing(false);
+    setFeedback("Perfil atualizado com sucesso.");
+  }
+
+  function handlePhotoChange(event) {
+    const file = event.target.files?.[0];
+    setFeedback("");
+
+    if (!validarImagemPerfil(file)) {
+      setFeedback("Esta imagem não pode ser usada como foto de perfil.");
+      event.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPhotoPreview(String(reader.result || ""));
+    };
+    reader.readAsDataURL(file);
   }
 
   function handleLogout() {
@@ -39,15 +84,29 @@ export function ProfilePage() {
       <TopBar title="Meu perfil" />
 
       <section className="profile-card">
-        <div className="profile-card__avatar">{getInitials(user.name)}</div>
+        <div className="profile-card__avatar profile-card__avatar--photo">
+          {photoPreview ? <img src={photoPreview} alt={`Foto de ${user.name}`} /> : getInitials(user.name)}
+        </div>
         <div>
           <h2>{user.name}</h2>
           <span className="tag-pill tag-pill--active">{user.role === "cliente" ? "Cliente" : "Funcionário"}</span>
         </div>
       </section>
 
+      {feedback ? <div className="alert alert--success">{feedback}</div> : null}
+
       {editing ? (
         <form className="form-grid panel" onSubmit={handleSave}>
+          <label className="profile-upload">
+            <span>Foto de perfil</span>
+            <input accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" onChange={handlePhotoChange} type="file" />
+          </label>
+          {photoPreview ? (
+            <div className="profile-preview">
+              <img src={photoPreview} alt="Prévia da foto de perfil" />
+              <small>Prévia da imagem selecionada</small>
+            </div>
+          ) : null}
           <input className="input" placeholder="Nome" value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} />
           <input className="input" placeholder="E-mail" value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} />
           <input className="input" placeholder="Telefone" value={form.phone} onChange={(event) => setForm((current) => ({ ...current, phone: event.target.value }))} />
@@ -66,7 +125,7 @@ export function ProfilePage() {
           </article>
           <article className="info-tile">
             <span>Telefone</span>
-            <strong>{user.phone}</strong>
+            <strong>{user.phone || "-"}</strong>
           </article>
           <article className="info-tile">
             <span>Senha</span>
@@ -76,7 +135,7 @@ export function ProfilePage() {
       )}
 
       <section className="actions-list">
-        <button className="menu-action" onClick={() => navigate("/emprestimos")} type="button">
+        <button className="menu-action" onClick={() => navigate("/cliente/emprestimos")} type="button">
           Meus empréstimos
         </button>
         <button className="menu-action" onClick={() => setEditing((current) => !current)} type="button">

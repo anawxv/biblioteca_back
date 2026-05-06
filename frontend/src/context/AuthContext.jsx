@@ -7,6 +7,10 @@ const AUTH_KEY = "biblioteca-auth";
 const FAVORITES_KEY = "biblioteca-favorites";
 const ROLE_KEY = "biblioteca-role";
 
+function normalizeRole(role) {
+  return String(role || "").toLowerCase() === "funcionario" ? "funcionario" : "cliente";
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState([]);
@@ -19,8 +23,17 @@ export function AuthProvider({ children }) {
     const storedRole = localStorage.getItem(ROLE_KEY);
 
     if (storedAuth) {
-      const parsedAuth = JSON.parse(storedAuth);
-      setUser(parsedAuth.user);
+      try {
+        const parsedAuth = JSON.parse(storedAuth);
+        if (parsedAuth?.user?.id && parsedAuth?.user?.role) {
+          setUser({
+            ...parsedAuth.user,
+            role: normalizeRole(parsedAuth.user.role),
+          });
+        }
+      } catch {
+        localStorage.removeItem(AUTH_KEY);
+      }
     }
 
     if (storedFavorites) {
@@ -28,35 +41,60 @@ export function AuthProvider({ children }) {
     }
 
     if (storedRole) {
-      setPreferredRole(storedRole);
+      setPreferredRole(normalizeRole(storedRole));
     }
 
     setLoading(false);
   }, []);
 
   const persistAuth = (payload) => {
-    localStorage.setItem(AUTH_KEY, JSON.stringify(payload));
-    setUser(payload.user);
+    const normalizedPayload = {
+      ...payload,
+      user: {
+        ...payload.user,
+        role: normalizeRole(payload.user.role),
+      },
+    };
+    localStorage.setItem(AUTH_KEY, JSON.stringify(normalizedPayload));
+    setUser(normalizedPayload.user);
   };
 
   const login = async (credentials) => {
     const response = await loginRequest(credentials);
-    persistAuth(response);
-    return response;
+    const responseRole = normalizeRole(response.user.role);
+    const expectedRole = normalizeRole(preferredRole);
+
+    if (responseRole !== expectedRole) {
+      throw new Error(
+        expectedRole === "cliente"
+          ? "Este usuário não é cliente. Volte e escolha Sou funcionário."
+          : "Este usuário não é funcionário. Volte e escolha Sou cliente.",
+      );
+    }
+
+    const normalizedResponse = {
+      ...response,
+      user: {
+        ...response.user,
+        role: responseRole,
+      },
+    };
+    persistAuth(normalizedResponse);
+    return normalizedResponse;
   };
 
   const register = async (payload) => {
-    const response = await cadastrarUsuario(payload);
-    const authPayload = {
-      token: `mock-token-${response.user.id}`,
-      user: response.user,
-    };
-    persistAuth(authPayload);
-    return response;
+    const role = normalizeRole(payload.role || preferredRole);
+    return cadastrarUsuario({
+      ...payload,
+      role,
+      tipoUsuario: role.toUpperCase(),
+    });
   };
 
   const logout = () => {
     localStorage.removeItem(AUTH_KEY);
+    sessionStorage.removeItem(AUTH_KEY);
     setUser(null);
   };
 
@@ -81,7 +119,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem(
         AUTH_KEY,
         JSON.stringify({
-          token: `mock-token-${nextUser.id}`,
+          token: `session-${nextUser.id}`,
           user: nextUser,
         }),
       );
@@ -89,22 +127,30 @@ export function AuthProvider({ children }) {
     });
   };
 
+  const updateProfilePhoto = (photoDataUrl) => {
+    updateProfile({ photoUrl: photoDataUrl });
+  };
+
   const definePreferredRole = (role) => {
-    localStorage.setItem(ROLE_KEY, role);
-    setPreferredRole(role);
+    const normalizedRole = normalizeRole(role);
+    localStorage.setItem(ROLE_KEY, normalizedRole);
+    setPreferredRole(normalizedRole);
   };
 
   const value = useMemo(
     () => ({
       user,
+      tipoUsuario: user?.role?.toUpperCase() || null,
       favorites,
       preferredRole,
       loading,
+      isAuthenticated: Boolean(user),
       login,
       register,
       logout,
       toggleFavorite,
       updateProfile,
+      updateProfilePhoto,
       definePreferredRole,
       isFavorite: (bookId) => favorites.includes(bookId),
     }),

@@ -83,7 +83,7 @@ public class EmprestimoService {
         emprestimo.setLivro(livro);
         emprestimo.setFuncionario(funcionario);
         emprestimo.setDataEmprestimo(LocalDate.now());
-        emprestimo.setDataPrevistaDevolucao(LocalDate.now().plusDays(request.prazoDias() == null ? DEFAULT_PRAZO_DIAS : request.prazoDias()));
+        emprestimo.setDataPrevistaDevolucao(LocalDate.now().plusDays(DEFAULT_PRAZO_DIAS));
         emprestimo.setStatus(StatusEmprestimo.ATIVO);
         emprestimo.setObservacao(request.observacao());
 
@@ -153,6 +153,9 @@ public class EmprestimoService {
 
         ApiDtos.LoanItemResponse item = toLoanItemResponse(emprestimo);
         return new ApiDtos.ReturnResponse(
+                late
+                        ? "Devolucao registrada com multa por atraso."
+                        : "Devolucao registrada com sucesso.",
                 item.id(),
                 item.client(),
                 item.book(),

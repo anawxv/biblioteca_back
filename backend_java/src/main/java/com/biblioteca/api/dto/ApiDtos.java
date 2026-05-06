@@ -41,8 +41,10 @@ public final class ApiDtos {
     }
 
     public record AuthResponse(
-            String token,
-            UserSummary user
+            Integer idUsuario,
+            String nome,
+            String email,
+            String tipoUsuario
     ) {
     }
 
@@ -57,6 +59,7 @@ public final class ApiDtos {
             @NotBlank(message = "Senha e obrigatoria.")
             @JsonAlias("senha")
             String password,
+            @NotBlank(message = "Telefone e obrigatorio.")
             @Size(max = 20, message = "Telefone deve ter no maximo 20 caracteres.")
             @JsonAlias("telefone")
             String phone,
@@ -68,7 +71,10 @@ public final class ApiDtos {
 
     public record RegisterResponse(
             String message,
-            UserSummary user
+            Integer idUsuario,
+            String nome,
+            String email,
+            String tipoUsuario
     ) {
     }
 
@@ -160,6 +166,7 @@ public final class ApiDtos {
     }
 
     public record ReturnResponse(
+            String message,
             Integer id,
             UserSummary client,
             BookResponse book,
@@ -181,12 +188,49 @@ public final class ApiDtos {
     ) {
     }
 
+    public record FavoriteRequest(
+            @NotNull(message = "Cliente e obrigatorio.")
+            @JsonAlias({"id_cliente", "idCliente", "clientId"})
+            Integer clienteId,
+            @NotNull(message = "Livro e obrigatorio.")
+            @JsonAlias({"id_livro", "idLivro", "bookId"})
+            Integer livroId
+    ) {
+    }
+
+    public record FavoriteResponse(
+            Integer clienteId,
+            BookResponse book,
+            LocalDateTime createdAt
+    ) {
+    }
+
+    public record ReservationRequest(
+            @NotNull(message = "Cliente e obrigatorio.")
+            @JsonAlias({"id_cliente", "idCliente", "clientId"})
+            Integer clienteId,
+            @NotNull(message = "Livro e obrigatorio.")
+            @JsonAlias({"id_livro", "idLivro", "bookId"})
+            Integer livroId
+    ) {
+    }
+
+    public record ReservationResponse(
+            Integer id,
+            UserSummary client,
+            BookResponse book,
+            LocalDateTime reservedAt,
+            String status
+    ) {
+    }
+
     public record DashboardMetricsResponse(
-            long totalBooks,
-            long totalClients,
-            long activeLoans,
-            long overdueLoans,
-            BigDecimal pendingFines
+            long livrosNoAcervo,
+            long clientesCadastrados,
+            long emprestimosAtivos,
+            long emprestimosAtrasados,
+            BigDecimal multasPendentes,
+            long livrosIndisponiveis
     ) {
     }
 
@@ -197,7 +241,12 @@ public final class ApiDtos {
     }
 
     public record DashboardResponse(
-            DashboardMetricsResponse metrics,
+            long livrosNoAcervo,
+            long clientesCadastrados,
+            long emprestimosAtivos,
+            long emprestimosAtrasados,
+            BigDecimal multasPendentes,
+            long livrosIndisponiveis,
             List<LoanItemResponse> recentLoans,
             List<ChartPointResponse> loansByMonth,
             ReturnsStats returnsStats

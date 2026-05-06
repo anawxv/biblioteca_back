@@ -1,14 +1,14 @@
 import { NavLink } from "react-router-dom";
 
 const customerItems = [
-  { to: "/catalogo", label: "Catálogo", icon: "⌂" },
-  { to: "/categorias", label: "Categorias", icon: "▦" },
-  { to: "/emprestimos", label: "Empréstimos", icon: "◫" },
-  { to: "/perfil", label: "Perfil", icon: "◌" },
+  { to: "/cliente/catalogo", label: "Catálogo", icon: "⌂" },
+  { to: "/cliente/categorias", label: "Categorias", icon: "▦" },
+  { to: "/cliente/emprestimos", label: "Empréstimos", icon: "◫" },
+  { to: "/cliente/perfil", label: "Perfil", icon: "○" },
 ];
 
 const adminItems = [
-  { to: "/funcionario", label: "Painel", icon: "⌂" },
+  { to: "/funcionario/painel", label: "Painel", icon: "⌂" },
   { to: "/funcionario/adicionar-livro", label: "Adicionar", icon: "+" },
   { to: "/funcionario/remover-livro", label: "Remover", icon: "−" },
   { to: "/funcionario/registrar-devolucao", label: "Devolução", icon: "↺" },

@@ -1,15 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { BookCarousel } from "../components/BookCarousel";
 import { BookCard } from "../components/BookCard";
 import { EmptyState } from "../components/EmptyState";
 import { HeroIllustration } from "../components/HeroIllustration";
 import {
-  buscarLivros,
   listarCategorias,
   listarLivros,
   listarLivrosMaisEmprestados,
   listarLivrosRecentes,
 } from "../services/api";
+
+function normalize(value = "") {
+  return String(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
 
 export function CatalogPage() {
   const navigate = useNavigate();
@@ -19,49 +27,73 @@ export function CatalogPage() {
   const [mostBorrowed, setMostBorrowed] = useState([]);
   const [recentBooks, setRecentBooks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState(searchParams.get("categoria") || "");
+  const [feedback, setFeedback] = useState("");
+  const [query, setQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("categoria") || "");
 
   useEffect(() => {
     async function bootstrap() {
       setLoading(true);
-      const [categoriesResponse, popularResponse, recentResponse] = await Promise.all([
-        listarCategorias(),
-        listarLivrosMaisEmprestados(),
-        listarLivrosRecentes(),
-      ]);
-      setCategories(categoriesResponse);
-      setMostBorrowed(popularResponse);
-      setRecentBooks(recentResponse);
-      setLoading(false);
+      setFeedback("");
+
+      try {
+        const [categoriesResponse, booksResponse, popularResponse, recentResponse] = await Promise.all([
+          listarCategorias(),
+          listarLivros(),
+          listarLivrosMaisEmprestados(),
+          listarLivrosRecentes(),
+        ]);
+        setCategories(categoriesResponse);
+        setBooks(booksResponse);
+        setMostBorrowed(popularResponse);
+        setRecentBooks(recentResponse);
+      } catch (error) {
+        setFeedback(error.message);
+      } finally {
+        setLoading(false);
+      }
     }
 
     bootstrap();
   }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(async () => {
-      setLoading(true);
-      const response = query ? await buscarLivros(query) : await listarLivros();
-      setBooks(response);
-      setLoading(false);
-    }, 200);
+    const category = searchParams.get("categoria") || "";
+    setSelectedCategory(category);
+  }, [searchParams]);
 
-    return () => clearTimeout(timeoutId);
-  }, [query]);
+  const filteredBooks = useMemo(() => {
+    const normalizedQuery = normalize(query);
+    const normalizedCategory = normalize(selectedCategory);
+
+    return books.filter((book) => {
+      const sameCategory = !normalizedCategory || normalize(book.category) === normalizedCategory;
+      const matchesQuery =
+        !normalizedQuery ||
+        [book.title, book.author, book.category].some((field) => normalize(field).includes(normalizedQuery));
+
+      return sameCategory && matchesQuery;
+    });
+  }, [books, query, selectedCategory]);
 
   function openDetails(book) {
-    navigate(`/livro/${book.id}`);
+    navigate(`/cliente/livros/${book.id}`);
   }
 
   function filterByCategory(category) {
-    setQuery(category);
-    setSearchParams({ categoria: category });
+    setSelectedCategory(category.name);
+    setSearchParams({ categoria: category.name });
   }
 
   function clearFilter() {
     setQuery("");
+    setSelectedCategory("");
     setSearchParams({});
   }
+
+  const emptyMessage = selectedCategory
+    ? `Nenhum livro encontrado nesta categoria.`
+    : "Nenhum livro encontrado.";
 
   return (
     <main className="page page-with-nav">
@@ -83,15 +115,17 @@ export function CatalogPage() {
         </div>
       </section>
 
+      {feedback ? <div className="alert alert--error">{feedback}</div> : null}
+
       <section className="pill-row">
-        {categories.slice(0, 5).map((category) => (
+        {categories.map((category) => (
           <button
-            key={category}
-            className={`tag-pill${query === category ? " tag-pill--active" : ""}`}
+            key={category.id}
+            className={`tag-pill${selectedCategory === category.name ? " tag-pill--active" : ""}`}
             onClick={() => filterByCategory(category)}
             type="button"
           >
-            {category}
+            {category.name}
           </button>
         ))}
         <button className="tag-pill tag-pill--ghost" onClick={clearFilter} type="button">
@@ -99,45 +133,37 @@ export function CatalogPage() {
         </button>
       </section>
 
-      <section className="section-block">
-        <div className="section-heading">
-          <h2>Mais emprestados</h2>
-        </div>
-        <div className="carousel-row">
-          {mostBorrowed.map((book) => (
-            <BookCard key={book.id} book={book} compact onClick={openDetails} />
-          ))}
-        </div>
-      </section>
+      <BookCarousel
+        title="Livros mais emprestados"
+        books={mostBorrowed}
+        onBookClick={openDetails}
+        emptyMessage="Os livros mais emprestados aparecerão aqui."
+      />
+
+      <BookCarousel
+        title="Recém adicionados"
+        books={recentBooks}
+        onBookClick={openDetails}
+        emptyMessage="Os livros adicionados recentemente aparecerão aqui."
+      />
 
       <section className="section-block">
         <div className="section-heading">
-          <h2>Recém adicionados</h2>
-        </div>
-        <div className="books-grid">
-          {recentBooks.slice(0, 3).map((book) => (
-            <BookCard key={book.id} book={book} onClick={openDetails} />
-          ))}
-        </div>
-      </section>
-
-      <section className="section-block">
-        <div className="section-heading">
-          <h2>Mais populares</h2>
+          <h2>{selectedCategory ? selectedCategory : "Mais populares"}</h2>
         </div>
 
         {loading ? (
           <div className="panel panel--soft">Carregando livros...</div>
-        ) : books.length ? (
+        ) : filteredBooks.length ? (
           <div className="books-grid">
-            {books.map((book) => (
+            {filteredBooks.map((book) => (
               <BookCard key={book.id} book={book} onClick={openDetails} />
             ))}
           </div>
         ) : (
           <EmptyState
-            title="Nenhum livro encontrado"
-            description="Ajuste a busca ou explore as categorias para descobrir outras leituras."
+            title={emptyMessage}
+            description="Tente outra categoria ou ajuste o texto da busca."
           />
         )}
       </section>

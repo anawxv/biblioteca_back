@@ -5,7 +5,7 @@ export function TopBar({ title, subtitle, action }) {
 
   return (
     <header className="topbar">
-      <button className="icon-button icon-button--ghost" onClick={() => navigate(-1)} type="button">
+      <button aria-label="Voltar" className="icon-button icon-button--ghost" onClick={() => navigate(-1)} type="button">
         ←
       </button>
       <div className="topbar__content">

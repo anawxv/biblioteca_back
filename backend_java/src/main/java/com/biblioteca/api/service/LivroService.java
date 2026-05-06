@@ -98,7 +98,7 @@ public class LivroService {
 
     public List<ApiDtos.BookResponse> listarLivrosMaisEmprestados() {
         List<EmprestimoRepository.BookLoanCountProjection> ranking =
-                emprestimoRepository.findTopBorrowedBooks(PageRequest.of(0, 6));
+                emprestimoRepository.findTopBorrowedBooks(PageRequest.of(0, 10));
 
         Map<Integer, Long> countsByBookId = ranking.stream()
                 .collect(Collectors.toMap(EmprestimoRepository.BookLoanCountProjection::getLivroId, EmprestimoRepository.BookLoanCountProjection::getTotal));

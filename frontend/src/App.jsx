@@ -17,16 +17,8 @@ import { RemoveBookPage } from "./pages/RemoveBookPage";
 
 function AppFrame() {
   const location = useLocation();
-  const showCustomerNav = ["/catalogo", "/categorias", "/emprestimos", "/perfil"].some((path) =>
-    location.pathname.startsWith(path),
-  );
-  const showAdminNav = [
-    "/funcionario",
-    "/funcionario/adicionar-livro",
-    "/funcionario/remover-livro",
-    "/funcionario/registrar-emprestimo",
-    "/funcionario/registrar-devolucao",
-  ].some((path) => location.pathname.startsWith(path));
+  const showCustomerNav = location.pathname.startsWith("/cliente");
+  const showAdminNav = location.pathname.startsWith("/funcionario");
 
   return (
     <div className="desktop-shell">
@@ -47,26 +39,31 @@ export default function App() {
         <Route path="/cadastro" element={<RegisterPage />} />
 
         <Route element={<ProtectedRoute allowedRoles={["cliente"]} />}>
-          <Route path="/catalogo" element={<CatalogPage />} />
-          <Route path="/categorias" element={<CategoriesPage />} />
-          <Route path="/livro/:id" element={<BookDetailsPage />} />
-          <Route path="/emprestimos" element={<MyLoansPage />} />
-          <Route path="/perfil" element={<ProfilePage />} />
+          <Route path="/cliente/catalogo" element={<CatalogPage />} />
+          <Route path="/cliente/categorias" element={<CategoriesPage />} />
+          <Route path="/cliente/livros/:id" element={<BookDetailsPage />} />
+          <Route path="/cliente/emprestimos" element={<MyLoansPage />} />
+          <Route path="/cliente/perfil" element={<ProfilePage />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={["funcionario"]} />}>
-          <Route path="/funcionario" element={<LibrarianDashboardPage />} />
+          <Route path="/funcionario/painel" element={<LibrarianDashboardPage />} />
+          <Route path="/funcionario/dashboard" element={<LibrarianDashboardPage />} />
+          <Route path="/funcionario/gerenciar-livros" element={<AddBookPage />} />
           <Route path="/funcionario/adicionar-livro" element={<AddBookPage />} />
           <Route path="/funcionario/remover-livro" element={<RemoveBookPage />} />
-          <Route
-            path="/funcionario/registrar-emprestimo"
-            element={<RegisterLoanPage />}
-          />
-          <Route
-            path="/funcionario/registrar-devolucao"
-            element={<RegisterReturnPage />}
-          />
+          <Route path="/funcionario/controlar-emprestimos" element={<RegisterLoanPage />} />
+          <Route path="/funcionario/registrar-emprestimo" element={<RegisterLoanPage />} />
+          <Route path="/funcionario/registrar-devolucao" element={<RegisterReturnPage />} />
+          <Route path="/funcionario/emprestimos-recentes" element={<LibrarianDashboardPage />} />
         </Route>
+
+        <Route path="/catalogo" element={<Navigate to="/cliente/catalogo" replace />} />
+        <Route path="/categorias" element={<Navigate to="/cliente/categorias" replace />} />
+        <Route path="/livro/:id" element={<Navigate to="/cliente/catalogo" replace />} />
+        <Route path="/emprestimos" element={<Navigate to="/cliente/emprestimos" replace />} />
+        <Route path="/perfil" element={<Navigate to="/cliente/perfil" replace />} />
+        <Route path="/funcionario" element={<Navigate to="/funcionario/painel" replace />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

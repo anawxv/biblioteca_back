@@ -1,4 +1,8 @@
 export function formatDate(date) {
+  if (!date) {
+    return "-";
+  }
+
   return new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
     month: "long",
@@ -49,7 +53,7 @@ export function currency(value) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
-  }).format(value);
+  }).format(Number(value || 0));
 }
 
 export function slugify(value = "") {

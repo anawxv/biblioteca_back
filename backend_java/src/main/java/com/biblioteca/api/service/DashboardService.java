@@ -45,11 +45,12 @@ public class DashboardService {
     }
 
     public ApiDtos.DashboardResponse carregarDashboard() {
-        long totalBooks = livroRepository.countByAtivoTrue();
-        long totalClients = clienteRepository.countActiveClients();
-        long activeLoans = emprestimoRepository.countActiveOpenLoans(StatusEmprestimo.CANCELADO);
-        long overdueLoans = emprestimoRepository.countOverdueOpenLoans(LocalDate.now(), StatusEmprestimo.CANCELADO);
-        BigDecimal pendingFines = multaRepository.sumPendingFines();
+        long livrosNoAcervo = livroRepository.countByAtivoTrue();
+        long clientesCadastrados = clienteRepository.countActiveClients();
+        long emprestimosAtivos = emprestimoRepository.countActiveOpenLoans(StatusEmprestimo.CANCELADO);
+        long emprestimosAtrasados = emprestimoRepository.countOverdueOpenLoans(LocalDate.now(), StatusEmprestimo.CANCELADO);
+        BigDecimal multasPendentes = multaRepository.sumPendingFines();
+        long livrosIndisponiveis = livroRepository.countByAtivoTrueAndQuantidadeDisponivelLessThanEqual(0);
 
         List<ApiDtos.LoanItemResponse> recentLoans = emprestimoRepository.findAllByOrderByDataEmprestimoDesc(PageRequest.of(0, 4))
                 .stream()
@@ -60,7 +61,12 @@ public class DashboardService {
         ApiDtos.ReturnsStats returnsStats = buildReturnsStats();
 
         return new ApiDtos.DashboardResponse(
-                new ApiDtos.DashboardMetricsResponse(totalBooks, totalClients, activeLoans, overdueLoans, pendingFines),
+                livrosNoAcervo,
+                clientesCadastrados,
+                emprestimosAtivos,
+                emprestimosAtrasados,
+                multasPendentes,
+                livrosIndisponiveis,
                 recentLoans,
                 loansByMonth,
                 returnsStats

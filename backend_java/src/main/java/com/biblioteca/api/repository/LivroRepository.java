@@ -37,6 +37,8 @@ public interface LivroRepository extends JpaRepository<Livro, Integer> {
 
     long countByAtivoTrue();
 
+    long countByAtivoTrueAndQuantidadeDisponivelLessThanEqual(Integer quantidadeDisponivel);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
             update Livro l
