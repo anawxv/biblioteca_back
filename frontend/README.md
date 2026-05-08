@@ -90,6 +90,10 @@ A integração fica em `src/services/api.js` e expõe:
 - `listarClientes()`
 - `listarHistoricoLivros()`
 - `listarEmprestimosRecentes()`
+- `atualizarLivro(idLivro, dados)`
+- `listarGeneros()`
+- `listarSubgenerosPorCategoria(idCategoria)`
+- `listarHistoricoLivro(idLivro)`
 
 Os mocks continuam apenas como fallback visual temporário para consultas quando a API não está disponível. Ações de escrita, como login, cadastro, empréstimo, devolução, criação e exclusão de livro, chamam a API real e não simulam sucesso.
 
@@ -102,3 +106,23 @@ Os mocks continuam apenas como fallback visual temporário para consultas quando
 5. No cliente, teste catálogo, categorias, detalhes, empréstimos e perfil.
 6. No funcionário, teste painel, gerenciar livros, controlar empréstimos, recentes e dashboard.
 7. Teste PWA em modo build/preview ou pelo navegador com o projeto rodando.
+
+## Edição de livros no front-end
+
+Entre como funcionário, acesse `Gerenciar livros` e clique em `Editar`. O modal carrega os dados atuais, permite alterar campos principais, categoria, gêneros extras e IDs de subgêneros, e chama:
+
+```text
+PUT http://localhost:8080/api/livros/{id}
+```
+
+Se o back-end responder sucesso, o modal fecha e a lista é atualizada. Se falhar, a interface mostra uma mensagem amigável e não simula sucesso.
+
+## Banco necessário para multigêneros e histórico
+
+Execute no pgAdmin:
+
+```sql
+banco_de_dados/melhorias_nota10.sql
+```
+
+Esse script cria as tabelas `genero`, `livro_genero`, `subgenero`, `livro_subgenero` e `historico_livro`, além das views de dashboard e códigos de funcionário.

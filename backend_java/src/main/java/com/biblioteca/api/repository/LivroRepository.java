@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface LivroRepository extends JpaRepository<Livro, Integer> {
 
-    @EntityGraph(attributePaths = {"categoria"})
+    @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
     @Query("""
             select l
             from Livro l
@@ -23,16 +23,30 @@ public interface LivroRepository extends JpaRepository<Livro, Integer> {
                 or lower(l.titulo) like lower(concat('%', :search, '%'))
                 or lower(l.autor) like lower(concat('%', :search, '%'))
                 or lower(l.categoria.nome) like lower(concat('%', :search, '%'))
+                or exists (
+                    select g
+                    from l.generosExtras g
+                    where lower(g.nome) like lower(concat('%', :search, '%'))
+                )
+                or exists (
+                    select s
+                    from l.subgeneros s
+                    where lower(s.nome) like lower(concat('%', :search, '%'))
+                )
               )
             order by l.titulo asc
             """)
     List<Livro> findActiveBySearch(@Param("search") String search);
 
-    @EntityGraph(attributePaths = {"categoria"})
+    @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
     @Query("select l from Livro l where l.ativo = true and l.idLivro = :id")
     Optional<Livro> findActiveDetailedById(@Param("id") Integer id);
 
-    @EntityGraph(attributePaths = {"categoria"})
+    @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
+    @Query("select l from Livro l where l.idLivro = :id")
+    Optional<Livro> findDetailedById(@Param("id") Integer id);
+
+    @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
     List<Livro> findTop6ByAtivoTrueOrderByCriadoEmDesc();
 
     long countByAtivoTrue();
@@ -50,4 +64,6 @@ public interface LivroRepository extends JpaRepository<Livro, Integer> {
     int softDelete(@Param("id") Integer id, @Param("updatedAt") LocalDateTime updatedAt);
 
     Optional<Livro> findByIdLivro(Integer idLivro);
+
+    boolean existsByIsbnIgnoreCaseAndIdLivroNot(String isbn, Integer idLivro);
 }

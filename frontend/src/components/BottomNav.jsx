@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const customerItems = [
   { to: "/cliente/catalogo", label: "Catálogo", icon: "⌂" },
@@ -15,10 +16,19 @@ const adminItems = [
 ];
 
 export function BottomNav({ isAdmin = false }) {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const items = isAdmin ? adminItems : customerItems;
 
+  function handleLogout() {
+    logout();
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate("/login", { replace: true });
+  }
+
   return (
-    <nav className="bottom-nav">
+    <nav className={`bottom-nav${isAdmin ? " bottom-nav--admin" : ""}`}>
       {items.map((item) => (
         <NavLink
           key={item.to}
@@ -31,6 +41,12 @@ export function BottomNav({ isAdmin = false }) {
           <span>{item.label}</span>
         </NavLink>
       ))}
+      {isAdmin ? (
+        <button className="bottom-nav__item bottom-nav__item--button" onClick={handleLogout} type="button">
+          <span className="bottom-nav__icon">↩</span>
+          <span>Sair</span>
+        </button>
+      ) : null}
     </nav>
   );
 }

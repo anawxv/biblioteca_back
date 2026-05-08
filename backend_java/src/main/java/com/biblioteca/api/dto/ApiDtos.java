@@ -65,7 +65,9 @@ public final class ApiDtos {
             String phone,
             @NotBlank(message = "Tipo de usuario e obrigatorio.")
             @JsonAlias({"tipo_usuario", "tipoUsuario"})
-            String role
+            String role,
+            @JsonAlias({"codigo_autorizacao", "codigoAutorizacao", "authorizationCode"})
+            String codigoAutorizacao
     ) {
     }
 
@@ -102,30 +104,61 @@ public final class ApiDtos {
             @JsonAlias({"quantidade_disponivel", "quantidadeDisponivel"})
             Integer availableQuantity,
             @NotNull(message = "Categoria e obrigatoria.")
-            @JsonAlias({"id_categoria", "idCategoria", "categoriaId"})
+            @JsonAlias({"id_categoria", "idCategoria", "categoriaId", "categoryId"})
             Integer categoryId,
             @JsonAlias({"imagem_capa", "imagemCapa"})
-            String coverImage
+            String coverImage,
+            @JsonAlias({"generosExtras", "extraGenres"})
+            List<String> generosExtras,
+            @JsonAlias({"idsGenerosExtras", "genreIds"})
+            List<Integer> idsGenerosExtras,
+            @JsonAlias({"idsSubgeneros", "subgenreIds"})
+            List<Integer> idsSubgeneros
     ) {
     }
 
     public record BookResponse(
             Integer id,
+            Integer idLivro,
             String title,
+            String titulo,
             String author,
+            String autor,
             String category,
+            String categoria,
             String isbn,
             Integer pages,
+            Integer paginas,
             String description,
+            String descricao,
             String status,
             Integer quantityTotal,
+            Integer quantidadeTotal,
             Integer availableQuantity,
+            Integer quantidadeDisponivel,
             Integer publishedYear,
+            Integer anoPublicacao,
             String publisher,
+            String editora,
             String coverImage,
+            String imagemCapa,
+            List<String> generosExtras,
+            List<String> subgeneros,
             Boolean active,
+            Boolean ativo,
+            Boolean disponivel,
             LocalDateTime createdAt,
             Long loanCount
+    ) {
+    }
+
+    public record HistoricoLivroResponse(
+            Integer idHistorico,
+            Integer idLivro,
+            String acao,
+            LocalDateTime criadoEm,
+            String dadosAnteriores,
+            String dadosNovos
     ) {
     }
 

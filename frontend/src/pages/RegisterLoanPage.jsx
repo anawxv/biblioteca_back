@@ -106,7 +106,9 @@ export function RegisterLoanPage() {
               <BookCover book={book} />
               <div>
                 <strong>{book.title}</strong>
-                <small>{book.status === "disponivel" ? "Disponível" : "Bloqueado"}</small>
+                <span className={`status-badge status-badge--${book.status === "disponivel" ? "disponivel" : "bloqueado"}`}>
+                  {book.status === "disponivel" ? "Disponível" : "Indisponível"}
+                </span>
               </div>
             </button>
           ))}
@@ -116,15 +118,15 @@ export function RegisterLoanPage() {
           <div className="summary-card">
             <strong>Cliente selecionado</strong>
             <p>{selectedClient.name}</p>
-            <small>
+            <span className={`status-badge status-badge--${selectedClient.pendingFine > 0 || selectedClient.blocked || selectedClient.active === false ? "bloqueado" : "disponivel"}`}>
               {selectedClient.pendingFine > 0
                 ? `Bloqueado por multa pendente de ${currency(selectedClient.pendingFine)}`
                 : selectedClient.blocked
-                  ? "Cliente bloqueado"
+                  ? "Bloqueado"
                   : selectedClient.active === false
-                    ? "Cliente inativo"
-                : "Cliente apto para empréstimo"}
-            </small>
+                    ? "Bloqueado"
+                : "Liberado"}
+            </span>
           </div>
         ) : null}
 
@@ -132,11 +134,11 @@ export function RegisterLoanPage() {
           <div className="summary-card">
             <strong>Livro selecionado</strong>
             <p>{selectedBook.title}</p>
-            <small>
+            <span className={`status-badge status-badge--${selectedBook.status === "disponivel" ? "disponivel" : "bloqueado"}`}>
               {selectedBook.status === "disponivel"
-                ? "Disponível para empréstimo"
-                : "Livro bloqueado / indisponível"}
-            </small>
+                ? "Disponível"
+                : "Indisponível"}
+            </span>
           </div>
         ) : null}
 

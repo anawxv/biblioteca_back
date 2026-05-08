@@ -7,12 +7,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "livro")
@@ -56,6 +60,22 @@ public class Livro {
 
     @Column(name = "imagem_capa", length = 255)
     private String imagemCapa;
+
+    @ManyToMany
+    @JoinTable(
+            name = "livro_genero",
+            joinColumns = @JoinColumn(name = "id_livro"),
+            inverseJoinColumns = @JoinColumn(name = "id_genero")
+    )
+    private Set<Genero> generosExtras = new LinkedHashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "livro_subgenero",
+            joinColumns = @JoinColumn(name = "id_livro"),
+            inverseJoinColumns = @JoinColumn(name = "id_subgenero")
+    )
+    private Set<Subgenero> subgeneros = new LinkedHashSet<>();
 
     @Column(name = "ativo", nullable = false)
     private Boolean ativo = true;
@@ -174,6 +194,22 @@ public class Livro {
 
     public void setImagemCapa(String imagemCapa) {
         this.imagemCapa = imagemCapa;
+    }
+
+    public Set<Genero> getGenerosExtras() {
+        return generosExtras;
+    }
+
+    public void setGenerosExtras(Set<Genero> generosExtras) {
+        this.generosExtras = generosExtras;
+    }
+
+    public Set<Subgenero> getSubgeneros() {
+        return subgeneros;
+    }
+
+    public void setSubgeneros(Set<Subgenero> subgeneros) {
+        this.subgeneros = subgeneros;
     }
 
     public Boolean getAtivo() {

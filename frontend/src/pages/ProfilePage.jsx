@@ -7,6 +7,8 @@ import { getInitials, maskPassword } from "../utils/formatters";
 
 const MAX_PROFILE_IMAGE_SIZE = 2 * 1024 * 1024;
 const ALLOWED_PROFILE_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const FILTER_PREFERENCE_KEY = "biblioteca-keep-category-filter";
+const LAST_CATEGORY_FILTER_KEY = "biblioteca-last-category-filter";
 
 export function validarImagemPerfil(file) {
   if (!file || !ALLOWED_PROFILE_IMAGE_TYPES.includes(file.type)) {
@@ -32,6 +34,9 @@ export function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(user.photoUrl || "");
   const [feedback, setFeedback] = useState("");
+  const [keepFilterActive, setKeepFilterActive] = useState(
+    () => localStorage.getItem(FILTER_PREFERENCE_KEY) === "true",
+  );
   const [form, setForm] = useState({
     name: user.name,
     email: user.email,
@@ -77,6 +82,17 @@ export function ProfilePage() {
   function handleLogout() {
     logout();
     navigate("/", { replace: true });
+  }
+
+  function toggleKeepFilterActive() {
+    setKeepFilterActive((current) => {
+      const next = !current;
+      localStorage.setItem(FILTER_PREFERENCE_KEY, String(next));
+      if (!next) {
+        localStorage.removeItem(LAST_CATEGORY_FILTER_KEY);
+      }
+      return next;
+    });
   }
 
   return (
@@ -130,6 +146,20 @@ export function ProfilePage() {
           <article className="info-tile">
             <span>Senha</span>
             <strong>{maskPassword(user.password)}</strong>
+          </article>
+          <article className="info-tile info-tile--switch">
+            <div>
+              <span>Preferência do catálogo</span>
+              <strong>Manter filtro ativo</strong>
+            </div>
+            <button
+              aria-pressed={keepFilterActive}
+              className={`switch-control${keepFilterActive ? " switch-control--active" : ""}`}
+              onClick={toggleKeepFilterActive}
+              type="button"
+            >
+              <span />
+            </button>
           </article>
         </section>
       )}

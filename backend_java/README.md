@@ -59,3 +59,42 @@ mvn spring-boot:run
 - `GET /api/dashboard/livros-mais-emprestados`
 - `GET /api/dashboard/livros-recentes`
 - `GET /api/dashboard/generos-mais-consumidos`
+
+## Melhorias nota 10 do banco
+
+Execute manualmente no pgAdmin, depois dos scripts originais:
+
+```sql
+banco_de_dados/melhorias_nota10.sql
+```
+
+O script cria tabelas de multigêneros, subgêneros, histórico de livros, códigos de funcionário, índices, views e trigger de `livro.atualizado_em`. Ele é incremental e não usa `DROP TABLE`, `TRUNCATE` ou recriação do banco.
+
+## Edição real de livros
+
+Endpoint:
+
+- `PUT /api/livros/{id}`
+- `GET /api/livros/{id}/historico`
+
+Exemplo:
+
+```powershell
+curl.exe -X PUT "http://localhost:8080/api/livros/1" `
+  -H "Content-Type: application/json" `
+  -d "{\"title\":\"Livro editado\",\"author\":\"Autor\",\"isbn\":\"ISBN-EDITADO\",\"description\":\"Descricao\",\"publishedYear\":2026,\"pages\":250,\"publisher\":\"Editora\",\"quantityTotal\":5,\"availableQuantity\":4,\"categoryId\":1,\"coverImage\":\"\",\"generosExtras\":[\"Romance\",\"Drama\"],\"idsGenerosExtras\":[],\"idsSubgeneros\":[]}"
+```
+
+Confira o histórico:
+
+```sql
+SELECT * FROM historico_livro ORDER BY criado_em DESC;
+```
+
+## Código de funcionário
+
+O cadastro de funcionário exige `codigoAutorizacao`. O script `melhorias_nota10.sql` cria a tabela `codigo_funcionario` e insere:
+
+- `FUNC-2026-001`
+- `FUNC-2026-002`
+- `BIBLIOTECARIO-AP1`

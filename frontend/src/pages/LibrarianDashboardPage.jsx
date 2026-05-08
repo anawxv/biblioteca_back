@@ -6,8 +6,10 @@ import { EmptyState } from "../components/EmptyState";
 import { MetricCard } from "../components/MetricCard";
 import { TopBar } from "../components/TopBar";
 import {
+  atualizarLivro,
   buscarLivros,
   excluirLivro,
+  listarCategorias,
   listarClientes,
   listarDashboard,
   listarEmprestimosAtrasados,
@@ -18,10 +20,12 @@ import {
   listarLivros,
   listarLivrosIndisponiveis,
   listarLivrosMaisEmprestados,
+  listarGeneros,
   listarMultasPendentes,
   marcarMultaComoPaga,
 } from "../services/api";
 import { currency, formatDate } from "../utils/formatters";
+import { bookMatchesSmartSearch, getBookGenres } from "../utils/search";
 
 const sections = [
   { id: "livros", label: "Gerenciar livros" },
@@ -30,12 +34,14 @@ const sections = [
   { id: "dashboard", label: "Dashboard" },
 ];
 
-export function LibrarianDashboardPage({ initialSection = "livros" }) {
+export function LibrarianDashboardPage({ initialSection = "dashboard" }) {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState(initialSection);
   const [activeMetric, setActiveMetric] = useState("");
   const [dashboard, setDashboard] = useState(null);
   const [genres, setGenres] = useState([]);
+  const [genreOptions, setGenreOptions] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [topBooks, setTopBooks] = useState([]);
   const [books, setBooks] = useState([]);
   const [clients, setClients] = useState([]);
@@ -46,6 +52,8 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
   const [bookHistory, setBookHistory] = useState([]);
   const [query, setQuery] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [editingBook, setEditingBook] = useState(null);
+  const [editForm, setEditForm] = useState(null);
   const [loading, setLoading] = useState(true);
 
   async function loadPanel() {
@@ -65,6 +73,8 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
         pendingFinesResponse,
         historyResponse,
         recentLoansResponse,
+        categoriesResponse,
+        genreOptionsResponse,
       ] = await Promise.all([
         listarDashboard(),
         listarGenerosMaisConsumidos(),
@@ -77,6 +87,8 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
         listarMultasPendentes(),
         listarHistoricoLivros(),
         listarEmprestimosRecentes(),
+        listarCategorias(),
+        listarGeneros(),
       ]);
 
       setGenres(genresResponse);
@@ -92,6 +104,8 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
         ...dashboardResponse,
         recentLoans: recentLoansResponse.length ? recentLoansResponse : dashboardResponse.recentLoans,
       });
+      setCategories(categoriesResponse);
+      setGenreOptions(genreOptionsResponse);
     } catch (error) {
       setFeedback(error.message);
     } finally {
@@ -136,6 +150,61 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
     }
   }
 
+  function openEditBook(book) {
+    setEditingBook(book);
+    setEditForm({
+      title: book.title || "",
+      author: book.author || "",
+      isbn: book.isbn || "",
+      description: book.description || "",
+      category: book.category || "",
+      categoryId: categories.find((category) => category.name === book.category)?.id || "",
+      extraGenres: (book.extraGenres || []).join(", "),
+      genreIds: [],
+      subgenreIds: [],
+      subgenreIdsText: "",
+      pages: book.pages || "",
+      publishedYear: book.publishedYear || "",
+      publisher: book.publisher || "",
+      quantityTotal: book.quantityTotal || 0,
+      availableQuantity: book.availableQuantity || 0,
+      coverImage: book.coverImage || "",
+    });
+  }
+
+  async function handleSaveEdit(event) {
+    event.preventDefault();
+    if (!editingBook || !editForm) return;
+
+    try {
+      await atualizarLivro(editingBook.id, {
+        ...editForm,
+        extraGenres: editForm.extraGenres.split(",").map((item) => item.trim()).filter(Boolean),
+        genreIds: editForm.genreIds,
+        subgenreIds: editForm.subgenreIdsText
+          .split(",")
+          .map((item) => Number(item.trim()))
+          .filter(Boolean),
+      });
+      setFeedback("Livro atualizado com sucesso.");
+      setEditingBook(null);
+      setEditForm(null);
+      await loadPanel();
+    } catch (error) {
+      setFeedback(error.message || "Edição de livro precisa do endpoint PUT /api/livros/{id} no back-end.");
+    }
+  }
+
+  function toggleEditArray(field, value) {
+    setEditForm((current) => {
+      const values = current[field] || [];
+      return {
+        ...current,
+        [field]: values.includes(value) ? values.filter((item) => item !== value) : [...values, value],
+      };
+    });
+  }
+
   async function handlePayFine(fineId) {
     try {
       await marcarMultaComoPaga(fineId);
@@ -157,11 +226,7 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
     [dashboard],
   );
 
-  const filteredBooks = books.filter((book) =>
-    [book.title, book.author, book.category].some((field) =>
-      String(field || "").toLowerCase().includes(query.toLowerCase()),
-    ),
-  );
+  const filteredBooks = books.filter((book) => bookMatchesSmartSearch(book, query));
 
   const filteredLoans = activeLoans.filter((loan) =>
     [loan.client.name, loan.book.title, loan.status].some((field) =>
@@ -210,6 +275,12 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
 
       {feedback ? <div className="alert alert--error">{feedback}</div> : null}
 
+      {activeSection === "dashboard" ? (
+        <>
+      <div className="section-heading admin-section-title">
+        <h2>Resumo geral</h2>
+      </div>
+
       <section className="metrics-grid metrics-grid--clickable">
         <button className="metric-button" onClick={() => openMetric("livros")} type="button">
           <MetricCard icon="▥" label="Livros no acervo" value={metrics.totalBooks} />
@@ -230,6 +301,39 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
           <MetricCard icon="−" label="Livros indisponíveis" value={metrics.unavailableBooks} soft />
         </button>
       </section>
+
+      <section className="admin-block">
+        <div className="section-heading">
+          <h2>Ações rápidas</h2>
+        </div>
+        <div className="quick-actions-grid">
+          <Link className="quick-action-card" to="/funcionario/adicionar-livro">Adicionar livro</Link>
+          <Link className="quick-action-card" to="/funcionario/remover-livro">Remover livro</Link>
+          <Link className="quick-action-card" to="/funcionario/registrar-emprestimo">Registrar empréstimo</Link>
+          <Link className="quick-action-card" to="/funcionario/registrar-devolucao">Registrar devolução</Link>
+          <Link className="quick-action-card" to="/funcionario/atrasos">Consultar atrasos</Link>
+          <Link className="quick-action-card" to="/funcionario/clientes">Consultar clientes</Link>
+        </div>
+      </section>
+
+      <DashboardSection
+        activeMetric={activeMetric}
+        activeLoans={activeLoans}
+        books={books}
+        clients={clients}
+        dashboard={dashboard}
+        genres={genres}
+        maxBookValue={maxBookValue}
+        maxGenreValue={maxGenreValue}
+        maxMonthValue={maxMonthValue}
+        overdueLoans={overdueLoans}
+        pendingFines={pendingFines}
+        topBooks={topBooks}
+        unavailableBooks={unavailableBooks}
+        onPayFine={handlePayFine}
+      />
+        </>
+      ) : null}
 
       {activeSection === "livros" ? (
         <section className="admin-section">
@@ -256,7 +360,7 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
                   <small>{book.category} • {book.availableQuantity} disponíveis</small>
                 </div>
                 <div className="list-actions">
-                  <button className="button button--small button--secondary" type="button">
+                  <button className="button button--small button--secondary" onClick={() => openEditBook(book)} type="button">
                     Editar
                   </button>
                   <button className="button button--small button--danger" onClick={() => handleDeleteBook(book.id)} type="button">
@@ -287,6 +391,7 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
           <div className="action-card__buttons">
             <Link className="button button--small" to="/funcionario/registrar-emprestimo">Registrar empréstimo</Link>
             <Link className="button button--small button--secondary" to="/funcionario/registrar-devolucao">Registrar devolução</Link>
+            <Link className="button button--small button--secondary" to="/funcionario/atrasos">Ver empréstimos atrasados</Link>
           </div>
           <section className="search-box">
             <span className="search-box__icon">⌕</span>
@@ -302,10 +407,6 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
             loans={filteredLoans}
             onReturn={(loan) => navigate("/funcionario/registrar-devolucao", { state: { emprestimoId: loan.id } })}
           />
-          <div className="panel panel--soft">
-            <strong>Empréstimos atrasados</strong>
-            <LoanList compact empty="Sem atrasos no momento." loans={overdueLoans} />
-          </div>
         </section>
       ) : null}
 
@@ -322,22 +423,59 @@ export function LibrarianDashboardPage({ initialSection = "livros" }) {
         </section>
       ) : null}
 
-      {activeSection === "dashboard" ? (
-        <DashboardSection
-          activeMetric={activeMetric}
-          clients={clients}
-          dashboard={dashboard}
-          genres={genres}
-          maxBookValue={maxBookValue}
-          maxGenreValue={maxGenreValue}
-          maxMonthValue={maxMonthValue}
-          overdueLoans={overdueLoans}
-          pendingFines={pendingFines}
-          topBooks={topBooks}
-          unavailableBooks={unavailableBooks}
-          onPayFine={handlePayFine}
-        />
+      {editingBook && editForm ? (
+        <section className="modal-backdrop" role="dialog" aria-modal="true">
+          <form className="panel edit-book-modal form-grid" onSubmit={handleSaveEdit}>
+            <div className="section-heading">
+              <h2>Editar livro</h2>
+              <button className="icon-button icon-button--ghost" onClick={() => setEditingBook(null)} type="button">×</button>
+            </div>
+            <input className="input" placeholder="Título" value={editForm.title} onChange={(event) => setEditForm((current) => ({ ...current, title: event.target.value }))} />
+            <input className="input" placeholder="Autor" value={editForm.author} onChange={(event) => setEditForm((current) => ({ ...current, author: event.target.value }))} />
+            <input className="input" placeholder="ISBN" value={editForm.isbn} onChange={(event) => setEditForm((current) => ({ ...current, isbn: event.target.value }))} />
+            <textarea className="input" placeholder="Descrição" value={editForm.description} onChange={(event) => setEditForm((current) => ({ ...current, description: event.target.value }))} />
+            <select className="input" value={editForm.categoryId || ""} onChange={(event) => {
+              const category = categories.find((item) => String(item.id) === event.target.value);
+              setEditForm((current) => ({ ...current, categoryId: Number(event.target.value), category: category?.name || current.category }));
+            }}>
+              <option value="">Selecione a categoria</option>
+              {categories.map((category) => (
+                <option key={`${category.id}-${category.name}`} value={category.id}>{category.name}</option>
+              ))}
+            </select>
+            <input className="input" placeholder="Gêneros extras separados por vírgula" value={editForm.extraGenres} onChange={(event) => setEditForm((current) => ({ ...current, extraGenres: event.target.value }))} />
+            {genreOptions.length ? (
+              <div className="checkbox-chip-panel">
+                <strong>Gêneros extras</strong>
+                <div className="genre-chip-row">
+                  {genreOptions.map((genre) => (
+                    <button
+                      className={`tag-pill${editForm.genreIds.includes(genre.id) ? " tag-pill--active" : ""}`}
+                      key={genre.id}
+                      onClick={() => toggleEditArray("genreIds", genre.id)}
+                      type="button"
+                    >
+                      {genre.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            <input className="input" placeholder="IDs de subgêneros separados por vírgula" value={editForm.subgenreIdsText} onChange={(event) => setEditForm((current) => ({ ...current, subgenreIdsText: event.target.value }))} />
+            <input className="input" placeholder="Páginas" type="number" value={editForm.pages} onChange={(event) => setEditForm((current) => ({ ...current, pages: event.target.value }))} />
+            <input className="input" placeholder="Ano" type="number" value={editForm.publishedYear} onChange={(event) => setEditForm((current) => ({ ...current, publishedYear: event.target.value }))} />
+            <input className="input" placeholder="Editora" value={editForm.publisher} onChange={(event) => setEditForm((current) => ({ ...current, publisher: event.target.value }))} />
+            <input className="input" placeholder="Quantidade total" type="number" value={editForm.quantityTotal} onChange={(event) => setEditForm((current) => ({ ...current, quantityTotal: event.target.value }))} />
+            <input className="input" placeholder="Quantidade disponível" type="number" value={editForm.availableQuantity} onChange={(event) => setEditForm((current) => ({ ...current, availableQuantity: event.target.value }))} />
+            <input className="input" placeholder="Imagem da capa" value={editForm.coverImage} onChange={(event) => setEditForm((current) => ({ ...current, coverImage: event.target.value }))} />
+            <div className="action-card__buttons">
+              <button className="button button--secondary" onClick={() => setEditingBook(null)} type="button">Cancelar</button>
+              <button className="button" type="submit">Salvar</button>
+            </div>
+          </form>
+        </section>
       ) : null}
+
     </main>
   );
 }
@@ -368,8 +506,18 @@ function LoanList({ loans, empty, onReturn, compact = false }) {
   );
 }
 
+function ChartEmpty() {
+  return (
+    <div className="chart-empty">
+      Ainda não há dados suficientes para gerar este gráfico.
+    </div>
+  );
+}
+
 function DashboardSection({
   activeMetric,
+  activeLoans,
+  books,
   clients,
   dashboard,
   genres,
@@ -383,6 +531,19 @@ function DashboardSection({
   onPayFine,
 }) {
   const metrics = dashboard?.metrics || {};
+  const finesByClient = pendingFines.reduce((accumulator, fine) => {
+    const key = fine.client?.id || fine.client?.email || fine.client?.name || fine.id;
+    const current = accumulator.get(key) || {
+      id: key,
+      label: fine.client?.name || "Cliente",
+      value: 0,
+    };
+    current.value += Number(fine.value || 0);
+    accumulator.set(key, current);
+    return accumulator;
+  }, new Map());
+  const finesByClientList = Array.from(finesByClient.values()).sort((a, b) => b.value - a.value);
+  const maxFineValue = Math.max(1, ...finesByClientList.map((item) => item.value));
 
   return (
     <section className="admin-section">
@@ -390,10 +551,16 @@ function DashboardSection({
         <h2>Dashboard</h2>
       </div>
 
+      <div className="section-heading admin-section-title">
+        <h2>Alertas</h2>
+      </div>
       <div className="alert-stack">
         {metrics.overdueLoans > 0 ? <div className="alert alert--error">Há empréstimos atrasados que precisam de atenção.</div> : null}
         {metrics.pendingFines > 0 ? <div className="alert alert--error">Existem multas pendentes no sistema.</div> : null}
         {metrics.unavailableBooks > 0 ? <div className="alert alert--success">Alguns livros estão sem disponibilidade no momento.</div> : null}
+        {!metrics.overdueLoans && !metrics.pendingFines && !metrics.unavailableBooks ? (
+          <div className="alert alert--success">Nenhum alerta crítico no momento.</div>
+        ) : null}
       </div>
 
       {activeMetric === "multas" ? (
@@ -445,6 +612,29 @@ function DashboardSection({
         </DetailPanel>
       ) : null}
 
+      {activeMetric === "ativos" ? (
+        <DetailPanel title="EmprÃ©stimos ativos">
+          <LoanList empty="Nenhum emprÃ©stimo ativo." loans={activeLoans} compact />
+        </DetailPanel>
+      ) : null}
+
+      {activeMetric === "livros" ? (
+        <DetailPanel title="Livros no acervo">
+          {books.length ? books.slice(0, 12).map((book) => (
+            <article className="recent-item" key={book.id}>
+              <strong>{book.title}</strong>
+              <p>{book.author}</p>
+                  <small>{getBookGenres(book).join(" + ")} • {book.availableQuantity} disponíveis</small>
+            </article>
+          )) : <EmptyState title="Nenhum livro encontrado" description="Os livros ativos aparecerÃ£o aqui." />}
+        </DetailPanel>
+      ) : null}
+
+      <div className="section-heading admin-section-title">
+        <h2>Indicadores e gráficos</h2>
+      </div>
+
+      <div className="dashboard-grid dashboard-grid--charts">
       <ChartCard title="Gêneros mais consumidos">
         <div className="chart-bars">
           {genres.map((item) => (
@@ -499,6 +689,30 @@ function DashboardSection({
           <EmptyState title="Sem devoluções registradas" description="Os indicadores aparecerão assim que houver movimentação." />
         )}
       </ChartCard>
+
+      <ChartCard title="Multas pendentes por cliente">
+        {finesByClientList.length ? (
+          <div className="chart-bars">
+            {finesByClientList.slice(0, 8).map((item) => (
+              <div className="chart-row" key={item.id}>
+                <span>{item.label}</span>
+                <div className="chart-row__track">
+                  <div className="chart-row__fill chart-row__fill--late" style={{ width: `${(item.value / maxFineValue) * 100}%` }} />
+                </div>
+                <strong>{currency(item.value)}</strong>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <ChartEmpty />
+        )}
+      </ChartCard>
+      </div>
+
+      <div className="section-heading admin-section-title">
+        <h2>Histórico</h2>
+      </div>
+      <LoanList empty="Empréstimos recentes aparecerão aqui." loans={dashboard?.recentLoans || []} compact />
     </section>
   );
 }

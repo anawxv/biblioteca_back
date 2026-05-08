@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +40,19 @@ public class LivroController {
     @PostMapping
     public ResponseEntity<ApiDtos.BookResponse> adicionar(@Valid @RequestBody ApiDtos.BookRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(livroService.adicionarLivro(request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiDtos.BookResponse> atualizar(
+            @PathVariable Integer id,
+            @Valid @RequestBody ApiDtos.BookRequest request
+    ) {
+        return ResponseEntity.ok(livroService.atualizarLivro(id, request));
+    }
+
+    @GetMapping("/{id}/historico")
+    public ResponseEntity<List<ApiDtos.HistoricoLivroResponse>> historico(@PathVariable Integer id) {
+        return ResponseEntity.ok(livroService.listarHistoricoLivro(id));
     }
 
     @DeleteMapping("/{id}")

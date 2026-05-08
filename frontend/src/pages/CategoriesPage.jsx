@@ -4,6 +4,7 @@ import { EmptyState } from "../components/EmptyState";
 import { HeroIllustration } from "../components/HeroIllustration";
 import { TopBar } from "../components/TopBar";
 import { CATEGORY_NAMES, listarCategorias } from "../services/api";
+import { slugifyCategory } from "./CategoryPage";
 
 export function CategoriesPage() {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ export function CategoriesPage() {
             <button
               key={`${category.id}-${category.name}`}
               className="category-card"
-              onClick={() => navigate(`/cliente/catalogo?categoria=${encodeURIComponent(category.name)}`)}
+              onClick={() => navigate(`/cliente/categorias/${slugifyCategory(category.name)}`)}
               type="button"
             >
               {category.name}

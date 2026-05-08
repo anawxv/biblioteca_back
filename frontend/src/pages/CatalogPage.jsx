@@ -11,14 +11,10 @@ import {
   listarLivrosMaisEmprestados,
   listarLivrosRecentes,
 } from "../services/api";
+import { bookMatchesSmartSearch, getBookGenres, normalizeSearchText } from "../utils/search";
 
-function normalize(value = "") {
-  return String(value)
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
-}
+const FILTER_PREFERENCE_KEY = "biblioteca-keep-category-filter";
+const LAST_CATEGORY_FILTER_KEY = "biblioteca-last-category-filter";
 
 export function CatalogPage() {
   const navigate = useNavigate();
@@ -30,7 +26,15 @@ export function CatalogPage() {
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState("");
   const [query, setQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("categoria") || "");
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    const categoryFromUrl = searchParams.get("categoria") || "";
+    if (categoryFromUrl) {
+      return categoryFromUrl;
+    }
+
+    const shouldKeepFilter = localStorage.getItem(FILTER_PREFERENCE_KEY) === "true";
+    return shouldKeepFilter ? localStorage.getItem(LAST_CATEGORY_FILTER_KEY) || "" : "";
+  });
 
   useEffect(() => {
     async function bootstrap() {
@@ -60,7 +64,13 @@ export function CatalogPage() {
 
   useEffect(() => {
     const category = searchParams.get("categoria") || "";
-    setSelectedCategory(category);
+    if (category) {
+      setSelectedCategory(category);
+      return;
+    }
+
+    const shouldKeepFilter = localStorage.getItem(FILTER_PREFERENCE_KEY) === "true";
+    setSelectedCategory(shouldKeepFilter ? localStorage.getItem(LAST_CATEGORY_FILTER_KEY) || "" : "");
   }, [searchParams]);
 
   useEffect(() => {
@@ -78,14 +88,11 @@ export function CatalogPage() {
   }, [query]);
 
   const filteredBooks = useMemo(() => {
-    const normalizedQuery = normalize(query);
-    const normalizedCategory = normalize(selectedCategory);
+    const normalizedCategory = normalizeSearchText(selectedCategory);
 
     return books.filter((book) => {
-      const sameCategory = !normalizedCategory || normalize(book.category) === normalizedCategory;
-      const matchesQuery =
-        !normalizedQuery ||
-        [book.title, book.author, book.category].some((field) => normalize(field).includes(normalizedQuery));
+      const sameCategory = !normalizedCategory || getBookGenres(book).some((genre) => normalizeSearchText(genre) === normalizedCategory);
+      const matchesQuery = bookMatchesSmartSearch(book, query);
 
       return sameCategory && matchesQuery;
     });
@@ -96,19 +103,27 @@ export function CatalogPage() {
   }
 
   function filterByCategory(category) {
+    if (selectedCategory === category.name) {
+      clearFilter();
+      return;
+    }
+
     setSelectedCategory(category.name);
+    localStorage.setItem(LAST_CATEGORY_FILTER_KEY, category.name);
     setSearchParams({ categoria: category.name });
   }
 
   function clearFilter() {
     setQuery("");
     setSelectedCategory("");
+    localStorage.removeItem(LAST_CATEGORY_FILTER_KEY);
     setSearchParams({});
   }
 
   const emptyMessage = selectedCategory
     ? `Nenhum livro encontrado nesta categoria.`
     : "Nenhum livro encontrado.";
+  const hasCategoryFilter = Boolean(selectedCategory);
 
   return (
     <main className="page page-with-nav">
@@ -132,7 +147,8 @@ export function CatalogPage() {
 
       {feedback ? <div className="alert alert--error">{feedback}</div> : null}
 
-      <section className="pill-row">
+      <section className="filter-panel">
+        <div className="pill-row">
         {categories.map((category) => (
           <button
             key={`${category.id}-${category.name}`}
@@ -143,28 +159,40 @@ export function CatalogPage() {
             {category.name}
           </button>
         ))}
-        <button className="tag-pill tag-pill--ghost" onClick={clearFilter} type="button">
-          Limpar
-        </button>
+        </div>
+        {hasCategoryFilter ? (
+          <div className="active-filter-bar">
+            <span>
+              Categoria ativa: <strong>{selectedCategory}</strong>
+            </span>
+            <button className="tag-pill tag-pill--ghost" onClick={clearFilter} type="button">
+              Limpar filtro
+            </button>
+          </div>
+        ) : null}
       </section>
 
-      <BookCarousel
-        title="Livros mais emprestados"
-        books={mostBorrowed}
-        onBookClick={openDetails}
-        emptyMessage="Os livros mais emprestados aparecerão aqui."
-      />
+      {!hasCategoryFilter ? (
+        <>
+          <BookCarousel
+            title="Livros mais emprestados"
+            books={mostBorrowed}
+            onBookClick={openDetails}
+            emptyMessage="Os livros mais emprestados aparecerão aqui."
+          />
 
-      <BookCarousel
-        title="Recém adicionados"
-        books={recentBooks}
-        onBookClick={openDetails}
-        emptyMessage="Os livros adicionados recentemente aparecerão aqui."
-      />
+          <BookCarousel
+            title="Recém adicionados"
+            books={recentBooks}
+            onBookClick={openDetails}
+            emptyMessage="Os livros adicionados recentemente aparecerão aqui."
+          />
+        </>
+      ) : null}
 
       <section className="section-block">
         <div className="section-heading">
-          <h2>{selectedCategory ? selectedCategory : "Mais populares"}</h2>
+          <h2>{selectedCategory ? `Livros de ${selectedCategory}` : "Mais populares"}</h2>
         </div>
 
         {loading ? (
@@ -177,8 +205,8 @@ export function CatalogPage() {
           </div>
         ) : (
           <EmptyState
-            title={emptyMessage}
-            description="Tente outra categoria ou ajuste o texto da busca."
+            title={query ? "Nenhum livro encontrado. Tente buscar por outro termo." : emptyMessage}
+            description="A busca ignora acentos e tenta encontrar resultados mesmo com pequenos erros de digitação."
           />
         )}
       </section>

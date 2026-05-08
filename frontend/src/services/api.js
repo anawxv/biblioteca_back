@@ -106,6 +106,7 @@ function normalizeUser(payload = {}) {
     active: user.active ?? user.ativo ?? true,
     blocked: user.blocked ?? user.bloqueado ?? false,
     pendingFine: Number(user.pendingFine ?? user.multaPendente ?? 0),
+    activeLoans: user.activeLoans ?? user.emprestimosAtivos ?? null,
   };
 }
 
@@ -130,6 +131,8 @@ export function normalizeBook(book = {}) {
     title: book.title ?? book.titulo,
     author: book.author ?? book.autor,
     category: pickCategoryName(book.category ?? book.categoria ?? book.categoriaLivro),
+    extraGenres: book.extraGenres ?? book.generosExtras ?? book.generos_extras ?? [],
+    subgenres: book.subgenres ?? book.subgeneros ?? [],
     isbn: book.isbn ?? "",
     pages: book.pages ?? book.paginas ?? "",
     description: book.description ?? book.descricao ?? "",
@@ -256,6 +259,9 @@ function toBookPayload(data) {
     availableQuantity: Number(data.availableQuantity ?? data.quantidadeDisponivel ?? quantityTotal),
     categoryId: resolveCategoryId(data),
     coverImage: data.coverImage ?? data.imagemCapa,
+    generosExtras: data.extraGenres ?? data.generosExtras ?? [],
+    idsGenerosExtras: data.genreIds ?? data.idsGenerosExtras ?? [],
+    idsSubgeneros: data.subgenreIds ?? data.idsSubgeneros ?? [],
   };
 }
 
@@ -281,6 +287,21 @@ export async function login(emailOrPayload, senha) {
   return normalizeAuth(response);
 }
 
+export async function loginComGoogle({ credential, tipoUsuario }) {
+  const role = String(tipoUsuario || "").toUpperCase();
+  const response = await request(
+    "/auth/google",
+    {
+      method: "POST",
+      body: JSON.stringify({ credential, tipoUsuario: role }),
+    },
+    null,
+    [],
+  );
+
+  return normalizeAuth(response);
+}
+
 export async function cadastrarUsuario(dados) {
   const role = String(dados.tipoUsuario ?? dados.role ?? "").toUpperCase();
   const payload = {
@@ -289,6 +310,7 @@ export async function cadastrarUsuario(dados) {
     senha: dados.password ?? dados.senha,
     telefone: dados.phone ?? dados.telefone,
     tipoUsuario: role,
+    codigoAutorizacao: dados.authorizationCode ?? dados.codigoAutorizacao,
   };
 
   const response = await request(
@@ -321,6 +343,23 @@ export async function buscarLivros(busca) {
   return asArray(response, ["livros", "items", "content"]).map(normalizeBook);
 }
 
+export async function listarLivrosPorCategoria(categoria) {
+  const books = await buscarLivros(categoria);
+  const normalizedCategory = String(categoria || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  return books.filter((book) => {
+    const bookCategory = String(book.category || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+    return bookCategory === normalizedCategory;
+  });
+}
+
+
 export async function detalharLivro(id) {
   const response = await request(`/livros/${id}`, {}, () => mockServer.detalharLivro(id));
   return normalizeBook(response);
@@ -338,6 +377,22 @@ export async function listarCategorias() {
     .map((name) => ({ id: CATEGORY_NAMES.indexOf(name) + 1, name }));
 
   return [...categories, ...missing];
+}
+
+export async function listarGeneros() {
+  const response = await request("/generos", {}, () => []);
+  return asArray(response, ["generos", "items", "content"]).map((genero, index) => ({
+    id: genero.id ?? genero.idGenero ?? index + 1,
+    name: genero.name ?? genero.nome,
+  }));
+}
+
+export async function listarSubgenerosPorCategoria(idCategoria) {
+  const response = await request(`/categorias/${idCategoria}/subgeneros`, {}, () => []);
+  return asArray(response, ["subgeneros", "items", "content"]).map((subgenero, index) => ({
+    id: subgenero.id ?? subgenero.idSubgenero ?? index + 1,
+    name: subgenero.name ?? subgenero.nome,
+  }));
 }
 
 export async function solicitarEmprestimo(dados) {
@@ -397,6 +452,23 @@ export async function adicionarLivro(dados) {
     [],
   );
   return normalizeBook(response);
+}
+
+export async function atualizarLivro(idLivro, dados) {
+  const response = await request(
+    `/livros/${idLivro}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(toBookPayload(dados)),
+    },
+    null,
+    [],
+  );
+  return normalizeBook(response);
+}
+
+export async function listarHistoricoLivro(idLivro) {
+  return request(`/livros/${idLivro}/historico`, {}, () => [], [400, 404, 500, 502, 503]);
 }
 
 export async function excluirLivro(idLivro) {

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { cadastrarUsuario, login as loginRequest } from "../services/api";
+import { cadastrarUsuario, login as loginRequest, loginComGoogle as googleLoginRequest } from "../services/api";
 
 const AuthContext = createContext(null);
 
@@ -100,6 +100,37 @@ export function AuthProvider({ children }) {
     return normalizedResponse;
   };
 
+  const loginWithGoogle = async (credential) => {
+    if (!preferredRole) {
+      throw new Error("Tipo de acesso nao identificado. Volte e escolha cliente ou funcionario.");
+    }
+
+    const response = await googleLoginRequest({
+      credential,
+      tipoUsuario: preferredRole.toUpperCase(),
+    });
+    const responseRole = normalizeUserRole(response.user.role);
+    const expectedRole = normalizePreferredRole(preferredRole);
+
+    if (responseRole !== expectedRole) {
+      throw new Error(
+        expectedRole === "cliente"
+          ? "Esta conta Google nao pertence a um cliente."
+          : "Esta conta Google nao pertence a um funcionario.",
+      );
+    }
+
+    const normalizedResponse = {
+      ...response,
+      user: {
+        ...response.user,
+        role: responseRole,
+      },
+    };
+    persistAuth(normalizedResponse);
+    return normalizedResponse;
+  };
+
   const register = async (payload) => {
     const role = normalizePreferredRole(payload.role || preferredRole);
     if (!role) {
@@ -173,6 +204,7 @@ export function AuthProvider({ children }) {
       loading,
       isAuthenticated: Boolean(user),
       login,
+      loginWithGoogle,
       register,
       logout,
       toggleFavorite,

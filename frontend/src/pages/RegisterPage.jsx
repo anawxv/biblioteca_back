@@ -35,7 +35,8 @@ function validateRequired(form, preferredRole) {
     !form.email.trim() ||
     !form.password.trim() ||
     !form.confirmPassword.trim() ||
-    !form.phone.trim()
+    !form.phone.trim() ||
+    (preferredRole === "funcionario" && !form.authorizationCode.trim())
   ) {
     return "Preencha todos os campos obrigatórios.";
   }
@@ -52,6 +53,7 @@ export function RegisterPage() {
     password: "",
     confirmPassword: "",
     phone: "",
+    authorizationCode: "",
   });
   const [feedback, setFeedback] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -83,6 +85,7 @@ export function RegisterPage() {
       await register({
         ...form,
         phone: phoneDigits,
+        authorizationCode: form.authorizationCode.trim(),
         role: preferredRole,
       });
       setFeedback({ type: "success", message: "Cadastro realizado com sucesso. Redirecionando para o login..." });
@@ -146,6 +149,15 @@ export function RegisterPage() {
             value={form.phone}
             onChange={(event) => updatePhone(event.target.value)}
           />
+          {preferredRole === "funcionario" ? (
+            <input
+              className="input"
+              placeholder="Código de autorização"
+              type="text"
+              value={form.authorizationCode}
+              onChange={(event) => updateField("authorizationCode", event.target.value)}
+            />
+          ) : null}
 
           {feedback ? (
             <div className={`alert alert--${feedback.type === "success" ? "success" : "error"}`}>

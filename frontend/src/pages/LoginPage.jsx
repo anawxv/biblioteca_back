@@ -5,7 +5,12 @@ import { useAuth } from "../context/AuthContext";
 
 function SocialButton({ label, icon, onClick }) {
   return (
-    <button className={`social-icon social-icon--${label.toLowerCase().split(" ").pop()}`} onClick={onClick} type="button" aria-label={label}>
+    <button
+      aria-label={label}
+      className={`social-icon social-icon--${label.toLowerCase().split(" ").pop()}`}
+      onClick={onClick}
+      type="button"
+    >
       {icon}
     </button>
   );
@@ -45,14 +50,30 @@ export function LoginPage() {
       navigate(destination, { replace: true });
     } catch (error) {
       const message = error.message || "";
-      setFeedback(message.startsWith("Este usuário") || message.startsWith("Tipo de acesso") ? message : "E-mail ou senha incorretos.");
+      setFeedback(
+        message.startsWith("Este usuário") || message.startsWith("Tipo de acesso")
+          ? message
+          : "E-mail ou senha incorretos.",
+      );
     } finally {
       setSubmitting(false);
     }
   }
 
-  function loginComGoogle() {
-    setFeedback("Login social ainda não configurado.");
+  async function loginComGoogle() {
+    setFeedback("");
+
+    if (!preferredRole) {
+      setFeedback("Escolha cliente ou funcionário na tela inicial antes de usar o Google.");
+      return;
+    }
+
+    if (!import.meta.env.VITE_GOOGLE_CLIENT_ID) {
+      setFeedback("Login com Google precisa ser configurado no front-end e no back-end.");
+      return;
+    }
+
+    setFeedback("Login com Google precisa ser conectado ao provedor OAuth e ao endpoint /api/auth/google.");
   }
 
   function loginComFacebook() {
@@ -110,9 +131,9 @@ export function LoginPage() {
         </div>
 
         <div className="social-row">
-          <SocialButton label="Entrar com Google" icon="G" onClick={loginComGoogle} />
+          <SocialButton label="Entrar com Google" icon={<span className="google-mark">G</span>} onClick={loginComGoogle} />
           <SocialButton label="Entrar com Facebook" icon="f" onClick={loginComFacebook} />
-          <SocialButton label="Entrar com Apple" icon="" onClick={loginComApple} />
+          <SocialButton label="Entrar com Apple" icon="A" onClick={loginComApple} />
         </div>
       </section>
     </main>

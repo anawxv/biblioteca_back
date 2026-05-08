@@ -4,6 +4,7 @@ import { BookCover } from "../components/BookCover";
 import { TopBar } from "../components/TopBar";
 import { useAuth } from "../context/AuthContext";
 import { detalharLivro, solicitarEmprestimo } from "../services/api";
+import { getBookGenres } from "../utils/search";
 
 export function BookDetailsPage() {
   const { id } = useParams();
@@ -49,6 +50,7 @@ export function BookDetailsPage() {
   }
 
   const available = book.status === "disponivel";
+  const genres = getBookGenres(book);
 
   return (
     <main className="page">
@@ -58,7 +60,9 @@ export function BookDetailsPage() {
         <BookCover book={book} large />
         <div className="details-panel__body">
           <div className="inline-badges">
-            <span className="tag-pill tag-pill--active">{book.category}</span>
+            {genres.map((genre) => (
+              <span className="tag-pill tag-pill--active" key={genre}>{genre}</span>
+            ))}
             <span className={`status-badge status-badge--${book.status}`}>
               {available ? "Disponível" : "Indisponível"}
             </span>

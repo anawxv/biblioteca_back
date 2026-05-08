@@ -3,10 +3,12 @@ package com.biblioteca.api.service;
 import com.biblioteca.api.dto.ApiDtos;
 import com.biblioteca.api.exception.BusinessException;
 import com.biblioteca.api.model.Cliente;
+import com.biblioteca.api.model.CodigoFuncionario;
 import com.biblioteca.api.model.Funcionario;
 import com.biblioteca.api.model.TipoUsuario;
 import com.biblioteca.api.model.Usuario;
 import com.biblioteca.api.repository.ClienteRepository;
+import com.biblioteca.api.repository.CodigoFuncionarioRepository;
 import com.biblioteca.api.repository.FuncionarioRepository;
 import com.biblioteca.api.repository.UsuarioRepository;
 import jakarta.persistence.EntityManager;
@@ -19,17 +21,20 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final ClienteRepository clienteRepository;
     private final FuncionarioRepository funcionarioRepository;
+    private final CodigoFuncionarioRepository codigoFuncionarioRepository;
     private final EntityManager entityManager;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             ClienteRepository clienteRepository,
             FuncionarioRepository funcionarioRepository,
+            CodigoFuncionarioRepository codigoFuncionarioRepository,
             EntityManager entityManager
     ) {
         this.usuarioRepository = usuarioRepository;
         this.clienteRepository = clienteRepository;
         this.funcionarioRepository = funcionarioRepository;
+        this.codigoFuncionarioRepository = codigoFuncionarioRepository;
         this.entityManager = entityManager;
     }
 
@@ -61,12 +66,16 @@ public class UsuarioService {
             entityManager.persist(cliente);
             entityManager.flush();
         } else {
+            CodigoFuncionario codigoFuncionario = validarCodigoFuncionario(request.codigoAutorizacao());
             Funcionario funcionario = new Funcionario();
             funcionario.setIdFuncionario(usuarioSalvo.getIdUsuario());
             funcionario.setUsuario(usuarioSalvo);
             funcionario.setCargo("BIBLIOTECARIO");
             funcionario.setAdministrador(false);
             entityManager.persist(funcionario);
+            codigoFuncionario.setUsado(true);
+            codigoFuncionario.setUsadoEm(java.time.LocalDateTime.now());
+            codigoFuncionarioRepository.save(codigoFuncionario);
             entityManager.flush();
         }
 
@@ -77,5 +86,20 @@ public class UsuarioService {
                 usuarioSalvo.getEmail(),
                 usuarioSalvo.getTipoUsuario().name()
         );
+    }
+
+    private CodigoFuncionario validarCodigoFuncionario(String codigo) {
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new BusinessException("Codigo de autorizacao invalido.");
+        }
+
+        CodigoFuncionario codigoFuncionario = codigoFuncionarioRepository.findByCodigoIgnoreCase(codigo.trim())
+                .orElseThrow(() -> new BusinessException("Codigo de autorizacao invalido."));
+
+        if (!Boolean.TRUE.equals(codigoFuncionario.getAtivo()) || Boolean.TRUE.equals(codigoFuncionario.getUsado())) {
+            throw new BusinessException("Codigo de autorizacao invalido.");
+        }
+
+        return codigoFuncionario;
     }
 }
