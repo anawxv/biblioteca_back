@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 
     @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria"})
@@ -20,5 +22,11 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
     @Query("select r from Reserva r where r.idReserva = :id")
     Optional<Reserva> findDetailedById(@Param("id") Integer id);
 
+  
+    boolean existsByLivro_IdLivroAndStatus(Integer idLivro, StatusReserva status);
+
+   
     boolean existsByCliente_IdClienteAndLivro_IdLivroAndStatus(Integer idCliente, Integer idLivro, StatusReserva status);
+    
+    long countByLivro_IdLivroAndStatus(Integer idLivro, StatusReserva status);
 }
