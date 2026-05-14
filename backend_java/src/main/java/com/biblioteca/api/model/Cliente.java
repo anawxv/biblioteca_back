@@ -1,5 +1,6 @@
 package com.biblioteca.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,9 +18,10 @@ public class Cliente {
     @Column(name = "id_cliente")
     private Integer idCliente;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @MapsId
     @JoinColumn(name = "id_cliente")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "senhaHash", "tipoUsuario"})
     private Usuario usuario;
 
     @Column(name = "limite_emprestimos", nullable = false)

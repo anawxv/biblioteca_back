@@ -36,7 +36,7 @@ public class Livro {
     @Column(name = "isbn", length = 30)
     private String isbn;
 
-    @Column(name = "descricao")
+    @Column(name = "descricao", columnDefinition = "TEXT")
     private String descricao;
 
     @Column(name = "ano_publicacao")
@@ -58,7 +58,7 @@ public class Livro {
     @JoinColumn(name = "id_categoria", nullable = false)
     private Categoria categoria;
 
-    @Column(name = "imagem_capa", length = 255)
+    @Column(name = "imagem_capa", columnDefinition = "TEXT")
     private String imagemCapa;
 
     @ManyToMany

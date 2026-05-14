@@ -20,18 +20,18 @@ public interface LivroRepository extends JpaRepository<Livro, Integer> {
             where l.ativo = true
               and (
                 :search is null
-                or lower(l.titulo) like lower(concat('%', :search, '%'))
-                or lower(l.autor) like lower(concat('%', :search, '%'))
-                or lower(l.categoria.nome) like lower(concat('%', :search, '%'))
+                or lower(l.titulo) like lower(cast(concat('%', :search, '%') as string))
+                or lower(l.autor) like lower(cast(concat('%', :search, '%') as string))
+                or lower(l.categoria.nome) like lower(cast(concat('%', :search, '%') as string))
                 or exists (
                     select g
                     from l.generosExtras g
-                    where lower(g.nome) like lower(concat('%', :search, '%'))
+                    where lower(g.nome) like lower(cast(concat('%', :search, '%') as string))
                 )
                 or exists (
                     select s
                     from l.subgeneros s
-                    where lower(s.nome) like lower(concat('%', :search, '%'))
+                    where lower(s.nome) like lower(cast(concat('%', :search, '%') as string))
                 )
               )
             order by l.titulo asc

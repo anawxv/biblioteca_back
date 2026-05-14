@@ -79,7 +79,7 @@ public class EmprestimoService {
         validateCliente(cliente);
         validateLivro(livro);
 
-        // Lógica de Reserva para múltiplas unidades
+       
         long totalReservasAtivas = reservaRepository.countByLivro_IdLivroAndStatus(
                 livro.getIdLivro(), StatusReserva.ATIVA);
 

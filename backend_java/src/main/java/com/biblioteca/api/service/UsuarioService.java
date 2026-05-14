@@ -15,6 +15,8 @@ import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UsuarioService {
 
@@ -38,6 +40,11 @@ public class UsuarioService {
         this.entityManager = entityManager;
     }
 
+ 
+    public List<Cliente> listarClientesAtivos() {
+        return clienteRepository.findAll();
+    }
+    
     @Transactional
     public ApiDtos.RegisterResponse cadastrar(ApiDtos.CreateUserRequest request) {
         TipoUsuario tipoUsuario = TipoUsuario.fromInput(request.role());
