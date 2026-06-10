@@ -38,8 +38,34 @@ public interface LivroRepository extends JpaRepository<Livro, Integer> {
     List<Integer> findActiveIdsBySearch(@Param("search") String search);
 
     @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
+<<<<<<< HEAD
     @Query("select distinct l from Livro l where l.ativo = true and l.idLivro in :ids order by l.titulo asc")
     List<Livro> findActiveDetailedByIds(@Param("ids") List<Integer> ids);
+=======
+    @Query("""
+            select l
+            from Livro l
+            where l.ativo = true
+              and (
+                :search is null
+                or lower(l.titulo) like lower(cast(concat('%', :search, '%') as string))
+                or lower(l.autor) like lower(cast(concat('%', :search, '%') as string))
+                or lower(l.categoria.nome) like lower(cast(concat('%', :search, '%') as string))
+                or exists (
+                    select g
+                    from l.generosExtras g
+                    where lower(g.nome) like lower(cast(concat('%', :search, '%') as string))
+                )
+                or exists (
+                    select s
+                    from l.subgeneros s
+                    where lower(s.nome) like lower(cast(concat('%', :search, '%') as string))
+                )
+              )
+            order by l.titulo asc
+            """)
+    List<Livro> findActiveBySearch(@Param("search") String search);
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f
 
     @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
     @Query("select l from Livro l where l.ativo = true and l.idLivro = :id")

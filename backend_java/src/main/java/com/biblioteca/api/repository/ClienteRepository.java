@@ -4,8 +4,6 @@ import com.biblioteca.api.model.Cliente;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
 import java.util.Optional;
 import java.util.List;
 
@@ -13,10 +11,15 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     @EntityGraph(attributePaths = {"usuario"})
     @Query("select c from Cliente c where c.idCliente = :id")
-    Optional<Cliente> findDetailedById(@Param("id") Integer id);
+    Optional<Cliente> findDetailedById(Integer id);
 
-    @Query("select count(c) from Cliente c join c.usuario u where u.ativo = true")
+    @EntityGraph(attributePaths = {"usuario"})
+    List<Cliente> findAll();
+
+    // ADICIONE ESTA LINHA ABAIXO PARA SUMIR O ERRO DO DASHBOARD:
+    @Query("SELECT COUNT(c) FROM Cliente c JOIN c.usuario u WHERE u.ativo = true")
     long countActiveClients();
+<<<<<<< HEAD
 
     @EntityGraph(attributePaths = {"usuario"})
     @Query("""
@@ -44,3 +47,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
             """)
     List<Cliente> findActiveDetailed();
 }
+=======
+}
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f

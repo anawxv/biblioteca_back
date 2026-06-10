@@ -10,12 +10,14 @@ import com.biblioteca.api.model.Funcionario;
 import com.biblioteca.api.model.Livro;
 import com.biblioteca.api.model.Multa;
 import com.biblioteca.api.model.StatusEmprestimo;
+import com.biblioteca.api.model.StatusReserva;
 import com.biblioteca.api.model.Usuario;
 import com.biblioteca.api.repository.ClienteRepository;
 import com.biblioteca.api.repository.EmprestimoRepository;
 import com.biblioteca.api.repository.FuncionarioRepository;
 import com.biblioteca.api.repository.LivroRepository;
 import com.biblioteca.api.repository.MultaRepository;
+import com.biblioteca.api.repository.ReservaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,7 @@ public class EmprestimoService {
     private final LivroRepository livroRepository;
     private final EmprestimoRepository emprestimoRepository;
     private final MultaRepository multaRepository;
+    private final ReservaRepository reservaRepository;
     private final LivroService livroService;
     private final AuthService authService;
     private final ExemplarLivroService exemplarLivroService;
@@ -47,6 +50,7 @@ public class EmprestimoService {
             LivroRepository livroRepository,
             EmprestimoRepository emprestimoRepository,
             MultaRepository multaRepository,
+            ReservaRepository reservaRepository,
             LivroService livroService,
             AuthService authService,
             ExemplarLivroService exemplarLivroService
@@ -56,13 +60,19 @@ public class EmprestimoService {
         this.livroRepository = livroRepository;
         this.emprestimoRepository = emprestimoRepository;
         this.multaRepository = multaRepository;
+        this.reservaRepository = reservaRepository;
         this.livroService = livroService;
         this.authService = authService;
         this.exemplarLivroService = exemplarLivroService;
     }
 
     @Transactional
+<<<<<<< HEAD
     public ApiDtos.LoanItemResponse solicitarEmprestimo(ApiDtos.LoanRequest request) {
+=======
+    public ApiDtos.LoanItemResponse registrarEmprestimo(ApiDtos.LoanRequest request) {
+        
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f
         Cliente cliente = clienteRepository.findDetailedById(request.clienteId())
                 .orElseThrow(() -> new NotFoundException("Cliente nao encontrado."));
 
@@ -73,6 +83,7 @@ public class EmprestimoService {
         validateLivro(livro);
         ensureLoanLimit(cliente);
 
+<<<<<<< HEAD
         emprestimoRepository.findByClientIdAndLivroIdAndStatus(
                 cliente.getIdCliente(),
                 livro.getIdLivro(),
@@ -80,6 +91,23 @@ public class EmprestimoService {
         ).ifPresent(existing -> {
             throw new BusinessException("Ja existe uma solicitacao pendente para este livro.");
         });
+=======
+       
+        long totalReservasAtivas = reservaRepository.countByLivro_IdLivroAndStatus(
+                livro.getIdLivro(), StatusReserva.ATIVA);
+
+        boolean clienteAtualTemReserva = reservaRepository.existsByCliente_IdClienteAndLivro_IdLivroAndStatus(
+                cliente.getIdCliente(), livro.getIdLivro(), StatusReserva.ATIVA);
+
+        if (!clienteAtualTemReserva && livro.getQuantidadeDisponivel() <= totalReservasAtivas) {
+            throw new BusinessException("Todas as unidades disponiveis deste livro estao reservadas para outros usuarios.");
+        }
+        
+        long openLoans = emprestimoRepository.countOpenLoansByClientId(cliente.getIdCliente(), StatusEmprestimo.CANCELADO);
+        if (openLoans >= cliente.getLimiteEmprestimos()) {
+            throw new BusinessException("Cliente atingiu o limite de emprestimos.");
+        }
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f
 
         LocalDate today = LocalDate.now();
         Emprestimo emprestimo = new Emprestimo();
@@ -90,10 +118,16 @@ public class EmprestimoService {
         emprestimo.setStatus(StatusEmprestimo.PENDENTE);
         emprestimo.setObservacao(request.observacao());
 
+<<<<<<< HEAD
+=======
+        livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() - 1);
+        
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f
         emprestimoRepository.save(emprestimo);
         return toLoanItemResponse(emprestimo);
     }
 
+<<<<<<< HEAD
     @Transactional
     public ApiDtos.LoanItemResponse registrarEmprestimo(ApiDtos.LoanRequest request) {
         return emprestimoRepository.findByClientIdAndLivroIdAndStatus(
@@ -165,6 +199,8 @@ public class EmprestimoService {
         return new ApiDtos.LoanListResponse(ativos, historico);
     }
 
+=======
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f
     @Transactional
     public ApiDtos.ReturnResponse registrarDevolucao(Integer emprestimoId) {
         Emprestimo emprestimo = emprestimoRepository.findDetailedById(emprestimoId)
@@ -187,8 +223,7 @@ public class EmprestimoService {
 
         Livro livro = emprestimo.getLivro();
         int currentAvailable = livro.getQuantidadeDisponivel() == null ? 0 : livro.getQuantidadeDisponivel();
-        int maxTotal = livro.getQuantidadeTotal() == null ? currentAvailable + 1 : livro.getQuantidadeTotal();
-        livro.setQuantidadeDisponivel(Math.min(maxTotal, currentAvailable + 1));
+        livro.setQuantidadeDisponivel(currentAvailable + 1);
 
         exemplarLivroService.liberarExemplar(emprestimo.getExemplar());
 
@@ -208,6 +243,7 @@ public class EmprestimoService {
         emprestimoRepository.save(emprestimo);
         livroRepository.save(livro);
 
+<<<<<<< HEAD
         ApiDtos.LoanItemResponse item = toLoanItemResponse(emprestimo);
         return new ApiDtos.ReturnResponse(
                 late
@@ -266,6 +302,24 @@ public class EmprestimoService {
                 statusVisual,
                 emprestimo.getObservacao()
         );
+=======
+        return toReturnResponse(emprestimo, late, fineAmount);
+    }
+
+    public ApiDtos.LoanListResponse listarPorCliente(Integer clienteId) {
+        clienteRepository.findDetailedById(clienteId)
+                .orElseThrow(() -> new NotFoundException("Cliente nao encontrado."));
+
+        List<ApiDtos.LoanItemResponse> loans = emprestimoRepository.findDetailedByClientId(clienteId)
+                .stream()
+                .map(this::toLoanItemResponse)
+                .toList();
+
+        List<ApiDtos.LoanItemResponse> ativos = loans.stream().filter(i -> i.returnedAt() == null).toList();
+        List<ApiDtos.LoanItemResponse> historico = loans.stream().filter(i -> i.returnedAt() != null).toList();
+
+        return new ApiDtos.LoanListResponse(ativos, historico);
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f
     }
 
     public List<ApiDtos.LoanItemResponse> listarAtivos(String busca) {
@@ -382,15 +436,11 @@ public class EmprestimoService {
 
     private void validateCliente(Cliente cliente) {
         Usuario usuario = cliente.getUsuario();
-        if (!Boolean.TRUE.equals(usuario.getAtivo())) {
-            throw new BusinessException("Cliente inativo.");
-        }
-        if (Boolean.TRUE.equals(usuario.getBloqueado())) {
-            throw new BusinessException("Cliente bloqueado.");
-        }
+        if (!Boolean.TRUE.equals(usuario.getAtivo())) throw new BusinessException("Cliente inativo.");
+        if (Boolean.TRUE.equals(usuario.getBloqueado())) throw new BusinessException("Cliente bloqueado.");
 
         BigDecimal pendingFines = multaRepository.sumPendingFinesByClientId(cliente.getIdCliente());
-        if (pendingFines.compareTo(BigDecimal.ZERO) > 0) {
+        if (pendingFines != null && pendingFines.compareTo(BigDecimal.ZERO) > 0) {
             throw new BusinessException("Cliente possui multa pendente.");
         }
         long overdueLoans = emprestimoRepository.countOverdueLoansByClientId(
@@ -404,14 +454,13 @@ public class EmprestimoService {
     }
 
     private void validateLivro(Livro livro) {
-        if (!Boolean.TRUE.equals(livro.getAtivo())) {
-            throw new BusinessException("Livro inativo.");
-        }
+        if (!Boolean.TRUE.equals(livro.getAtivo())) throw new BusinessException("Livro inativo.");
         if (livro.getQuantidadeDisponivel() == null || livro.getQuantidadeDisponivel() <= 0) {
-            throw new BusinessException("Livro indisponivel.");
+            throw new BusinessException("Livro indisponivel no estoque.");
         }
     }
 
+<<<<<<< HEAD
     private void validateLivroForApproval(Livro livro) {
         if (!Boolean.TRUE.equals(livro.getAtivo())) {
             throw new BusinessException("Livro inativo.");
@@ -430,6 +479,28 @@ public class EmprestimoService {
 
     private boolean isApprovedOpenStatus(String status) {
         return StatusEmprestimo.ATIVO.name().equals(status) || StatusEmprestimo.ATRASADO.name().equals(status);
+=======
+    ApiDtos.LoanItemResponse toLoanItemResponse(Emprestimo emprestimo) {
+        ApiDtos.UserSummary client = authService.toUserSummary(emprestimo.getCliente().getUsuario());
+        ApiDtos.BookResponse book = livroService.toBookResponse(emprestimo.getLivro(), 0L);
+        Integer funcId = emprestimo.getFuncionario() != null ? emprestimo.getFuncionario().getIdFuncionario() : null;
+
+        return new ApiDtos.LoanItemResponse(
+                emprestimo.getIdEmprestimo(), client, book, funcId,
+                emprestimo.getDataEmprestimo(), emprestimo.getDataPrevistaDevolucao(),
+                emprestimo.getDataDevolucao(), resolveVisualStatus(emprestimo), emprestimo.getObservacao()
+        );
+    }
+
+    private ApiDtos.ReturnResponse toReturnResponse(Emprestimo e, boolean late, BigDecimal fine) {
+        ApiDtos.LoanItemResponse item = toLoanItemResponse(e);
+        return new ApiDtos.ReturnResponse(
+                late ? "Devolucao com multa." : "Sucesso.",
+                item.id(), item.client(), item.book(), item.funcionarioId(),
+                item.borrowedAt(), item.dueDate(), item.returnedAt(),
+                item.status(), item.observacao(), late, fine
+        );
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f
     }
 
     private String resolveVisualStatus(Emprestimo emprestimo) {
@@ -443,16 +514,12 @@ public class EmprestimoService {
             return "Devolvido";
         }
         LocalDate baseDate = emprestimo.getDataDevolucao() != null ? emprestimo.getDataDevolucao() : LocalDate.now();
-        long diffDays = ChronoUnit.DAYS.between(baseDate, emprestimo.getDataPrevistaDevolucao());
-
-        if (diffDays < 0) {
-            return "Atrasado";
-        }
-        if (diffDays <= 2) {
-            return "Devolucao breve";
-        }
-        return "Dentro do prazo";
+        long diff = ChronoUnit.DAYS.between(baseDate, emprestimo.getDataPrevistaDevolucao());
+        if (diff < 0) return "Atrasado";
+        if (diff <= 2) return "Devolucao breve";
+        return "No prazo";
     }
+<<<<<<< HEAD
 
     private StatusEmprestimo resolveTechnicalStatus(Emprestimo emprestimo) {
         if (emprestimo.getStatus() == StatusEmprestimo.PENDENTE) {
@@ -477,3 +544,6 @@ public class EmprestimoService {
         return busca.trim();
     }
 }
+=======
+}
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f

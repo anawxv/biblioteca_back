@@ -47,6 +47,11 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
+ 
+    public List<Cliente> listarClientesAtivos() {
+        return clienteRepository.findAll();
+    }
+    
     @Transactional
     public ApiDtos.RegisterResponse cadastrar(ApiDtos.CreateUserRequest request) {
         TipoUsuario tipoUsuario = TipoUsuario.fromInput(request.role());
@@ -118,6 +123,7 @@ public class UsuarioService {
 
         return codigoFuncionario;
     }
+<<<<<<< HEAD
 
     public List<ApiDtos.UserSummary> listarClientes(String busca) {
         String search = busca == null || busca.trim().isEmpty() ? null : busca.trim();
@@ -143,3 +149,6 @@ public class UsuarioService {
                 .toList();
     }
 }
+=======
+}
+>>>>>>> f1c942b357e26ea8407126567397b833e9cf7c6f
