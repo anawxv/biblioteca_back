@@ -105,7 +105,6 @@ export function ProfilePage() {
         </div>
         <div>
           <h2>{user.name}</h2>
-          <span className="tag-pill tag-pill--active">{user.role === "cliente" ? "Cliente" : "Funcionário"}</span>
         </div>
       </section>
 
@@ -148,18 +147,18 @@ export function ProfilePage() {
             <strong>{maskPassword(user.password)}</strong>
           </article>
           <article className="info-tile info-tile--switch">
-            <div>
-              <span>Preferência do catálogo</span>
+            <span>Preferência do catálogo</span>
+            <div className="info-tile__switch-row">
               <strong>Manter filtro ativo</strong>
+              <button
+                aria-pressed={keepFilterActive}
+                className={`switch-control${keepFilterActive ? " switch-control--active" : ""}`}
+                onClick={toggleKeepFilterActive}
+                type="button"
+              >
+                <span />
+              </button>
             </div>
-            <button
-              aria-pressed={keepFilterActive}
-              className={`switch-control${keepFilterActive ? " switch-control--active" : ""}`}
-              onClick={toggleKeepFilterActive}
-              type="button"
-            >
-              <span />
-            </button>
           </article>
         </section>
       )}

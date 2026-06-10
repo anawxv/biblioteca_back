@@ -2,11 +2,13 @@ package com.biblioteca.api.service;
 
 import com.biblioteca.api.dto.ApiDtos;
 import com.biblioteca.api.model.Emprestimo;
+import com.biblioteca.api.model.Multa;
 import com.biblioteca.api.model.StatusEmprestimo;
 import com.biblioteca.api.repository.ClienteRepository;
 import com.biblioteca.api.repository.EmprestimoRepository;
 import com.biblioteca.api.repository.LivroRepository;
 import com.biblioteca.api.repository.MultaRepository;
+import com.biblioteca.api.repository.FuncionarioRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class DashboardService {
     private final ClienteRepository clienteRepository;
     private final EmprestimoRepository emprestimoRepository;
     private final MultaRepository multaRepository;
+    private final FuncionarioRepository funcionarioRepository;
     private final EmprestimoService emprestimoService;
     private final LivroService livroService;
 
@@ -33,6 +36,7 @@ public class DashboardService {
             ClienteRepository clienteRepository,
             EmprestimoRepository emprestimoRepository,
             MultaRepository multaRepository,
+            FuncionarioRepository funcionarioRepository,
             EmprestimoService emprestimoService,
             LivroService livroService
     ) {
@@ -40,6 +44,7 @@ public class DashboardService {
         this.clienteRepository = clienteRepository;
         this.emprestimoRepository = emprestimoRepository;
         this.multaRepository = multaRepository;
+        this.funcionarioRepository = funcionarioRepository;
         this.emprestimoService = emprestimoService;
         this.livroService = livroService;
     }
@@ -47,8 +52,10 @@ public class DashboardService {
     public ApiDtos.DashboardResponse carregarDashboard() {
         long livrosNoAcervo = livroRepository.countByAtivoTrue();
         long clientesCadastrados = clienteRepository.countActiveClients();
-        long emprestimosAtivos = emprestimoRepository.countActiveOpenLoans(StatusEmprestimo.CANCELADO);
-        long emprestimosAtrasados = emprestimoRepository.countOverdueOpenLoans(LocalDate.now(), StatusEmprestimo.CANCELADO);
+        long funcionariosCadastrados = funcionarioRepository.count();
+        long emprestimosAtivos = emprestimoRepository.countActiveOpenLoans(EmprestimoRepository.EXCLUDED_OPEN_STATUSES);
+        long emprestimosAtrasados = emprestimoRepository.countOverdueOpenLoans(LocalDate.now(), EmprestimoRepository.EXCLUDED_OPEN_STATUSES);
+        long emprestimosDevolvidos = emprestimoRepository.countByStatus(StatusEmprestimo.DEVOLVIDO);
         BigDecimal multasPendentes = multaRepository.sumPendingFines();
         long livrosIndisponiveis = livroRepository.countByAtivoTrueAndQuantidadeDisponivelLessThanEqual(0);
 
@@ -59,17 +66,21 @@ public class DashboardService {
 
         List<ApiDtos.ChartPointResponse> loansByMonth = buildLoansByMonth();
         ApiDtos.ReturnsStats returnsStats = buildReturnsStats();
+        List<String> alertas = buildAlertas(emprestimosAtrasados, multasPendentes, livrosIndisponiveis);
 
         return new ApiDtos.DashboardResponse(
                 livrosNoAcervo,
                 clientesCadastrados,
+                funcionariosCadastrados,
                 emprestimosAtivos,
                 emprestimosAtrasados,
+                emprestimosDevolvidos,
                 multasPendentes,
                 livrosIndisponiveis,
                 recentLoans,
                 loansByMonth,
-                returnsStats
+                returnsStats,
+                alertas
         );
     }
 
@@ -82,9 +93,28 @@ public class DashboardService {
     }
 
     public List<ApiDtos.ChartPointResponse> listarGenerosMaisConsumidos() {
-        return emprestimoRepository.findTopGenres(PageRequest.of(0, 6))
+        return emprestimoRepository.findTopGenres(EmprestimoRepository.EXCLUDED_OPEN_STATUSES, PageRequest.of(0, 6))
                 .stream()
                 .map(item -> new ApiDtos.ChartPointResponse(item.getLabel(), item.getTotal()))
+                .toList();
+    }
+
+    public List<ApiDtos.ChartPointResponse> listarEmprestimosPorMes() {
+        return buildLoansByMonth();
+    }
+
+    public ApiDtos.ReturnsStats listarDevolucoesPrazoAtrasadas() {
+        return buildReturnsStats();
+    }
+
+    public List<ApiDtos.LoanItemResponse> listarAtrasos() {
+        return emprestimoService.listarAtrasados(null);
+    }
+
+    public List<ApiDtos.FineResponse> listarMultasPendentes() {
+        return multaRepository.findByPagaFalseOrderByCriadaEmDesc()
+                .stream()
+                .map(this::toFineResponse)
                 .toList();
     }
 
@@ -123,5 +153,30 @@ public class DashboardService {
         }
 
         return new ApiDtos.ReturnsStats(onTime, late);
+    }
+
+    private ApiDtos.FineResponse toFineResponse(Multa multa) {
+        return new ApiDtos.FineResponse(
+                multa.getIdMulta(),
+                multa.getValor(),
+                multa.getPaga(),
+                multa.getMotivo(),
+                multa.getCriadaEm(),
+                emprestimoService.toLoanItemResponse(multa.getEmprestimo())
+        );
+    }
+
+    private List<String> buildAlertas(long emprestimosAtrasados, BigDecimal multasPendentes, long livrosIndisponiveis) {
+        java.util.ArrayList<String> alertas = new java.util.ArrayList<>();
+        if (emprestimosAtrasados > 0) {
+            alertas.add("Existem emprestimos atrasados.");
+        }
+        if (multasPendentes.compareTo(BigDecimal.ZERO) > 0) {
+            alertas.add("Existem multas pendentes.");
+        }
+        if (livrosIndisponiveis > 0) {
+            alertas.add("Existem livros indisponiveis.");
+        }
+        return alertas;
     }
 }

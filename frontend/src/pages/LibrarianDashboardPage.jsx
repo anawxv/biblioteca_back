@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BookCover } from "../components/BookCover";
-import { ChartCard } from "../components/ChartCard";
+import { DashboardCharts } from "../components/DashboardCharts";
 import { EmptyState } from "../components/EmptyState";
 import { MetricCard } from "../components/MetricCard";
 import { TopBar } from "../components/TopBar";
 import {
   atualizarLivro,
   buscarLivros,
+  formatExemplarLabel,
   excluirLivro,
   listarCategorias,
   listarClientes,
@@ -25,6 +26,7 @@ import {
   marcarMultaComoPaga,
 } from "../services/api";
 import { currency, formatDate } from "../utils/formatters";
+import { buildEmployeeStats, mergeLoansUnique } from "../utils/employeeStats";
 import { bookMatchesSmartSearch, getBookGenres } from "../utils/search";
 
 const sections = [
@@ -219,19 +221,18 @@ export function LibrarianDashboardPage({ initialSection = "dashboard" }) {
     setActiveSection("dashboard");
   }
 
-  const maxGenreValue = useMemo(() => Math.max(1, ...genres.map((item) => item.value)), [genres]);
   const maxBookValue = useMemo(() => Math.max(1, ...topBooks.map((item) => item.loanCount)), [topBooks]);
-  const maxMonthValue = useMemo(
-    () => Math.max(1, ...(dashboard?.loansByMonth || []).map((item) => item.value)),
-    [dashboard],
-  );
-
   const filteredBooks = books.filter((book) => bookMatchesSmartSearch(book, query));
 
   const filteredLoans = activeLoans.filter((loan) =>
     [loan.client.name, loan.book.title, loan.status].some((field) =>
       String(field || "").toLowerCase().includes(query.toLowerCase()),
     ),
+  );
+
+  const allLoansForStats = useMemo(
+    () => mergeLoansUnique(activeLoans, overdueLoans, dashboard?.recentLoans || []),
+    [activeLoans, overdueLoans, dashboard?.recentLoans],
   );
 
   if (loading && !dashboard) {
@@ -246,6 +247,7 @@ export function LibrarianDashboardPage({ initialSection = "dashboard" }) {
   const metrics = dashboard?.metrics || {
     totalBooks: 0,
     totalClients: 0,
+    totalEmployees: 0,
     activeLoans: 0,
     overdueLoans: 0,
     pendingFines: 0,
@@ -288,6 +290,9 @@ export function LibrarianDashboardPage({ initialSection = "dashboard" }) {
         <button className="metric-button" onClick={() => openMetric("clientes")} type="button">
           <MetricCard icon="○" label="Clientes cadastrados" value={metrics.totalClients} soft />
         </button>
+        <button className="metric-button" onClick={() => openMetric("funcionarios")} type="button">
+          <MetricCard icon="◇" label="Funcionarios cadastrados" value={metrics.totalEmployees} />
+        </button>
         <button className="metric-button" onClick={() => openMetric("ativos")} type="button">
           <MetricCard icon="↗" label="Empréstimos ativos" value={metrics.activeLoans} />
         </button>
@@ -299,6 +304,9 @@ export function LibrarianDashboardPage({ initialSection = "dashboard" }) {
         </button>
         <button className="metric-button" onClick={() => openMetric("indisponiveis")} type="button">
           <MetricCard icon="−" label="Livros indisponíveis" value={metrics.unavailableBooks} soft />
+        </button>
+        <button className="metric-button" onClick={() => openMetric("historico")} type="button">
+          <MetricCard icon="◷" label="Ver histórico" value={dashboard?.recentLoans?.length || 0} soft />
         </button>
       </section>
 
@@ -319,17 +327,17 @@ export function LibrarianDashboardPage({ initialSection = "dashboard" }) {
       <DashboardSection
         activeMetric={activeMetric}
         activeLoans={activeLoans}
+        allLoans={allLoansForStats}
         books={books}
         clients={clients}
         dashboard={dashboard}
         genres={genres}
         maxBookValue={maxBookValue}
-        maxGenreValue={maxGenreValue}
-        maxMonthValue={maxMonthValue}
         overdueLoans={overdueLoans}
         pendingFines={pendingFines}
         topBooks={topBooks}
         unavailableBooks={unavailableBooks}
+        onClearMetric={() => setActiveMetric("")}
         onPayFine={handlePayFine}
       />
         </>
@@ -491,6 +499,7 @@ function LoanList({ loans, empty, onReturn, compact = false }) {
         <article className="recent-item loan-admin-item" key={loan.id}>
           <strong>{loan.client.name || "Cliente"}</strong>
           <p>{loan.book.title}</p>
+          <small className="muted-text">Exemplar: {formatExemplarLabel(loan)}</small>
           <small>Empréstimo: {formatDate(loan.borrowedAt)} • Prevista: {formatDate(loan.dueDate)}</small>
           <span className={`status-badge status-badge--${loan.status === "Atrasado" ? "atrasado" : "dentro-do-prazo"}`}>
             {loan.status}
@@ -506,31 +515,27 @@ function LoanList({ loans, empty, onReturn, compact = false }) {
   );
 }
 
-function ChartEmpty() {
-  return (
-    <div className="chart-empty">
-      Ainda não há dados suficientes para gerar este gráfico.
-    </div>
-  );
-}
-
 function DashboardSection({
   activeMetric,
   activeLoans,
+  allLoans,
   books,
   clients,
   dashboard,
   genres,
   maxBookValue,
-  maxGenreValue,
-  maxMonthValue,
   overdueLoans,
   pendingFines,
   topBooks,
   unavailableBooks,
+  onClearMetric,
   onPayFine,
 }) {
   const metrics = dashboard?.metrics || {};
+  const employeeStats = useMemo(
+    () => buildEmployeeStats(allLoans, metrics.totalEmployees),
+    [allLoans, metrics.totalEmployees],
+  );
   const finesByClient = pendingFines.reduce((accumulator, fine) => {
     const key = fine.client?.id || fine.client?.email || fine.client?.name || fine.id;
     const current = accumulator.get(key) || {
@@ -544,6 +549,7 @@ function DashboardSection({
   }, new Map());
   const finesByClientList = Array.from(finesByClient.values()).sort((a, b) => b.value - a.value);
   const maxFineValue = Math.max(1, ...finesByClientList.map((item) => item.value));
+  const showingMetricDetail = Boolean(activeMetric);
 
   return (
     <section className="admin-section">
@@ -564,7 +570,7 @@ function DashboardSection({
       </div>
 
       {activeMetric === "multas" ? (
-        <DetailPanel title="Multas pendentes">
+        <DetailPanel onClose={onClearMetric} title="Multas pendentes">
           {pendingFines.length ? pendingFines.map((fine) => (
             <article className="fine-item" key={fine.id}>
               <strong>{fine.client.name}</strong>
@@ -583,13 +589,13 @@ function DashboardSection({
       ) : null}
 
       {activeMetric === "atrasados" ? (
-        <DetailPanel title="Empréstimos atrasados">
+        <DetailPanel onClose={onClearMetric} title="Empréstimos atrasados">
           <LoanList empty="Nenhum empréstimo atrasado." loans={overdueLoans} />
         </DetailPanel>
       ) : null}
 
       {activeMetric === "indisponiveis" ? (
-        <DetailPanel title="Livros indisponíveis">
+        <DetailPanel onClose={onClearMetric} title="Livros indisponíveis">
           {unavailableBooks.length ? unavailableBooks.map((book) => (
             <article className="recent-item" key={book.id}>
               <strong>{book.title}</strong>
@@ -601,7 +607,7 @@ function DashboardSection({
       ) : null}
 
       {activeMetric === "clientes" ? (
-        <DetailPanel title="Clientes cadastrados">
+        <DetailPanel onClose={onClearMetric} title="Clientes cadastrados">
           {clients.length ? clients.map((client) => (
             <article className="recent-item" key={client.id}>
               <strong>{client.name}</strong>
@@ -612,116 +618,123 @@ function DashboardSection({
         </DetailPanel>
       ) : null}
 
+      {activeMetric === "funcionarios" ? (
+        <DetailPanel onClose={onClearMetric} title="Funcionários cadastrados">
+          <div className="employee-summary">
+            <article className="info-tile">
+              <strong>{employeeStats.totalActive}</strong>
+              <span>Funcionários ativos no sistema</span>
+            </article>
+            <article className="info-tile">
+              <strong>{employeeStats.employees.length}</strong>
+              <span>Com movimentação registrada</span>
+            </article>
+          </div>
+          {employeeStats.employees.length ? (
+            <>
+              <div className="employee-table employee-table--desktop">
+                <div className="employee-table__head">
+                  <span>Funcionário</span>
+                  <span>Empréstimos</span>
+                  <span>Devoluções</span>
+                </div>
+                {employeeStats.employees.map((employee) => (
+                  <div className="employee-table__row" key={employee.id}>
+                    <strong>{employee.name}</strong>
+                    <span>{employee.loansRegistered}</span>
+                    <span>{employee.returnsRegistered}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="employee-cards employee-cards--mobile">
+                {employeeStats.employees.map((employee) => (
+                  <article className="employee-card" key={`card-${employee.id}`}>
+                    <p className="employee-card__line">
+                      <span className="employee-card__label">Funcionário:</span>
+                      <span className="employee-card__value">{employee.name}</span>
+                    </p>
+                    <p className="employee-card__line">
+                      <span className="employee-card__label">Empréstimos:</span>
+                      <span className="employee-card__value">{employee.loansRegistered}</span>
+                    </p>
+                    <p className="employee-card__line">
+                      <span className="employee-card__label">Devoluções:</span>
+                      <span className="employee-card__value">{employee.returnsRegistered}</span>
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </>
+          ) : (
+            <EmptyState
+              title="Sem movimentação por funcionário"
+              description="Os empréstimos registrados aparecerão aqui com o total por bibliotecário."
+            />
+          )}
+          {employeeStats.withoutMovements > 0 ? (
+            <p className="muted-text">
+              {employeeStats.withoutMovements} funcionário(s) cadastrado(s) ainda sem empréstimos vinculados nos registros recentes.
+            </p>
+          ) : null}
+        </DetailPanel>
+      ) : null}
+
       {activeMetric === "ativos" ? (
-        <DetailPanel title="EmprÃ©stimos ativos">
-          <LoanList empty="Nenhum emprÃ©stimo ativo." loans={activeLoans} compact />
+        <DetailPanel onClose={onClearMetric} title="Empréstimos ativos">
+          <LoanList empty="Nenhum empréstimo ativo." loans={activeLoans} compact />
         </DetailPanel>
       ) : null}
 
       {activeMetric === "livros" ? (
-        <DetailPanel title="Livros no acervo">
+        <DetailPanel onClose={onClearMetric} title="Livros no acervo">
           {books.length ? books.slice(0, 12).map((book) => (
             <article className="recent-item" key={book.id}>
               <strong>{book.title}</strong>
               <p>{book.author}</p>
-                  <small>{getBookGenres(book).join(" + ")} • {book.availableQuantity} disponíveis</small>
+              <small>{getBookGenres(book).join(" + ")} • {book.availableQuantity} disponíveis</small>
             </article>
-          )) : <EmptyState title="Nenhum livro encontrado" description="Os livros ativos aparecerÃ£o aqui." />}
+          )) : <EmptyState title="Nenhum livro encontrado" description="Os livros ativos aparecerão aqui." />}
         </DetailPanel>
       ) : null}
 
-      <div className="section-heading admin-section-title">
-        <h2>Indicadores e gráficos</h2>
-      </div>
+      {activeMetric === "historico" ? (
+        <DetailPanel onClose={onClearMetric} title="Histórico de empréstimos">
+          <LoanList empty="Empréstimos recentes aparecerão aqui." loans={dashboard?.recentLoans || []} compact />
+        </DetailPanel>
+      ) : null}
 
-      <div className="dashboard-grid dashboard-grid--charts">
-      <ChartCard title="Gêneros mais consumidos">
-        <div className="chart-bars">
-          {genres.map((item) => (
-            <div className="chart-row" key={item.label}>
-              <span>{item.label}</span>
-              <div className="chart-row__track">
-                <div className="chart-row__fill" style={{ width: `${(item.value / maxGenreValue) * 100}%` }} />
-              </div>
-              <strong>{item.value}</strong>
-            </div>
-          ))}
-        </div>
-      </ChartCard>
-
-      <ChartCard title="Livros mais emprestados">
-        <div className="chart-bars">
-          {topBooks.map((book) => (
-            <div className="chart-row" key={book.id}>
-              <span>{book.title}</span>
-              <div className="chart-row__track">
-                <div className="chart-row__fill chart-row__fill--dark" style={{ width: `${(book.loanCount / maxBookValue) * 100}%` }} />
-              </div>
-              <strong>{book.loanCount}</strong>
-            </div>
-          ))}
-        </div>
-      </ChartCard>
-
-      <ChartCard title="Empréstimos por mês">
-        <div className="vertical-chart">
-          {(dashboard?.loansByMonth || []).map((item) => (
-            <div className="vertical-chart__item" key={item.label}>
-              <div className="vertical-chart__bar" style={{ height: `${(item.value / maxMonthValue) * 100}%` }} />
-              <strong>{item.value}</strong>
-              <span>{item.label}</span>
-            </div>
-          ))}
-        </div>
-      </ChartCard>
-
-      <ChartCard title="Devoluções no prazo x atrasadas">
-        {dashboard?.returnsStats?.onTime || dashboard?.returnsStats?.late ? (
-          <div className="split-chart">
-            <div className="split-chart__segment" style={{ width: `${(dashboard.returnsStats.onTime / (dashboard.returnsStats.onTime + dashboard.returnsStats.late || 1)) * 100}%` }}>
-              No prazo: {dashboard.returnsStats.onTime}
-            </div>
-            <div className="split-chart__segment split-chart__segment--late" style={{ width: `${(dashboard.returnsStats.late / (dashboard.returnsStats.onTime + dashboard.returnsStats.late || 1)) * 100}%` }}>
-              Atrasadas: {dashboard.returnsStats.late}
-            </div>
+      {!showingMetricDetail ? (
+        <>
+          <div className="section-heading admin-section-title">
+            <h2>Indicadores e gráficos</h2>
           </div>
-        ) : (
-          <EmptyState title="Sem devoluções registradas" description="Os indicadores aparecerão assim que houver movimentação." />
-        )}
-      </ChartCard>
 
-      <ChartCard title="Multas pendentes por cliente">
-        {finesByClientList.length ? (
-          <div className="chart-bars">
-            {finesByClientList.slice(0, 8).map((item) => (
-              <div className="chart-row" key={item.id}>
-                <span>{item.label}</span>
-                <div className="chart-row__track">
-                  <div className="chart-row__fill chart-row__fill--late" style={{ width: `${(item.value / maxFineValue) * 100}%` }} />
-                </div>
-                <strong>{currency(item.value)}</strong>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <ChartEmpty />
-        )}
-      </ChartCard>
-      </div>
-
-      <div className="section-heading admin-section-title">
-        <h2>Histórico</h2>
-      </div>
-      <LoanList empty="Empréstimos recentes aparecerão aqui." loans={dashboard?.recentLoans || []} compact />
+          <DashboardCharts
+            currency={currency}
+            finesByClientList={finesByClientList}
+            genres={genres}
+            loansByMonth={dashboard?.loansByMonth || []}
+            maxBookValue={maxBookValue}
+            maxFineValue={maxFineValue}
+            returnsStats={dashboard?.returnsStats}
+            topBooks={topBooks}
+          />
+        </>
+      ) : null}
     </section>
   );
 }
 
-function DetailPanel({ title, children }) {
+function DetailPanel({ title, children, onClose }) {
   return (
     <section className="panel dashboard-detail-panel">
       <div className="section-heading">
         <h2>{title}</h2>
+        {onClose ? (
+          <button className="button button--small button--secondary" onClick={onClose} type="button">
+            Voltar aos gráficos
+          </button>
+        ) : null}
       </div>
       {children}
     </section>

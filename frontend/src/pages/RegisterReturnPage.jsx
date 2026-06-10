@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "../components/TopBar";
-import { listarEmprestimosAtivos, registrarDevolucao } from "../services/api";
+import { formatExemplarLabel, listarEmprestimosAtivos, registrarDevolucao } from "../services/api";
 import { currency, formatDate } from "../utils/formatters";
 
 function estimateFine(dueDate) {
@@ -95,6 +95,7 @@ export function RegisterReturnPage() {
             >
               <strong>{loan.client.name}</strong>
               <small>{loan.book.title}</small>
+              <small className="muted-text">Exemplar: {formatExemplarLabel(loan)}</small>
               <small>Previsão: {formatDate(loan.dueDate)}</small>
             </button>
           ))}
@@ -104,6 +105,7 @@ export function RegisterReturnPage() {
           <div className="summary-card">
             <strong>{selectedLoan.client.name}</strong>
             <p>{selectedLoan.book.title}</p>
+            <small className="muted-text">Exemplar: {formatExemplarLabel(selectedLoan)}</small>
             <small>Data prevista: {formatDate(selectedLoan.dueDate)}</small>
             <small>
               {estimatedFine > 0

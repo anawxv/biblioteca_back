@@ -13,30 +13,33 @@ import java.util.Optional;
 
 public interface LivroRepository extends JpaRepository<Livro, Integer> {
 
+    @Query(value = """
+            select distinct l.id_livro
+              from livro l
+              left join categoria c on c.id_categoria = l.id_categoria
+              left join livro_genero lg on lg.id_livro = l.id_livro
+              left join genero g on g.id_genero = lg.id_genero
+              left join livro_subgenero ls on ls.id_livro = l.id_livro
+              left join subgenero s on s.id_subgenero = ls.id_subgenero
+             where l.ativo = true
+               and (
+                 :search is null
+                 or lower(cast(l.titulo as text)) like lower(concat('%', cast(:search as text), '%'))
+                 or lower(cast(l.autor as text)) like lower(concat('%', cast(:search as text), '%'))
+                 or lower(cast(l.isbn as text)) like lower(concat('%', cast(:search as text), '%'))
+                 or lower(cast(l.descricao as text)) like lower(concat('%', cast(:search as text), '%'))
+                 or lower(cast(l.editora as text)) like lower(concat('%', cast(:search as text), '%'))
+                 or lower(cast(c.nome as text)) like lower(concat('%', cast(:search as text), '%'))
+                 or lower(cast(g.nome as text)) like lower(concat('%', cast(:search as text), '%'))
+                 or lower(cast(s.nome as text)) like lower(concat('%', cast(:search as text), '%'))
+               )
+             order by l.id_livro asc
+            """, nativeQuery = true)
+    List<Integer> findActiveIdsBySearch(@Param("search") String search);
+
     @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
-    @Query("""
-            select l
-            from Livro l
-            where l.ativo = true
-              and (
-                :search is null
-                or lower(l.titulo) like lower(concat('%', :search, '%'))
-                or lower(l.autor) like lower(concat('%', :search, '%'))
-                or lower(l.categoria.nome) like lower(concat('%', :search, '%'))
-                or exists (
-                    select g
-                    from l.generosExtras g
-                    where lower(g.nome) like lower(concat('%', :search, '%'))
-                )
-                or exists (
-                    select s
-                    from l.subgeneros s
-                    where lower(s.nome) like lower(concat('%', :search, '%'))
-                )
-              )
-            order by l.titulo asc
-            """)
-    List<Livro> findActiveBySearch(@Param("search") String search);
+    @Query("select distinct l from Livro l where l.ativo = true and l.idLivro in :ids order by l.titulo asc")
+    List<Livro> findActiveDetailedByIds(@Param("ids") List<Integer> ids);
 
     @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
     @Query("select l from Livro l where l.ativo = true and l.idLivro = :id")
@@ -48,6 +51,32 @@ public interface LivroRepository extends JpaRepository<Livro, Integer> {
 
     @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
     List<Livro> findTop6ByAtivoTrueOrderByCriadoEmDesc();
+
+    @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
+    @Query("""
+            select distinct l
+            from Livro l
+            where l.ativo = true
+              and l.quantidadeDisponivel <= 0
+              and (
+                :search is null
+                or lower(l.titulo) like lower(concat('%', :search, '%'))
+                or lower(l.autor) like lower(concat('%', :search, '%'))
+                or lower(l.categoria.nome) like lower(concat('%', :search, '%'))
+              )
+            order by l.titulo asc
+            """)
+    List<Livro> findUnavailableBySearch(@Param("search") String search);
+
+    @EntityGraph(attributePaths = {"categoria", "generosExtras", "subgeneros"})
+    @Query("""
+            select distinct l
+            from Livro l
+            where l.ativo = true
+              and l.quantidadeDisponivel <= 0
+            order by l.titulo asc
+            """)
+    List<Livro> findUnavailable();
 
     long countByAtivoTrue();
 

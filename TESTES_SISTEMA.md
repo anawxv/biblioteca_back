@@ -71,3 +71,66 @@
 ```sql
 SELECT codigo, usado, usado_em FROM codigo_funcionario WHERE codigo = 'FUNC-2026-001';
 ```
+
+## Comandos curl principais
+
+Login:
+
+```powershell
+curl.exe -X POST "http://localhost:8080/api/auth/login" -H "Content-Type: application/json" -d "{\"email\":\"cliente@teste.com\",\"senha\":\"123456\"}"
+```
+
+Cadastrar cliente:
+
+```powershell
+curl.exe -X POST "http://localhost:8080/api/usuarios" -H "Content-Type: application/json" -d "{\"nome\":\"Cliente Teste\",\"email\":\"cliente.novo@teste.com\",\"senha\":\"123456\",\"telefone\":\"11999999999\",\"tipoUsuario\":\"CLIENTE\"}"
+```
+
+Cadastrar funcionario com codigo:
+
+```powershell
+curl.exe -X POST "http://localhost:8080/api/usuarios" -H "Content-Type: application/json" -d "{\"nome\":\"Funcionario Teste\",\"email\":\"func.novo@teste.com\",\"senha\":\"123456\",\"telefone\":\"11999999999\",\"tipoUsuario\":\"FUNCIONARIO\",\"codigoAutorizacao\":\"FUNC-2026-001\"}"
+```
+
+Listar e buscar livros:
+
+```powershell
+curl.exe "http://localhost:8080/api/livros"
+curl.exe "http://localhost:8080/api/livros?busca=Harry"
+```
+
+Criar livro:
+
+```powershell
+curl.exe -X POST "http://localhost:8080/api/livros" -H "Content-Type: application/json" -d "{\"title\":\"Livro Teste\",\"author\":\"Autor Teste\",\"isbn\":\"TESTE-001\",\"description\":\"Livro para teste\",\"publishedYear\":2026,\"pages\":200,\"publisher\":\"Editora Teste\",\"quantityTotal\":3,\"availableQuantity\":3,\"categoryId\":1,\"coverImage\":\"\",\"generosExtras\":[\"Drama\"],\"idsGenerosExtras\":[],\"idsSubgeneros\":[]}"
+```
+
+Editar livro:
+
+```powershell
+curl.exe -X PUT "http://localhost:8080/api/livros/1" -H "Content-Type: application/json" -d "{\"title\":\"Livro Editado\",\"author\":\"Autor Editado\",\"isbn\":\"TESTE-001-EDIT\",\"description\":\"Editado\",\"publishedYear\":2026,\"pages\":220,\"publisher\":\"Editora\",\"quantityTotal\":4,\"availableQuantity\":4,\"categoryId\":1,\"coverImage\":\"\",\"generosExtras\":[\"Drama\",\"Romance\"],\"idsGenerosExtras\":[],\"idsSubgeneros\":[]}"
+```
+
+Excluir livro:
+
+```powershell
+curl.exe -X DELETE "http://localhost:8080/api/livros/1"
+```
+
+Registrar emprestimo:
+
+```powershell
+curl.exe -X POST "http://localhost:8080/api/emprestimos" -H "Content-Type: application/json" -d "{\"clienteId\":1,\"livroId\":1}"
+```
+
+Registrar devolucao:
+
+```powershell
+curl.exe -X POST "http://localhost:8080/api/emprestimos/1/devolver"
+```
+
+Dashboard:
+
+```powershell
+curl.exe "http://localhost:8080/api/dashboard"
+```

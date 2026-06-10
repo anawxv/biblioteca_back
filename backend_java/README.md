@@ -98,3 +98,26 @@ O cadastro de funcionário exige `codigoAutorizacao`. O script `melhorias_nota10
 - `FUNC-2026-001`
 - `FUNC-2026-002`
 - `BIBLIOTECARIO-AP1`
+
+## Scripts SQL novos
+
+Execute no pgAdmin, nesta ordem, depois dos scripts originais:
+
+1. `banco_de_dados/melhorias_nota10.sql`
+2. `banco_de_dados/normalizar_status_emprestimo.sql`
+3. `banco_de_dados/seeds_subgeneros.sql`
+4. `banco_de_dados/corrigir_dados_exemplo.sql`
+
+Todos sao incrementais e nao apagam dados.
+
+## GitHub
+
+Antes de enviar:
+
+```powershell
+cd C:\Users\gusta\OneDrive\AP1\AP1_2.0
+git status
+git add .
+git commit -m "Melhora API, dashboard, status e documentacao"
+git push
+```

@@ -14,6 +14,7 @@ import { MyLoansPage } from "./pages/MyLoansPage";
 import { OverduePage } from "./pages/OverduePage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterLoanPage } from "./pages/RegisterLoanPage";
+import { RegisterChoicePage } from "./pages/RegisterChoicePage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { RegisterReturnPage } from "./pages/RegisterReturnPage";
 import { RemoveBookPage } from "./pages/RemoveBookPage";
@@ -23,10 +24,11 @@ function AppFrame() {
   const showCustomerNav = location.pathname.startsWith("/cliente");
   const showAdminNav = location.pathname.startsWith("/funcionario");
   const shellMode = showAdminNav ? "app-shell--admin" : showCustomerNav ? "app-shell--customer" : "app-shell--auth";
+  const withNav = showCustomerNav || showAdminNav;
 
   return (
     <div className="desktop-shell">
-      <div className={`app-shell ${shellMode}`}>
+      <div className={`app-shell ${shellMode}${withNav ? " app-shell--with-nav" : ""}`}>
         <Outlet />
         {(showCustomerNav || showAdminNav) && <BottomNav isAdmin={showAdminNav} />}
       </div>
@@ -40,7 +42,9 @@ export default function App() {
       <Route element={<AppFrame />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/cadastro" element={<RegisterPage />} />
+        <Route path="/cadastro" element={<RegisterChoicePage />} />
+        <Route path="/cadastro/cliente" element={<RegisterPage />} />
+        <Route path="/cadastro/funcionario" element={<RegisterPage />} />
 
         <Route element={<ProtectedRoute allowedRoles={["cliente"]} />}>
           <Route path="/cliente/catalogo" element={<CatalogPage />} />

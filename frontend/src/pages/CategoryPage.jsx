@@ -13,13 +13,6 @@ const categoryDescriptions = {
   Suspense: "Tramas tensas com mistério, risco e revelações graduais.",
 };
 
-const categorySubgenres = {
-  Romance: ["romance contemporâneo", "romance histórico", "romance jovem adulto", "romance nacional", "romance LGBTQIA+"],
-  Fantasia: ["fantasia épica", "fantasia urbana", "fantasia sombria", "fantasia infantojuvenil", "mitologia", "aventura fantástica"],
-  Suspense: ["thriller psicológico", "suspense policial", "mistério investigativo", "crime"],
-  Aventura: ["aventura histórica", "sobrevivência", "exploração", "jornada"],
-};
-
 export function slugifyCategory(name) {
   return String(name || "")
     .normalize("NFD")
@@ -42,6 +35,15 @@ function normalize(value) {
 
 function getBookYear(book) {
   return String(book.publishedYear || "").trim();
+}
+
+function getBookSubgenres(book) {
+  const subgenres = book.subgenres || book.subgeneros || [];
+  return Array.isArray(subgenres) ? subgenres.filter(Boolean) : [];
+}
+
+function getSubgenreLabel(subgenre) {
+  return normalize(subgenre) === "alta fantasia" ? "Fantasia épica" : subgenre;
 }
 
 export function CategoryPage() {
@@ -94,6 +96,11 @@ export function CategoryPage() {
     [books],
   );
 
+  const subgenres = useMemo(
+    () => Array.from(new Set(books.flatMap(getBookSubgenres))).sort((a, b) => a.localeCompare(b)),
+    [books],
+  );
+
   const filteredBooks = useMemo(() => {
     let nextBooks = [...books];
     const search = normalize(filters.busca);
@@ -110,6 +117,12 @@ export function CategoryPage() {
 
     if (filters.ano) {
       nextBooks = nextBooks.filter((book) => getBookYear(book) === filters.ano);
+    }
+
+    if (filters.subgenero) {
+      nextBooks = nextBooks.filter((book) =>
+        getBookSubgenres(book).some((subgenre) => normalize(subgenre) === normalize(filters.subgenero)),
+      );
     }
 
     if (filters.disponibilidade !== "todos") {
@@ -138,9 +151,6 @@ export function CategoryPage() {
 
     return nextBooks;
   }, [books, filters]);
-
-  const subgenres = categorySubgenres[categoryName] || [];
-  const subgenreUnavailable = Boolean(filters.subgenero);
 
   return (
     <main className="page page-with-nav category-page">
@@ -180,7 +190,7 @@ export function CategoryPage() {
           />
           <select className="input" onChange={(event) => setFilters((current) => ({ ...current, subgenero: event.target.value }))} value={filters.subgenero}>
             <option value="">Subgênero</option>
-            {subgenres.map((subgenre) => <option key={subgenre} value={subgenre}>{subgenre}</option>)}
+            {subgenres.map((subgenre) => <option key={subgenre} value={subgenre}>{getSubgenreLabel(subgenre)}</option>)}
           </select>
           <select className="input" onChange={(event) => setFilters((current) => ({ ...current, autor: event.target.value }))} value={filters.autor}>
             <option value="">Autor</option>
@@ -208,9 +218,6 @@ export function CategoryPage() {
           </select>
         </div>
 
-        {subgenreUnavailable ? (
-          <div className="alert alert--success">Subgêneros ainda não cadastrados para esta categoria.</div>
-        ) : null}
       </section>
 
       <div className="section-heading">

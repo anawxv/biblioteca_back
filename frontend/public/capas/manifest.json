@@ -1,0 +1,1085 @@
+{
+  "generatedAt": "2026-05-29T15:54:57.584Z",
+  "files": [
+    "1808.jpg",
+    "1822.jpg",
+    "1889.jpg",
+    "1984.jpg",
+    "a-bolsa-amarela.jpg",
+    "a-empregada.jpg",
+    "a-garota-no-trem.jpg",
+    "a-guerra-dos-tronos.jpg",
+    "a-ilha-do-tesouro.jpg",
+    "a-menina-que-roubava-livros.jpg",
+    "a-paciente-silenciosa.jpg",
+    "a-republica.jpg",
+    "a-rosa-do-povo.jpg",
+    "a-sociedade-do-anel.jpg",
+    "a-sutil-arte-de-ligar-o-foda-se.jpg",
+    "a-volta-ao-mundo-em-80-dias.jpg",
+    "admiravel-mundo-novo.jpg",
+    "alem-do-bem-e-do-mal.jpg",
+    "alice-no-pais-das-maravilhas.jpg",
+    "as-cronicas-de-narnia.jpg",
+    "as-minas-do-rei-salomao.jpg",
+    "becoming.jpg",
+    "brasil-uma-biografia.jpg",
+    "caixa-de-passaros.jpg",
+    "capitaes-da-areia.jpg",
+    "codigo-limpo.jpg",
+    "comedias-da-vida-privada.jpg",
+    "como-eu-era-antes-de-voce.jpg",
+    "como-ser-brasileiro.jpg",
+    "convite-a-filosofia.jpg",
+    "coraline.jpg",
+    "diario-de-um-banana-rodrick-e-o-cara.jpg",
+    "diario-de-um-banana.jpg",
+    "dom-casmurro.jpg",
+    "dracula.jpg",
+    "duna.jpg",
+    "e-assim-que-acaba.jpg",
+    "e-nao-sobrou-nenhum.jpg",
+    "elon-musk.jpg",
+    "entendendo-algoritmos.jpg",
+    "essencialismo.jpg",
+    "etica-a-nicomaco.jpg",
+    "eu-robo.jpg",
+    "eu-sou-malala.jpg",
+    "eu.jpg",
+    "extraordinario.jpg",
+    "fahrenheit-451.jpg",
+    "feliz-ano-velho.jpg",
+    "frankenstein.jpg",
+    "fundacao.jpg",
+    "garota-exemplar.jpg",
+    "habitos-atomicos.jpg",
+    "harry-potter-e-a-pedra-filosofal.jpg",
+    "homo-deus.jpg",
+    "inteligencia-emocional.jpg",
+    "iracema.jpg",
+    "it-a-coisa.jpg",
+    "jantar-secreto.jpg",
+    "java-como-programar.jpg",
+    "livro-do-desassossego.jpg",
+    "macunaima.jpg",
+    "marcelo-marmelo-martelo.jpg",
+    "matilda.jpg",
+    "meditacoes.jpg",
+    "memorias-postumas-de-bras-cubas.jpg",
+    "mindset.jpg",
+    "minha-historia.jpg",
+    "misery.jpg",
+    "moby-dick.jpg",
+    "neuromancer.jpg",
+    "o-analista-de-bage.jpg",
+    "o-cacador-de-pipas.jpg",
+    "o-codigo-da-vinci.jpg",
+    "o-colecionador.jpg",
+    "o-conde-de-monte-cristo.jpg",
+    "o-corpo-fala.jpg",
+    "o-cortico.jpg",
+    "o-diario-de-anne-frank.jpg",
+    "o-gato-malhado-e-a-andorinha-sinha.jpg",
+    "o-guia-do-mochileiro-das-galaxias.jpg",
+    "o-hobbit.jpg",
+    "o-homem-de-giz.jpg",
+    "o-iluminado.jpg",
+    "o-menino-maluquinho.jpg",
+    "o-milagre-da-manha.jpg",
+    "o-mundo-de-sofia.jpg",
+    "o-pequeno-principe.jpg",
+    "o-poder-do-habito.jpg",
+    "o-principe.jpg",
+    "o-sol-e-para-todos.jpg",
+    "orgulho-e-preconceito.jpg",
+    "os-7-habitos-das-pessoas-altamente-eficazes.jpg",
+    "pai-rico-pai-pobre.jpg",
+    "psicologia-das-massas.jpg",
+    "quarto-de-despejo.jpg",
+    "rapido-e-devagar.jpg",
+    "reinacoes-de-narizinho.jpg",
+    "robinson-crusoe.jpg",
+    "sapiens.jpg",
+    "sentimento-do-mundo.jpg",
+    "steve-jobs.jpg",
+    "toda-poesia.jpg",
+    "torto-arado.jpg",
+    "use-a-cabeca-java.jpg",
+    "viagem-ao-centro-da-terra.jpg",
+    "vidas-secas.jpg"
+  ],
+  "books": [
+    {
+      "titulo": "É Assim que Acaba",
+      "autor": "Colleen Hoover",
+      "isbn": "9788501112514",
+      "file": "e-assim-que-acaba.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Orgulho e Preconceito",
+      "autor": "Jane Austen",
+      "isbn": "9788544001820",
+      "file": "orgulho-e-preconceito.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Como Eu Era Antes de Você",
+      "autor": "Jojo Moyes",
+      "isbn": "9788580573299",
+      "file": "como-eu-era-antes-de-voce.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Harry Potter e a Pedra Filosofal",
+      "autor": "J. K. Rowling",
+      "isbn": "9788532511010",
+      "file": "harry-potter-e-a-pedra-filosofal.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Hobbit",
+      "autor": "J. R. R. Tolkien",
+      "isbn": "9788595084742",
+      "file": "o-hobbit.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "A Sociedade do Anel",
+      "autor": "J. R. R. Tolkien",
+      "isbn": "9788595084759",
+      "file": "a-sociedade-do-anel.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "As Crônicas de Nárnia",
+      "autor": "C. S. Lewis",
+      "isbn": "9788578270698",
+      "file": "as-cronicas-de-narnia.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "A Guerra dos Tronos",
+      "autor": "George R. R. Martin",
+      "isbn": "9788556510785",
+      "file": "a-guerra-dos-tronos.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "A Ilha do Tesouro",
+      "autor": "Robert Louis Stevenson",
+      "isbn": "9788537816066",
+      "file": "a-ilha-do-tesouro.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Robinson Crusoé",
+      "autor": "Daniel Defoe",
+      "isbn": "9788537811139",
+      "file": "robinson-crusoe.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Viagem ao Centro da Terra",
+      "autor": "Júlio Verne",
+      "isbn": "9788537816059",
+      "file": "viagem-ao-centro-da-terra.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "A Volta ao Mundo em 80 Dias",
+      "autor": "Júlio Verne",
+      "isbn": "9788537816073",
+      "file": "a-volta-ao-mundo-em-80-dias.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Moby Dick",
+      "autor": "Herman Melville",
+      "isbn": "9788544001821",
+      "file": "moby-dick.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "As Minas do Rei Salomão",
+      "autor": "H. Rider Haggard",
+      "isbn": "9788537812785",
+      "file": "as-minas-do-rei-salomao.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Conde de Monte Cristo",
+      "autor": "Alexandre Dumas",
+      "isbn": "9788537811016",
+      "file": "o-conde-de-monte-cristo.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Duna",
+      "autor": "Frank Herbert",
+      "isbn": "9788576573135",
+      "file": "duna.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "1984",
+      "autor": "George Orwell",
+      "isbn": "9788535914849",
+      "file": "1984.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Fahrenheit 451",
+      "autor": "Ray Bradbury",
+      "isbn": "9788525052247",
+      "file": "fahrenheit-451.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Fundação",
+      "autor": "Isaac Asimov",
+      "isbn": "9788576570554",
+      "file": "fundacao.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Eu, Robô",
+      "autor": "Isaac Asimov",
+      "isbn": "9788576572008",
+      "file": "eu-robo.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Neuromancer",
+      "autor": "William Gibson",
+      "isbn": "9788576573005",
+      "file": "neuromancer.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Guia do Mochileiro das Galáxias",
+      "autor": "Douglas Adams",
+      "isbn": "9788599296585",
+      "file": "o-guia-do-mochileiro-das-galaxias.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Admirável Mundo Novo",
+      "autor": "Aldous Huxley",
+      "isbn": "9788525056009",
+      "file": "admiravel-mundo-novo.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "A Empregada",
+      "autor": "Freida McFadden",
+      "isbn": "9786555654481",
+      "file": "a-empregada.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Garota Exemplar",
+      "autor": "Gillian Flynn",
+      "isbn": "9788580572902",
+      "file": "garota-exemplar.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "A Garota no Trem",
+      "autor": "Paula Hawkins",
+      "isbn": "9788501104656",
+      "file": "a-garota-no-trem.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "O Colecionador",
+      "autor": "John Fowles",
+      "isbn": "9788594318602",
+      "file": "o-colecionador.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Caixa de Pássaros",
+      "autor": "Josh Malerman",
+      "isbn": "9788581052144",
+      "file": "caixa-de-passaros.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Jantar Secreto",
+      "autor": "Raphael Montes",
+      "isbn": "9788535928310",
+      "file": "jantar-secreto.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "O Homem de Giz",
+      "autor": "C. J. Tudor",
+      "isbn": "9788551002934",
+      "file": "o-homem-de-giz.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "A Paciente Silenciosa",
+      "autor": "Alex Michaelides",
+      "isbn": "9788501116437",
+      "file": "a-paciente-silenciosa.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "E Não Sobrou Nenhum",
+      "autor": "Agatha Christie",
+      "isbn": "9788525432186",
+      "file": "e-nao-sobrou-nenhum.jpg",
+      "source": "openlibrary-isbn"
+    },
+    {
+      "titulo": "O Código Da Vinci",
+      "autor": "Dan Brown",
+      "isbn": "9788575421130",
+      "file": "o-codigo-da-vinci.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "It: A Coisa",
+      "autor": "Stephen King",
+      "isbn": "9788560280940",
+      "file": "it-a-coisa.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Iluminado",
+      "autor": "Stephen King",
+      "isbn": "9788556510464",
+      "file": "o-iluminado.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Drácula",
+      "autor": "Bram Stoker",
+      "isbn": "9788537811221",
+      "file": "dracula.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Frankenstein",
+      "autor": "Mary Shelley",
+      "isbn": "9788537811245",
+      "file": "frankenstein.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Coraline",
+      "autor": "Neil Gaiman",
+      "isbn": "9788579801860",
+      "file": "coraline.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Misery",
+      "autor": "Stephen King",
+      "isbn": "9788556510440",
+      "file": "misery.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Steve Jobs",
+      "autor": "Walter Isaacson",
+      "isbn": "9788535919714",
+      "file": "steve-jobs.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Minha História",
+      "autor": "Michelle Obama",
+      "isbn": "9788547000646",
+      "file": "minha-historia.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Eu Sou Malala",
+      "autor": "Malala Yousafzai",
+      "isbn": "9788535923438",
+      "file": "eu-sou-malala.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Diário de Anne Frank",
+      "autor": "Anne Frank",
+      "isbn": "9788501044457",
+      "file": "o-diario-de-anne-frank.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Elon Musk",
+      "autor": "Ashlee Vance",
+      "isbn": "9788580578287",
+      "file": "elon-musk.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Becoming",
+      "autor": "Michelle Obama",
+      "isbn": "9781524763138",
+      "file": "becoming.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Sapiens",
+      "autor": "Yuval Noah Harari",
+      "isbn": "9788525432407",
+      "file": "sapiens.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Homo Deus",
+      "autor": "Yuval Noah Harari",
+      "isbn": "9788535928198",
+      "file": "homo-deus.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Brasil: Uma Biografia",
+      "autor": "Lilia M. Schwarcz e Heloisa M. Starling",
+      "isbn": "9788535925661",
+      "file": "brasil-uma-biografia.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "1808",
+      "autor": "Laurentino Gomes",
+      "isbn": "9788573029444",
+      "file": "1808.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "1822",
+      "autor": "Laurentino Gomes",
+      "isbn": "9788525051431",
+      "file": "1822.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "1889",
+      "autor": "Laurentino Gomes",
+      "isbn": "9788525057518",
+      "file": "1889.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Mundo de Sofia",
+      "autor": "Jostein Gaarder",
+      "isbn": "9788535908060",
+      "file": "o-mundo-de-sofia.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Meditações",
+      "autor": "Marco Aurélio",
+      "isbn": "9788544001837",
+      "file": "meditacoes.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "A República",
+      "autor": "Platão",
+      "isbn": "9788572839044",
+      "file": "a-republica.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Ética a Nicômaco",
+      "autor": "Aristóteles",
+      "isbn": "9788572839907",
+      "file": "etica-a-nicomaco.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Além do Bem e do Mal",
+      "autor": "Friedrich Nietzsche",
+      "isbn": "9788544001844",
+      "file": "alem-do-bem-e-do-mal.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Convite à Filosofia",
+      "autor": "Marilena Chaui",
+      "isbn": "9788508134694",
+      "file": "convite-a-filosofia.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "O Príncipe",
+      "autor": "Nicolau Maquiavel",
+      "isbn": "9788544001851",
+      "file": "o-principe.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Rápido e Devagar",
+      "autor": "Daniel Kahneman",
+      "isbn": "9788539003839",
+      "file": "rapido-e-devagar.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Poder do Hábito",
+      "autor": "Charles Duhigg",
+      "isbn": "9788539004119",
+      "file": "o-poder-do-habito.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Inteligência Emocional",
+      "autor": "Daniel Goleman",
+      "isbn": "9788573020809",
+      "file": "inteligencia-emocional.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Mindset",
+      "autor": "Carol S. Dweck",
+      "isbn": "9788547000240",
+      "file": "mindset.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Corpo Fala",
+      "autor": "Pierre Weil e Roland Tompakow",
+      "isbn": "9788532602084",
+      "file": "o-corpo-fala.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Psicologia das Massas",
+      "autor": "Gustave Le Bon",
+      "isbn": "9788544001868",
+      "file": "psicologia-das-massas.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Hábitos Atômicos",
+      "autor": "James Clear",
+      "isbn": "9788550807560",
+      "file": "habitos-atomicos.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Milagre da Manhã",
+      "autor": "Hal Elrod",
+      "isbn": "9788576849940",
+      "file": "o-milagre-da-manha.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Pai Rico, Pai Pobre",
+      "autor": "Robert T. Kiyosaki",
+      "isbn": "9788550801483",
+      "file": "pai-rico-pai-pobre.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Os 7 Hábitos das Pessoas Altamente Eficazes",
+      "autor": "Stephen R. Covey",
+      "isbn": "9788576840626",
+      "file": "os-7-habitos-das-pessoas-altamente-eficazes.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Essencialismo",
+      "autor": "Greg McKeown",
+      "isbn": "9788543102146",
+      "file": "essencialismo.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "A Sutil Arte de Ligar o Foda-se",
+      "autor": "Mark Manson",
+      "isbn": "9788551002490",
+      "file": "a-sutil-arte-de-ligar-o-foda-se.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Entendendo Algoritmos",
+      "autor": "Aditya Y. Bhargava",
+      "isbn": "9788575225639",
+      "file": "entendendo-algoritmos.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Código Limpo",
+      "autor": "Robert C. Martin",
+      "isbn": "9788576082675",
+      "file": "codigo-limpo.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Use a Cabeça Java",
+      "autor": "Kathy Sierra e Bert Bates",
+      "isbn": "9788576081739",
+      "file": "use-a-cabeca-java.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Java: Como Programar",
+      "autor": "Paul Deitel e Harvey Deitel",
+      "isbn": "9788543004792",
+      "file": "java-como-programar.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Pequeno Príncipe",
+      "autor": "Antoine de Saint-Exupéry",
+      "isbn": "9788595081512",
+      "file": "o-pequeno-principe.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Alice no País das Maravilhas",
+      "autor": "Lewis Carroll",
+      "isbn": "9788537811726",
+      "file": "alice-no-pais-das-maravilhas.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "O Menino Maluquinho",
+      "autor": "Ziraldo",
+      "isbn": "9788506055045",
+      "file": "o-menino-maluquinho.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Marcelo, Marmelo, Martelo",
+      "autor": "Ruth Rocha",
+      "isbn": "9788516071493",
+      "file": "marcelo-marmelo-martelo.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Reinações de Narizinho",
+      "autor": "Monteiro Lobato",
+      "isbn": "9788525061232",
+      "file": "reinacoes-de-narizinho.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "O Gato Malhado e a Andorinha Sinhá",
+      "autor": "Jorge Amado",
+      "isbn": "9788535911268",
+      "file": "o-gato-malhado-e-a-andorinha-sinha.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "A Bolsa Amarela",
+      "autor": "Lygia Bojunga",
+      "isbn": "9788520932964",
+      "file": "a-bolsa-amarela.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Diário de um Banana",
+      "autor": "Jeff Kinney",
+      "isbn": "9788576831303",
+      "file": "diario-de-um-banana.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Matilda",
+      "autor": "Roald Dahl",
+      "isbn": "9788574064389",
+      "file": "matilda.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Sentimento do Mundo",
+      "autor": "Carlos Drummond de Andrade",
+      "isbn": "9788535924626",
+      "file": "sentimento-do-mundo.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "A Rosa do Povo",
+      "autor": "Carlos Drummond de Andrade",
+      "isbn": "9788535924633",
+      "file": "a-rosa-do-povo.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Toda Poesia",
+      "autor": "Paulo Leminski",
+      "isbn": "9788535923780",
+      "file": "toda-poesia.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Livro do Desassossego",
+      "autor": "Fernando Pessoa",
+      "isbn": "9788535914962",
+      "file": "livro-do-desassossego.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Eu",
+      "autor": "Augusto dos Anjos",
+      "isbn": "9788572327817",
+      "file": "eu.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "A Menina que Roubava Livros",
+      "autor": "Markus Zusak",
+      "isbn": "9788598078175",
+      "file": "a-menina-que-roubava-livros.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Sol é Para Todos",
+      "autor": "Harper Lee",
+      "isbn": "9788503009499",
+      "file": "o-sol-e-para-todos.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "O Caçador de Pipas",
+      "autor": "Khaled Hosseini",
+      "isbn": "9788520917671",
+      "file": "o-cacador-de-pipas.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Extraordinário",
+      "autor": "R. J. Palacio",
+      "isbn": "9788580573015",
+      "file": "extraordinario.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Torto Arado",
+      "autor": "Itamar Vieira Junior",
+      "isbn": "9786580309313",
+      "file": "torto-arado.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Quarto de Despejo",
+      "autor": "Carolina Maria de Jesus",
+      "isbn": "9788508171279",
+      "file": "quarto-de-despejo.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Diário de um Banana: Rodrick é o Cara",
+      "autor": "Jeff Kinney",
+      "isbn": "9788576832294",
+      "file": "diario-de-um-banana-rodrick-e-o-cara.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Feliz Ano Velho",
+      "autor": "Marcelo Rubens Paiva",
+      "isbn": "9788573026375",
+      "file": "feliz-ano-velho.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Memórias Póstumas de Brás Cubas",
+      "autor": "Machado de Assis",
+      "isbn": "9788535910667",
+      "file": "memorias-postumas-de-bras-cubas.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "O Analista de Bagé",
+      "autor": "Luis Fernando Verissimo",
+      "isbn": "9788525410450",
+      "file": "o-analista-de-bage.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Comédias da Vida Privada",
+      "autor": "Luis Fernando Verissimo",
+      "isbn": "9788525410665",
+      "file": "comedias-da-vida-privada.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Como Ser Brasileiro",
+      "autor": "Matthew Shirts",
+      "isbn": "9788573029505",
+      "file": "como-ser-brasileiro.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Dom Casmurro",
+      "autor": "Machado de Assis",
+      "isbn": "9788525406064",
+      "file": "dom-casmurro.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Capitães da Areia",
+      "autor": "Jorge Amado",
+      "isbn": "9788535914061",
+      "file": "capitaes-da-areia.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Vidas Secas",
+      "autor": "Graciliano Ramos",
+      "isbn": "9788501067340",
+      "file": "vidas-secas.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "O Cortiço",
+      "autor": "Aluísio Azevedo",
+      "isbn": "9788525406347",
+      "file": "o-cortico.jpg",
+      "source": "openlibrary-search"
+    },
+    {
+      "titulo": "Iracema",
+      "autor": "José de Alencar",
+      "isbn": "9788525406385",
+      "file": "iracema.jpg",
+      "source": "existing"
+    },
+    {
+      "titulo": "Macunaíma",
+      "autor": "Mário de Andrade",
+      "isbn": "9788520926093",
+      "file": "macunaima.jpg",
+      "source": "openlibrary-search"
+    }
+  ],
+  "failed": [
+    {
+      "titulo": "Vermelho, Branco e Sangue Azul",
+      "autor": "Casey McQuiston",
+      "isbn": "9788555340940",
+      "filename": "vermelho-branco-e-sangue-azul.jpg"
+    },
+    {
+      "titulo": "A Culpa é das Estrelas",
+      "autor": "John Green",
+      "isbn": "9788580573466",
+      "filename": "a-culpa-e-das-estrelas.jpg"
+    },
+    {
+      "titulo": "Um Dia",
+      "autor": "David Nicholls",
+      "isbn": "9788580570458",
+      "filename": "um-dia.jpg"
+    },
+    {
+      "titulo": "Teto Para Dois",
+      "autor": "Beth OLeary",
+      "isbn": "9788551005416",
+      "filename": "teto-para-dois.jpg"
+    },
+    {
+      "titulo": "O Morro dos Ventos Uivantes",
+      "autor": "Emily Brontë",
+      "isbn": "9788544001639",
+      "filename": "o-morro-dos-ventos-uivantes.jpg"
+    },
+    {
+      "titulo": "O Cálice dos Deuses",
+      "autor": "Rick Riordan",
+      "isbn": "9786555607890",
+      "filename": "o-calice-dos-deuses.jpg"
+    },
+    {
+      "titulo": "O Nome do Vento",
+      "autor": "Patrick Rothfuss",
+      "isbn": "9788599296493",
+      "filename": "o-nome-do-vento.jpg"
+    },
+    {
+      "titulo": "Percy Jackson e o Ladrão de Raios",
+      "autor": "Rick Riordan",
+      "isbn": "9788598078355",
+      "filename": "percy-jackson-e-o-ladrao-de-raios.jpg"
+    },
+    {
+      "titulo": "O Chamado da Selva",
+      "autor": "Jack London",
+      "isbn": "9788525418272",
+      "filename": "o-chamado-da-selva.jpg"
+    },
+    {
+      "titulo": "O Silêncio dos Inocentes",
+      "autor": "Thomas Harris",
+      "isbn": "9788501110237",
+      "filename": "o-silencio-dos-inocentes.jpg"
+    },
+    {
+      "titulo": "Assassinato no Expresso do Oriente",
+      "autor": "Agatha Christie",
+      "isbn": "9788525421012",
+      "filename": "assassinato-no-expresso-do-oriente.jpg"
+    },
+    {
+      "titulo": "Sherlock Holmes: Um Estudo em Vermelho",
+      "autor": "Arthur Conan Doyle",
+      "isbn": "9788537810460",
+      "filename": "sherlock-holmes-um-estudo-em-vermelho.jpg"
+    },
+    {
+      "titulo": "O Nome da Rosa",
+      "autor": "Umberto Eco",
+      "isbn": "9788501021403",
+      "filename": "o-nome-da-rosa.jpg"
+    },
+    {
+      "titulo": "A Mulher na Janela",
+      "autor": "A. J. Finn",
+      "isbn": "9788580418293",
+      "filename": "a-mulher-na-janela.jpg"
+    },
+    {
+      "titulo": "O Chamado do Cuco",
+      "autor": "Robert Galbraith",
+      "isbn": "9788532528940",
+      "filename": "o-chamado-do-cuco.jpg"
+    },
+    {
+      "titulo": "Morte no Nilo",
+      "autor": "Agatha Christie",
+      "isbn": "9788525426130",
+      "filename": "morte-no-nilo.jpg"
+    },
+    {
+      "titulo": "O Exorcista",
+      "autor": "William Peter Blatty",
+      "isbn": "9788594540591",
+      "filename": "o-exorcista.jpg"
+    },
+    {
+      "titulo": "A Assombração da Casa da Colina",
+      "autor": "Shirley Jackson",
+      "isbn": "9788581053707",
+      "filename": "a-assombracao-da-casa-da-colina.jpg"
+    },
+    {
+      "titulo": "Longa Caminhada até a Liberdade",
+      "autor": "Nelson Mandela",
+      "isbn": "9788560280650",
+      "filename": "longa-caminhada-ate-a-liberdade.jpg"
+    },
+    {
+      "titulo": "Rita Lee: Uma Autobiografia",
+      "autor": "Rita Lee",
+      "isbn": "9788525065308",
+      "filename": "rita-lee-uma-autobiografia.jpg"
+    },
+    {
+      "titulo": "A Segunda Guerra Mundial",
+      "autor": "Antony Beevor",
+      "isbn": "9788501094704",
+      "filename": "a-segunda-guerra-mundial.jpg"
+    },
+    {
+      "titulo": "Uma Breve História do Mundo",
+      "autor": "Geoffrey Blainey",
+      "isbn": "9788573029116",
+      "filename": "uma-breve-historia-do-mundo.jpg"
+    },
+    {
+      "titulo": "O Mito de Sísifo",
+      "autor": "Albert Camus",
+      "isbn": "9788501116475",
+      "filename": "o-mito-de-sisifo.jpg"
+    },
+    {
+      "titulo": "Talvez Você Deva Conversar com Alguém",
+      "autor": "Lori Gottlieb",
+      "isbn": "9786580634309",
+      "filename": "talvez-voce-deva-conversar-com-alguem.jpg"
+    },
+    {
+      "titulo": "A Coragem de Ser Imperfeito",
+      "autor": "Brené Brown",
+      "isbn": "9788543102313",
+      "filename": "a-coragem-de-ser-imperfeito.jpg"
+    },
+    {
+      "titulo": "Como Fazer Amigos e Influenciar Pessoas",
+      "autor": "Dale Carnegie",
+      "isbn": "9788504018021",
+      "filename": "como-fazer-amigos-e-influenciar-pessoas.jpg"
+    },
+    {
+      "titulo": "O Poder do Agora",
+      "autor": "Eckhart Tolle",
+      "isbn": "9788575420270",
+      "filename": "o-poder-do-agora.jpg"
+    },
+    {
+      "titulo": "Aprendendo SQL",
+      "autor": "Alan Beaulieu",
+      "isbn": "9788575222102",
+      "filename": "aprendendo-sql.jpg"
+    },
+    {
+      "titulo": "Sistema de Banco de Dados",
+      "autor": "Abraham Silberschatz",
+      "isbn": "9788535245356",
+      "filename": "sistema-de-banco-de-dados.jpg"
+    },
+    {
+      "titulo": "Algoritmos",
+      "autor": "Thomas H. Cormen",
+      "isbn": "9788535236996",
+      "filename": "algoritmos.jpg"
+    },
+    {
+      "titulo": "Lógica de Programação e Algoritmos com JavaScript",
+      "autor": "Edécio Fernando Iepsen",
+      "isbn": "9788575226568",
+      "filename": "logica-de-programacao-e-algoritmos-com-javascript.jpg"
+    },
+    {
+      "titulo": "Antologia Poética",
+      "autor": "Vinicius de Moraes",
+      "isbn": "9788532508294",
+      "filename": "antologia-poetica.jpg"
+    },
+    {
+      "titulo": "Poemas Completos de Alberto Caeiro",
+      "autor": "Fernando Pessoa",
+      "isbn": "9788525413833",
+      "filename": "poemas-completos-de-alberto-caeiro.jpg"
+    },
+    {
+      "titulo": "Melhores Poemas de Cecília Meireles",
+      "autor": "Cecília Meireles",
+      "isbn": "9788526007413",
+      "filename": "melhores-poemas-de-cecilia-meireles.jpg"
+    },
+    {
+      "titulo": "A Lista de Schindler",
+      "autor": "Thomas Keneally",
+      "isbn": "9788528613346",
+      "filename": "a-lista-de-schindler.jpg"
+    },
+    {
+      "titulo": "As Vantagens de Ser Invisível",
+      "autor": "Stephen Chbosky",
+      "isbn": "9788532522337",
+      "filename": "as-vantagens-de-ser-invisivel.jpg"
+    },
+    {
+      "titulo": "O Auto da Compadecida",
+      "autor": "Ariano Suassuna",
+      "isbn": "9788520931707",
+      "filename": "o-auto-da-compadecida.jpg"
+    },
+    {
+      "titulo": "Grande Sertão: Veredas",
+      "autor": "João Guimarães Rosa",
+      "isbn": "9788520923252",
+      "filename": "grande-sertao-veredas.jpg"
+    }
+  ]
+}

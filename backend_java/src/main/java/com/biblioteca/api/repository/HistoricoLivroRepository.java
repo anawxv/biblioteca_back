@@ -8,4 +8,6 @@ import java.util.List;
 public interface HistoricoLivroRepository extends JpaRepository<HistoricoLivro, Integer> {
 
     List<HistoricoLivro> findByLivroIdLivroOrderByCriadoEmDesc(Integer idLivro);
+
+    List<HistoricoLivro> findTop50ByOrderByCriadoEmDesc();
 }

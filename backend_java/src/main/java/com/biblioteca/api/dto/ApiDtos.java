@@ -118,37 +118,25 @@ public final class ApiDtos {
     }
 
     public record BookResponse(
-            Integer id,
             Integer idLivro,
-            String title,
             String titulo,
-            String author,
             String autor,
-            String category,
             String categoria,
             String isbn,
-            Integer pages,
             Integer paginas,
-            String description,
             String descricao,
             String status,
-            Integer quantityTotal,
             Integer quantidadeTotal,
-            Integer availableQuantity,
             Integer quantidadeDisponivel,
-            Integer publishedYear,
             Integer anoPublicacao,
-            String publisher,
             String editora,
-            String coverImage,
             String imagemCapa,
             List<String> generosExtras,
             List<String> subgeneros,
-            Boolean active,
             Boolean ativo,
             Boolean disponivel,
-            LocalDateTime createdAt,
-            Long loanCount
+            LocalDateTime criadoEm,
+            Long quantidadeEmprestimos
     ) {
     }
 
@@ -179,15 +167,44 @@ public final class ApiDtos {
     ) {
     }
 
+    public record ApproveLoanRequest(
+            @JsonAlias({"id_funcionario", "idFuncionario"})
+            Integer funcionarioId,
+            String observacao
+    ) {
+    }
+
+    public record ExemplarLivroResponse(
+            Integer idExemplar,
+            String codigoTombo,
+            String status,
+            Boolean ativo
+    ) {
+    }
+
     public record LoanItemResponse(
             Integer id,
+            Integer idEmprestimo,
+            Integer idCliente,
+            String nomeCliente,
+            String emailCliente,
             UserSummary client,
+            Integer idLivro,
+            String tituloLivro,
+            String autorLivro,
+            String imagemCapa,
             BookResponse book,
+            Integer idExemplar,
+            String codigoTombo,
             Integer funcionarioId,
             LocalDate borrowedAt,
+            LocalDate dataEmprestimo,
             LocalDate dueDate,
+            LocalDate dataPrevistaDevolucao,
             LocalDate returnedAt,
+            LocalDate dataDevolucao,
             String status,
+            String statusVisual,
             String observacao
     ) {
     }
@@ -208,9 +225,20 @@ public final class ApiDtos {
             LocalDate dueDate,
             LocalDate returnedAt,
             String status,
+            String statusVisual,
             String observacao,
             boolean fineApplied,
             BigDecimal fineAmount
+    ) {
+    }
+
+    public record FineResponse(
+            Integer idMulta,
+            BigDecimal valor,
+            Boolean paga,
+            String motivo,
+            LocalDateTime criadaEm,
+            LoanItemResponse emprestimo
     ) {
     }
 
@@ -276,13 +304,16 @@ public final class ApiDtos {
     public record DashboardResponse(
             long livrosNoAcervo,
             long clientesCadastrados,
+            long funcionariosCadastrados,
             long emprestimosAtivos,
             long emprestimosAtrasados,
+            long emprestimosDevolvidos,
             BigDecimal multasPendentes,
             long livrosIndisponiveis,
             List<LoanItemResponse> recentLoans,
             List<ChartPointResponse> loansByMonth,
-            ReturnsStats returnsStats
+            ReturnsStats returnsStats,
+            List<String> alertas
     ) {
     }
 

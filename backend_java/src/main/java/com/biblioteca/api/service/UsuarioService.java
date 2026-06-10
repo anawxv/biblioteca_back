@@ -12,8 +12,11 @@ import com.biblioteca.api.repository.CodigoFuncionarioRepository;
 import com.biblioteca.api.repository.FuncionarioRepository;
 import com.biblioteca.api.repository.UsuarioRepository;
 import jakarta.persistence.EntityManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class UsuarioService {
@@ -23,34 +26,45 @@ public class UsuarioService {
     private final FuncionarioRepository funcionarioRepository;
     private final CodigoFuncionarioRepository codigoFuncionarioRepository;
     private final EntityManager entityManager;
+    private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             ClienteRepository clienteRepository,
             FuncionarioRepository funcionarioRepository,
             CodigoFuncionarioRepository codigoFuncionarioRepository,
-            EntityManager entityManager
+            EntityManager entityManager,
+            AuthService authService,
+            PasswordEncoder passwordEncoder
     ) {
         this.usuarioRepository = usuarioRepository;
         this.clienteRepository = clienteRepository;
         this.funcionarioRepository = funcionarioRepository;
         this.codigoFuncionarioRepository = codigoFuncionarioRepository;
         this.entityManager = entityManager;
+        this.authService = authService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public ApiDtos.RegisterResponse cadastrar(ApiDtos.CreateUserRequest request) {
         TipoUsuario tipoUsuario = TipoUsuario.fromInput(request.role());
         String email = request.email().trim().toLowerCase();
+        CodigoFuncionario codigoFuncionario = null;
 
         if (usuarioRepository.existsByEmailIgnoreCase(email)) {
             throw new BusinessException("Este e-mail ja esta cadastrado.");
         }
 
+        if (tipoUsuario == TipoUsuario.FUNCIONARIO) {
+            codigoFuncionario = validarCodigoFuncionario(request.codigoAutorizacao());
+        }
+
         Usuario usuario = new Usuario();
         usuario.setNome(request.name().trim());
         usuario.setEmail(email);
-        usuario.setSenhaHash(request.password());
+        usuario.setSenhaHash(passwordEncoder.encode(request.password()));
         usuario.setTelefone(request.phone().trim());
         usuario.setTipoUsuario(tipoUsuario);
         usuario.setAtivo(true);
@@ -66,7 +80,6 @@ public class UsuarioService {
             entityManager.persist(cliente);
             entityManager.flush();
         } else {
-            CodigoFuncionario codigoFuncionario = validarCodigoFuncionario(request.codigoAutorizacao());
             Funcionario funcionario = new Funcionario();
             funcionario.setIdFuncionario(usuarioSalvo.getIdUsuario());
             funcionario.setUsuario(usuarioSalvo);
@@ -90,16 +103,43 @@ public class UsuarioService {
 
     private CodigoFuncionario validarCodigoFuncionario(String codigo) {
         if (codigo == null || codigo.trim().isEmpty()) {
-            throw new BusinessException("Codigo de autorizacao invalido.");
+            throw new BusinessException("Codigo de autorizacao e obrigatorio para cadastro de funcionario.");
         }
 
         CodigoFuncionario codigoFuncionario = codigoFuncionarioRepository.findByCodigoIgnoreCase(codigo.trim())
-                .orElseThrow(() -> new BusinessException("Codigo de autorizacao invalido."));
+                .orElseThrow(() -> new BusinessException("Codigo de autorizacao inexistente."));
 
-        if (!Boolean.TRUE.equals(codigoFuncionario.getAtivo()) || Boolean.TRUE.equals(codigoFuncionario.getUsado())) {
-            throw new BusinessException("Codigo de autorizacao invalido.");
+        if (!Boolean.TRUE.equals(codigoFuncionario.getAtivo())) {
+            throw new BusinessException("Codigo de autorizacao inativo.");
+        }
+        if (Boolean.TRUE.equals(codigoFuncionario.getUsado())) {
+            throw new BusinessException("Codigo de autorizacao ja usado.");
         }
 
         return codigoFuncionario;
+    }
+
+    public List<ApiDtos.UserSummary> listarClientes(String busca) {
+        String search = busca == null || busca.trim().isEmpty() ? null : busca.trim();
+        List<Cliente> clientes = search == null
+                ? clienteRepository.findActiveDetailed()
+                : clienteRepository.findActiveDetailedBySearch(search);
+        return clientes
+                .stream()
+                .map(Cliente::getUsuario)
+                .map(authService::toUserSummary)
+                .toList();
+    }
+
+    public List<ApiDtos.UserSummary> listarFuncionarios(String busca) {
+        String search = busca == null || busca.trim().isEmpty() ? null : busca.trim();
+        List<Funcionario> funcionarios = search == null
+                ? funcionarioRepository.findActiveDetailed()
+                : funcionarioRepository.findActiveDetailedBySearch(search);
+        return funcionarios
+                .stream()
+                .map(Funcionario::getUsuario)
+                .map(authService::toUserSummary)
+                .toList();
     }
 }

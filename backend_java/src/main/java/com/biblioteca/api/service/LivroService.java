@@ -54,7 +54,11 @@ public class LivroService {
 
     public List<ApiDtos.BookResponse> listarLivros(String busca) {
         String search = normalizeSearch(busca);
-        return livroRepository.findActiveBySearch(search)
+        List<Integer> ids = livroRepository.findActiveIdsBySearch(search);
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+        return livroRepository.findActiveDetailedByIds(ids)
                 .stream()
                 .map(livro -> toBookResponse(livro, 0L))
                 .toList();
@@ -161,6 +165,24 @@ public class LivroService {
                 .toList();
     }
 
+    public List<ApiDtos.HistoricoLivroResponse> listarHistoricoLivros() {
+        return historicoLivroRepository.findTop50ByOrderByCriadoEmDesc()
+                .stream()
+                .map(this::toHistoricoResponse)
+                .toList();
+    }
+
+    public List<ApiDtos.BookResponse> listarLivrosIndisponiveis(String busca) {
+        String search = normalizeSearch(busca);
+        List<Livro> livros = search == null
+                ? livroRepository.findUnavailable()
+                : livroRepository.findUnavailableBySearch(search);
+        return livros
+                .stream()
+                .map(livro -> toBookResponse(livro, 0L))
+                .toList();
+    }
+
     public List<ApiDtos.BookResponse> listarLivrosRecentes() {
         return livroRepository.findTop6ByAtivoTrueOrderByCriadoEmDesc()
                 .stream()
@@ -170,7 +192,7 @@ public class LivroService {
 
     public List<ApiDtos.BookResponse> listarLivrosMaisEmprestados() {
         List<EmprestimoRepository.BookLoanCountProjection> ranking =
-                emprestimoRepository.findTopBorrowedBooks(PageRequest.of(0, 10));
+                emprestimoRepository.findTopBorrowedBooks(EmprestimoRepository.EXCLUDED_OPEN_STATUSES, PageRequest.of(0, 10));
 
         Map<Integer, Long> countsByBookId = ranking.stream()
                 .collect(Collectors.toMap(EmprestimoRepository.BookLoanCountProjection::getLivroId, EmprestimoRepository.BookLoanCountProjection::getTotal));
@@ -200,34 +222,23 @@ public class LivroService {
                 .map(Subgenero::getNome)
                 .sorted()
                 .toList();
+        String categoriaNome = livro.getCategoria() == null ? null : livro.getCategoria().getNome();
         return new ApiDtos.BookResponse(
                 livro.getIdLivro(),
-                livro.getIdLivro(),
-                livro.getTitulo(),
                 livro.getTitulo(),
                 livro.getAutor(),
-                livro.getAutor(),
-                livro.getCategoria().getNome(),
-                livro.getCategoria().getNome(),
+                categoriaNome,
                 livro.getIsbn(),
                 livro.getPaginas(),
-                livro.getPaginas(),
-                livro.getDescricao(),
                 livro.getDescricao(),
                 status,
                 livro.getQuantidadeTotal(),
-                livro.getQuantidadeTotal(),
-                livro.getQuantidadeDisponivel(),
                 livro.getQuantidadeDisponivel(),
                 livro.getAnoPublicacao(),
-                livro.getAnoPublicacao(),
                 livro.getEditora(),
-                livro.getEditora(),
-                livro.getImagemCapa(),
                 livro.getImagemCapa(),
                 generos,
                 subgeneros,
-                livro.getAtivo(),
                 livro.getAtivo(),
                 "disponivel".equals(status),
                 livro.getCriadoEm(),
@@ -316,6 +327,17 @@ public class LivroService {
         historico.setDadosAnteriores(dadosAnteriores);
         historico.setDadosNovos(dadosNovos);
         historicoLivroRepository.save(historico);
+    }
+
+    private ApiDtos.HistoricoLivroResponse toHistoricoResponse(HistoricoLivro item) {
+        return new ApiDtos.HistoricoLivroResponse(
+                item.getIdHistorico(),
+                item.getLivro() == null ? null : item.getLivro().getIdLivro(),
+                item.getAcao(),
+                item.getCriadoEm(),
+                item.getDadosAnteriores(),
+                item.getDadosNovos()
+        );
     }
 
     private String snapshot(Livro livro) {

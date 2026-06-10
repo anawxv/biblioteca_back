@@ -1,0 +1,474 @@
+﻿[
+    {
+        "Phase":  1,
+        "Num":  1,
+        "Name":  "Backend sobe sem erro",
+        "Scenario":  "Spring Boot em localhost:8080",
+        "Passed":  true,
+        "Detail":  "Tomcat started (validado ao subir)"
+    },
+    {
+        "Phase":  1,
+        "Num":  2,
+        "Name":  "Frontend sobe sem erro",
+        "Scenario":  "Vite dev em localhost:5173",
+        "Passed":  true,
+        "Detail":  "Vite ready (validado ao subir)"
+    },
+    {
+        "Phase":  1,
+        "Num":  3,
+        "Name":  "PostgreSQL conecta",
+        "Scenario":  "Datasource via API",
+        "Passed":  true,
+        "Detail":  "API retornou livros - conexao OK"
+    },
+    {
+        "Phase":  1,
+        "Num":  4,
+        "Name":  "API /api/livros",
+        "Scenario":  "GET listagem",
+        "Passed":  true,
+        "Detail":  "HTTP 200, count=143"
+    },
+    {
+        "Phase":  1,
+        "Num":  5,
+        "Name":  "API /api/dashboard",
+        "Scenario":  "GET metricas",
+        "Passed":  true,
+        "Detail":  "HTTP 200, livros=143"
+    },
+    {
+        "Phase":  2,
+        "Num":  1,
+        "Name":  "Cadastro cliente",
+        "Scenario":  "POST /api/usuarios role CLIENTE",
+        "Passed":  true,
+        "Detail":  "HTTP 201 id=27"
+    },
+    {
+        "Phase":  2,
+        "Num":  3,
+        "Name":  "Funcionario codigo invalido",
+        "Scenario":  "codigo inexistente",
+        "Passed":  false,
+        "Detail":  "HTTP 400 msg=Codigo de autorizacao inexistente."
+    },
+    {
+        "Phase":  2,
+        "Num":  2,
+        "Name":  "Cadastro funcionario codigo valido",
+        "Scenario":  "POST com codigo autorizacao",
+        "Passed":  false,
+        "Detail":  "Nenhum codigo disponivel no banco"
+    },
+    {
+        "Phase":  2,
+        "Num":  4,
+        "Name":  "Login cliente",
+        "Scenario":  "credenciais novas",
+        "Passed":  true,
+        "Detail":  "HTTP 200 tipo=CLIENTE"
+    },
+    {
+        "Phase":  2,
+        "Num":  5,
+        "Name":  "Login funcionario",
+        "Scenario":  "admin seed",
+        "Passed":  false,
+        "Detail":  "HTTP 400 tipo="
+    },
+    {
+        "Phase":  2,
+        "Num":  6,
+        "Name":  "Login invalido",
+        "Scenario":  "senha errada",
+        "Passed":  true,
+        "Detail":  "HTTP 400"
+    },
+    {
+        "Phase":  2,
+        "Num":  7,
+        "Name":  "BCrypt no banco",
+        "Scenario":  "novo cadastro usa hash BCrypt",
+        "Passed":  true,
+        "Detail":  "Cadastro OK; hash BCrypt validado via login cliente (senha plain nao aceita re-login se hash ok)"
+    },
+    {
+        "Phase":  3,
+        "Num":  1,
+        "Name":  "Listar livros",
+        "Scenario":  "GET sem filtro",
+        "Passed":  true,
+        "Detail":  "Total=143"
+    },
+    {
+        "Phase":  3,
+        "Num":  2,
+        "Name":  "Buscar titulo",
+        "Scenario":  "busca=1808",
+        "Passed":  true,
+        "Detail":  "Encontrados=1"
+    },
+    {
+        "Phase":  3,
+        "Num":  3,
+        "Name":  "Buscar autor",
+        "Scenario":  "busca=Laurentino",
+        "Passed":  true,
+        "Detail":  "Encontrados=3"
+    },
+    {
+        "Phase":  3,
+        "Num":  4,
+        "Name":  "Buscar categoria",
+        "Scenario":  "busca=Hist",
+        "Passed":  true,
+        "Detail":  "Encontrados=18"
+    },
+    {
+        "Phase":  3,
+        "Num":  5,
+        "Name":  "Livro inexistente",
+        "Scenario":  "busca sem resultado",
+        "Passed":  true,
+        "Detail":  "Encontrados=0"
+    },
+    {
+        "Phase":  3,
+        "Num":  6,
+        "Name":  "Cadastrar livro",
+        "Scenario":  "POST /api/livros",
+        "Passed":  true,
+        "Detail":  "id=152"
+    },
+    {
+        "Phase":  3,
+        "Num":  7,
+        "Name":  "Editar livro",
+        "Scenario":  "PUT /api/livros/{id}",
+        "Passed":  true,
+        "Detail":  "titulo=Livro QA Editado 20260606160019"
+    },
+    {
+        "Phase":  3,
+        "Num":  8,
+        "Name":  "Excluir logico",
+        "Scenario":  "DELETE /api/livros/{id}",
+        "Passed":  true,
+        "Detail":  "success=True"
+    },
+    {
+        "Phase":  3,
+        "Num":  9,
+        "Name":  "ativo=false",
+        "Scenario":  "GET livro excluido",
+        "Passed":  false,
+        "Detail":  "ativo="
+    },
+    {
+        "Phase":  3,
+        "Num":  10,
+        "Name":  "historico_livro",
+        "Scenario":  "GET historico",
+        "Passed":  true,
+        "Detail":  "registros=3"
+    },
+    {
+        "Phase":  4,
+        "Num":  1,
+        "Name":  "Categorias carregam",
+        "Scenario":  "GET /api/categorias",
+        "Passed":  true,
+        "Detail":  "Total=18"
+    },
+    {
+        "Phase":  4,
+        "Num":  2,
+        "Name":  "Subgeneros filtram",
+        "Scenario":  "GET categoria/1/subgeneros",
+        "Passed":  true,
+        "Detail":  "Total=5"
+    },
+    {
+        "Phase":  4,
+        "Num":  3,
+        "Name":  "Capas locais",
+        "Scenario":  "manifest + jpg",
+        "Passed":  true,
+        "Detail":  "manifest=200 capa=200"
+    },
+    {
+        "Phase":  5,
+        "Num":  1,
+        "Name":  "Registrar emprestimo",
+        "Scenario":  "livro disponivel",
+        "Passed":  true,
+        "Detail":  "id=13"
+    },
+    {
+        "Phase":  5,
+        "Num":  2,
+        "Name":  "quantidade_disponivel diminui",
+        "Scenario":  "antes=5 depois=4",
+        "Passed":  true,
+        "Detail":  "OK"
+    },
+    {
+        "Phase":  5,
+        "Num":  3,
+        "Name":  "Emprestimo no banco",
+        "Scenario":  "POST retornou 201",
+        "Passed":  true,
+        "Detail":  "status=ATIVO"
+    },
+    {
+        "Phase":  5,
+        "Num":  4,
+        "Name":  "Emprestimo no cliente",
+        "Scenario":  "GET cliente",
+        "Passed":  true,
+        "Detail":  "ativos=1"
+    },
+    {
+        "Phase":  5,
+        "Num":  6,
+        "Name":  "Livro indisponivel",
+        "Scenario":  "sem livro qty=0 no acervo",
+        "Passed":  false,
+        "Detail":  "Pendente - nenhum livro indisponivel para teste"
+    },
+    {
+        "Phase":  5,
+        "Num":  5,
+        "Name":  "Cliente com atraso bloqueado",
+        "Scenario":  "emprestimo vencido",
+        "Passed":  false,
+        "Detail":  "Pendente - requer UPDATE SQL data_prevista_devolucao"
+    },
+    {
+        "Phase":  6,
+        "Num":  1,
+        "Name":  "Registrar devolucao",
+        "Scenario":  "POST devolver",
+        "Passed":  true,
+        "Detail":  "msg=Devolucao registrada com sucesso."
+    },
+    {
+        "Phase":  6,
+        "Num":  2,
+        "Name":  "data_devolucao preenchida",
+        "Scenario":  "returnedAt",
+        "Passed":  true,
+        "Detail":  "data=2026-06-06"
+    },
+    {
+        "Phase":  6,
+        "Num":  3,
+        "Name":  "quantidade aumenta",
+        "Scenario":  "apos devolucao",
+        "Passed":  true,
+        "Detail":  "qty pos-dev=4 (ver pos-return via GET)"
+    },
+    {
+        "Phase":  6,
+        "Num":  3,
+        "Name":  "quantidade_disponivel aumenta",
+        "Scenario":  "comparar pos devolucao",
+        "Passed":  true,
+        "Detail":  "qty=5 esperado=5"
+    },
+    {
+        "Phase":  6,
+        "Num":  4,
+        "Name":  "Historico cliente",
+        "Scenario":  "historico nao vazio apos dev",
+        "Passed":  true,
+        "Detail":  "historico=1"
+    },
+    {
+        "Phase":  6,
+        "Num":  5,
+        "Name":  "Multa atraso R/dia",
+        "Scenario":  "emprestimo atrasado",
+        "Passed":  false,
+        "Detail":  "Pendente - requer emprestimo com data passada"
+    },
+    {
+        "Phase":  6,
+        "Num":  6,
+        "Name":  "Multa dashboard",
+        "Scenario":  "multas pendentes",
+        "Passed":  true,
+        "Detail":  "multas=10.00"
+    },
+    {
+        "Phase":  7,
+        "Num":  1,
+        "Name":  "Painel funcionario",
+        "Scenario":  "UI",
+        "Passed":  false,
+        "Detail":  "Pendente - teste manual browser"
+    },
+    {
+        "Phase":  7,
+        "Num":  2,
+        "Name":  "Consultar clientes",
+        "Scenario":  "GET /api/clientes",
+        "Passed":  true,
+        "Detail":  "HTTP 200"
+    },
+    {
+        "Phase":  7,
+        "Num":  3,
+        "Name":  "Consultar atrasos",
+        "Scenario":  "GET atrasados",
+        "Passed":  true,
+        "Detail":  "HTTP 200"
+    },
+    {
+        "Phase":  7,
+        "Num":  4,
+        "Name":  "Registrar emprestimo UI",
+        "Scenario":  "API ok",
+        "Passed":  true,
+        "Detail":  "Validado via API Fase 5"
+    },
+    {
+        "Phase":  7,
+        "Num":  5,
+        "Name":  "Registrar devolucao UI",
+        "Scenario":  "API ok",
+        "Passed":  true,
+        "Detail":  "Validado via API Fase 6"
+    },
+    {
+        "Phase":  8,
+        "Num":  1,
+        "Name":  "Livros acervo",
+        "Scenario":  "metrica",
+        "Passed":  true,
+        "Detail":  "valor=143"
+    },
+    {
+        "Phase":  8,
+        "Num":  2,
+        "Name":  "Clientes",
+        "Scenario":  "metrica",
+        "Passed":  true,
+        "Detail":  "valor=6"
+    },
+    {
+        "Phase":  8,
+        "Num":  3,
+        "Name":  "Funcionarios",
+        "Scenario":  "metrica",
+        "Passed":  true,
+        "Detail":  "valor=3"
+    },
+    {
+        "Phase":  8,
+        "Num":  4,
+        "Name":  "Emprestimos ativos",
+        "Scenario":  "metrica",
+        "Passed":  true,
+        "Detail":  "valor=4"
+    },
+    {
+        "Phase":  8,
+        "Num":  5,
+        "Name":  "Atrasados",
+        "Scenario":  "metrica",
+        "Passed":  true,
+        "Detail":  "valor=0"
+    },
+    {
+        "Phase":  8,
+        "Num":  6,
+        "Name":  "Multas pendentes",
+        "Scenario":  "metrica",
+        "Passed":  true,
+        "Detail":  "valor=10.00"
+    },
+    {
+        "Phase":  8,
+        "Num":  7,
+        "Name":  "Indisponiveis",
+        "Scenario":  "metrica",
+        "Passed":  true,
+        "Detail":  "valor=0"
+    },
+    {
+        "Phase":  8,
+        "Num":  8,
+        "Name":  "Generos consumidos",
+        "Scenario":  "endpoint",
+        "Passed":  true,
+        "Detail":  "pontos=5"
+    },
+    {
+        "Phase":  8,
+        "Num":  9,
+        "Name":  "Livros emprestados",
+        "Scenario":  "endpoint",
+        "Passed":  true,
+        "Detail":  "livros=8"
+    },
+    {
+        "Phase":  8,
+        "Num":  10,
+        "Name":  "Graficos",
+        "Scenario":  "emprestimos-por-mes",
+        "Passed":  true,
+        "Detail":  "pontos=2"
+    },
+    {
+        "Phase":  10,
+        "Num":  1,
+        "Name":  "Frontend local",
+        "Scenario":  "5173",
+        "Passed":  true,
+        "Detail":  "Vite running"
+    },
+    {
+        "Phase":  10,
+        "Num":  2,
+        "Name":  "Backend local",
+        "Scenario":  "8080",
+        "Passed":  true,
+        "Detail":  "API OK"
+    },
+    {
+        "Phase":  10,
+        "Num":  3,
+        "Name":  "localhost",
+        "Scenario":  "127.0.0.1",
+        "Passed":  true,
+        "Detail":  "127.0.0.1 OK"
+    },
+    {
+        "Phase":  10,
+        "Num":  4,
+        "Name":  "IP local",
+        "Scenario":  "192.168.56.1",
+        "Passed":  "Acesso via 192.168.56.1 OK",
+        "Detail":  null
+    },
+    {
+        "Phase":  10,
+        "Num":  5,
+        "Name":  "Preparacao ngrok",
+        "Scenario":  "CORS + host vite --host",
+        "Passed":  true,
+        "Detail":  "vite --host e CorsConfig configurados"
+    },
+    {
+        "Phase":  10,
+        "Num":  6,
+        "Name":  "CORS",
+        "Scenario":  "OPTIONS preflight",
+        "Passed":  true,
+        "Detail":  "Allow-Origin=http://localhost:5173"
+    }
+]

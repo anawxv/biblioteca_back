@@ -35,6 +35,10 @@ public class Emprestimo {
     @JoinColumn(name = "id_funcionario")
     private Funcionario funcionario;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_exemplar")
+    private ExemplarLivro exemplar;
+
     @Column(name = "data_emprestimo", nullable = false)
     private LocalDate dataEmprestimo;
 
@@ -81,6 +85,14 @@ public class Emprestimo {
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
+    }
+
+    public ExemplarLivro getExemplar() {
+        return exemplar;
+    }
+
+    public void setExemplar(ExemplarLivro exemplar) {
+        this.exemplar = exemplar;
     }
 
     public LocalDate getDataEmprestimo() {

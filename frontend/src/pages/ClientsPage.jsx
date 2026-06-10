@@ -55,15 +55,22 @@ export function ClientsPage() {
       {filteredClients.length ? (
         <section className="recent-list">
           {filteredClients.map((client) => (
-            <article className="recent-item" key={client.id}>
-              <strong>{client.name}</strong>
-              <p>{client.email}</p>
-              <small>{client.phone || "Sem telefone"}</small>
-              <span className={`status-badge status-badge--${client.blocked || client.active === false ? "atrasado" : "disponivel"}`}>
-                {client.blocked || client.active === false ? "Bloqueado" : "Ativo"}
-              </span>
-              <small>Empréstimos ativos: {client.activeLoans ?? "não informado"}</small>
-              <small>Multas pendentes: {client.pendingFine ? currency(client.pendingFine) : "R$ 0,00"}</small>
+            <article className="recent-item client-info-card" key={client.id}>
+              <strong className="client-info-card__name">{client.name}</strong>
+              <p className="client-info-card__line">{client.email}</p>
+              <p className="client-info-card__line">{client.phone || "Sem telefone"}</p>
+              <div className="client-info-card__line client-info-card__status">
+                <span>Status:</span>
+                <span className={`status-badge status-badge--${client.blocked || client.active === false ? "atrasado" : "disponivel"}`}>
+                  {client.blocked || client.active === false ? "Bloqueado" : "Ativo"}
+                </span>
+              </div>
+              <p className="client-info-card__line">
+                Empréstimos ativos: {client.activeLoans ?? "não informado"}
+              </p>
+              <p className="client-info-card__line client-info-card__fine">
+                Multas pendentes: {client.pendingFine ? currency(client.pendingFine) : "R$ 0,00"}
+              </p>
             </article>
           ))}
         </section>

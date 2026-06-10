@@ -38,18 +38,25 @@ function sanitizeUser(user) {
 function enrichLoan(loan) {
   const client = db.users.find((user) => user.id === loan.clientId);
   const book = db.books.find((item) => item.id === loan.bookId);
-  const status = getLoanStatus(loan.dueDate, loan.returnedAt);
+  const status =
+    loan.technicalStatus === "PENDENTE"
+      ? "Pendente"
+      : loan.technicalStatus === "RECUSADA"
+        ? "Recusada"
+        : getLoanStatus(loan.dueDate, loan.returnedAt);
 
   return {
     ...loan,
+    funcionarioId: loan.funcionarioId ?? "f1",
     client: sanitizeUser(client),
     book,
     status,
+    technicalStatus: loan.technicalStatus || (loan.returnedAt ? "DEVOLVIDO" : "ATIVO"),
   };
 }
 
 function getActiveLoans() {
-  return db.loans.filter((loan) => !loan.returnedAt);
+  return db.loans.filter((loan) => !loan.returnedAt && loan.technicalStatus !== "PENDENTE");
 }
 
 function recomputeBookAvailability() {
@@ -115,9 +122,11 @@ function buildDashboard() {
     metrics: {
       totalBooks: db.books.filter((book) => book.active !== false).length,
       totalClients: db.users.filter((user) => user.role === "cliente").length,
+      totalEmployees: db.users.filter((user) => user.role === "funcionario").length,
       activeLoans: activeLoans.length,
       overdueLoans: overdueLoans.length,
       pendingFines: pendingFine,
+      unavailableBooks: db.books.filter((book) => book.active !== false && Number(book.availableQuantity) <= 0).length,
     },
     recentLoans,
     loansByMonth: Object.entries(loanBuckets).map(([label, value]) => ({ label, value })),
@@ -151,12 +160,94 @@ function ensureClient(clientId) {
   return client;
 }
 
+function createLoanRequest(clientId, bookId) {
+  const client = ensureClient(clientId);
+  const book = ensureBook(bookId);
+
+  if (client.pendingFine > 0 || client.blocked) {
+    throw new Error("Usuário com pendência. Regularize antes de solicitar o empréstimo.");
+  }
+
+  if (book.status !== "disponivel" || Number(book.availableQuantity || 0) <= 0) {
+    throw new Error("Livro indisponível para empréstimo.");
+  }
+
+  const existingPending = db.loans.find(
+    (loan) =>
+      loan.clientId === client.id &&
+      loan.bookId === book.id &&
+      loan.technicalStatus === "PENDENTE" &&
+      !loan.returnedAt,
+  );
+
+  if (existingPending) {
+    throw new Error("Já existe uma solicitação pendente para este livro.");
+  }
+
+  const borrowedAt = new Date();
+  const newLoan = {
+    id: `e${Date.now()}`,
+    clientId: client.id,
+    bookId: book.id,
+    borrowedAt: borrowedAt.toISOString(),
+    dueDate: borrowedAt.toISOString(),
+    returnedAt: null,
+    technicalStatus: "PENDENTE",
+  };
+
+  db.loans.unshift(newLoan);
+  return enrichLoan(newLoan);
+}
+
+function approvePendingLoan(pendingIndex, book) {
+  const borrowedAt = new Date();
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + 30);
+
+  const updatedLoan = {
+    ...db.loans[pendingIndex],
+    borrowedAt: borrowedAt.toISOString(),
+    dueDate: dueDate.toISOString(),
+    technicalStatus: "ATIVO",
+  };
+
+  db.loans[pendingIndex] = updatedLoan;
+  db.books = db.books.map((item) =>
+    item.id === book.id
+      ? {
+          ...item,
+          loanCount: item.loanCount + 1,
+          availableQuantity: Math.max(0, Number(item.availableQuantity || item.quantity || 1) - 1),
+          status:
+            Math.max(0, Number(item.availableQuantity || item.quantity || 1) - 1) > 0
+              ? "disponivel"
+              : "indisponivel",
+        }
+      : item,
+  );
+
+  recomputeBookAvailability();
+  return enrichLoan(updatedLoan);
+}
+
 function createLoan(clientId, bookId) {
   const client = ensureClient(clientId);
   const book = ensureBook(bookId);
 
-  if (client.pendingFine > 0) {
+  if (client.pendingFine > 0 || client.blocked) {
     throw new Error("Usuário com pendência. Regularize antes de registrar o empréstimo.");
+  }
+
+  const pendingIndex = db.loans.findIndex(
+    (loan) =>
+      loan.clientId === String(clientId) &&
+      loan.bookId === String(bookId) &&
+      loan.technicalStatus === "PENDENTE" &&
+      !loan.returnedAt,
+  );
+
+  if (pendingIndex >= 0) {
+    return approvePendingLoan(pendingIndex, book);
   }
 
   if (book.status !== "disponivel" || Number(book.availableQuantity || 0) <= 0) {
@@ -165,7 +256,7 @@ function createLoan(clientId, bookId) {
 
   const borrowedAt = new Date();
   const dueDate = new Date();
-  dueDate.setDate(dueDate.getDate() + 14);
+  dueDate.setDate(dueDate.getDate() + 30);
 
   const newLoan = {
     id: `e${Date.now()}`,
@@ -174,6 +265,7 @@ function createLoan(clientId, bookId) {
     borrowedAt: borrowedAt.toISOString(),
     dueDate: dueDate.toISOString(),
     returnedAt: null,
+    technicalStatus: "ATIVO",
   };
 
   db.loans.unshift(newLoan);
@@ -268,7 +360,7 @@ export const mockServer = {
 
   async solicitarEmprestimo(payload) {
     try {
-      const loan = createLoan(payload.clienteId, payload.livroId);
+      const loan = createLoanRequest(payload.clienteId, payload.livroId);
       return delay(loan);
     } catch (error) {
       return delay(error, true);
@@ -282,8 +374,8 @@ export const mockServer = {
       .sort((a, b) => new Date(b.borrowedAt) - new Date(a.borrowedAt));
 
     return delay({
-      ativos: myLoans.filter((loan) => !loan.returnedAt),
-      historico: myLoans.filter((loan) => loan.returnedAt),
+      ativos: myLoans.filter((loan) => !loan.returnedAt && loan.technicalStatus !== "PENDENTE"),
+      historico: myLoans.filter((loan) => loan.returnedAt || loan.technicalStatus === "RECUSADA"),
     });
   },
 

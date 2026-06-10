@@ -1,0 +1,610 @@
+﻿[
+    {
+        "Num":  1,
+        "Name":  "Classe de dominio Livro",
+        "Scenario":  "Arquivo model/Livro.java com @Entity e @Table",
+        "Result":  "Entidade JPA presente e mapeada",
+        "Status":  "Validado",
+        "Evidence":  "backend_java/.../model/Livro.java"
+    },
+    {
+        "Num":  2,
+        "Name":  "Classe de dominio Usuario",
+        "Scenario":  "Arquivo model/Usuario.java com @Entity e @Table",
+        "Result":  "Entidade JPA presente e mapeada",
+        "Status":  "Validado",
+        "Evidence":  "backend_java/.../model/Usuario.java"
+    },
+    {
+        "Num":  3,
+        "Name":  "Classe de dominio Cliente",
+        "Scenario":  "Arquivo model/Cliente.java com @Entity e @Table",
+        "Result":  "Entidade JPA presente e mapeada",
+        "Status":  "Validado",
+        "Evidence":  "backend_java/.../model/Cliente.java"
+    },
+    {
+        "Num":  4,
+        "Name":  "Classe de dominio Funcionario",
+        "Scenario":  "Arquivo model/Funcionario.java com @Entity e @Table",
+        "Result":  "Entidade JPA presente e mapeada",
+        "Status":  "Validado",
+        "Evidence":  "backend_java/.../model/Funcionario.java"
+    },
+    {
+        "Num":  5,
+        "Name":  "Classe de dominio Emprestimo",
+        "Scenario":  "Arquivo model/Emprestimo.java com @Entity e @Table",
+        "Result":  "Entidade JPA presente e mapeada",
+        "Status":  "Validado",
+        "Evidence":  "backend_java/.../model/Emprestimo.java"
+    },
+    {
+        "Num":  6,
+        "Name":  "Classe de dominio Multa",
+        "Scenario":  "Arquivo model/Multa.java com @Entity e @Table",
+        "Result":  "Entidade JPA presente e mapeada",
+        "Status":  "Validado",
+        "Evidence":  "backend_java/.../model/Multa.java"
+    },
+    {
+        "Num":  7,
+        "Name":  "Classe de dominio Reserva",
+        "Scenario":  "Arquivo model/Reserva.java com @Entity e @Table",
+        "Result":  "Entidade JPA presente e mapeada",
+        "Status":  "Validado",
+        "Evidence":  "backend_java/.../model/Reserva.java"
+    },
+    {
+        "Num":  8,
+        "Name":  "Criacao das tabelas",
+        "Scenario":  "Tabelas obrigatorias no schema public",
+        "Result":  "Todas as 9 tabelas existem",
+        "Status":  "Validado",
+        "Evidence":  "SQL: SELECT tablename FROM pg_tables WHERE schemaname=\u0027public\u0027"
+    },
+    {
+        "Num":  9,
+        "Name":  "Conexao PostgreSQL",
+        "Scenario":  "JDBC biblioteca@localhost:5432",
+        "Result":  "Conexao OK",
+        "Status":  "Validado",
+        "Evidence":  "DbExec: SELECT 1"
+    },
+    {
+        "Num":  10,
+        "Name":  "Persistencia de dados",
+        "Scenario":  "Livros ativos no banco",
+        "Result":  "146 livros ativos persistidos",
+        "Status":  "Validado",
+        "Evidence":  "SQL: SELECT COUNT(*) FROM livro WHERE ativo=true"
+    },
+    {
+        "Num":  11,
+        "Name":  "Relacionamentos no banco",
+        "Scenario":  "FKs usuario-cliente, usuario-funcionario, emprestimo",
+        "Result":  "cliente=14 funcionario=8 emprestimo=16",
+        "Status":  "Validado",
+        "Evidence":  "SQL JOINs cliente/funcionario/emprestimo"
+    },
+    {
+        "Num":  12,
+        "Name":  "DER na pratica pelo banco",
+        "Scenario":  "Constraints FK no PostgreSQL",
+        "Result":  "18 foreign keys no schema public",
+        "Status":  "Validado",
+        "Evidence":  "SQL: information_schema.table_constraints"
+    },
+    {
+        "Num":  13,
+        "Name":  "Entidades mapeadas corretamente",
+        "Scenario":  "Todas as 7 entidades com @Entity/@Table",
+        "Result":  "7/7 entidades mapeadas",
+        "Status":  "Validado",
+        "Evidence":  "Inspecao model/*.java"
+    },
+    {
+        "Num":  14,
+        "Name":  "Relacionamento Usuario -\u003e Cliente",
+        "Scenario":  "@OneToOne @MapsId em Cliente",
+        "Result":  "Cliente.id = Usuario.id",
+        "Status":  "Validado",
+        "Evidence":  "Cliente.java"
+    },
+    {
+        "Num":  15,
+        "Name":  "Relacionamento Usuario -\u003e Funcionario",
+        "Scenario":  "@OneToOne @MapsId em Funcionario",
+        "Result":  "Funcionario.id = Usuario.id",
+        "Status":  "Validado",
+        "Evidence":  "Funcionario.java"
+    },
+    {
+        "Num":  16,
+        "Name":  "Relacionamento Cliente -\u003e Emprestimo",
+        "Scenario":  "@ManyToOne id_cliente",
+        "Result":  "Emprestimo referencia Cliente",
+        "Status":  "Validado",
+        "Evidence":  "Emprestimo.java"
+    },
+    {
+        "Num":  17,
+        "Name":  "Relacionamento Livro -\u003e Emprestimo",
+        "Scenario":  "@ManyToOne id_livro",
+        "Result":  "Emprestimo referencia Livro",
+        "Status":  "Validado",
+        "Evidence":  "Emprestimo.java"
+    },
+    {
+        "Num":  18,
+        "Name":  "Relacionamento Emprestimo -\u003e Multa",
+        "Scenario":  "@ManyToOne id_emprestimo em Multa",
+        "Result":  "Multa referencia Emprestimo",
+        "Status":  "Validado",
+        "Evidence":  "Multa.java"
+    },
+    {
+        "Num":  19,
+        "Name":  "Entidade Reserva operacional",
+        "Scenario":  "ReservaRepository + tabela reserva",
+        "Result":  "Reserva mapeada e tabela existe",
+        "Status":  "Validado",
+        "Evidence":  "ReservaRepository.java"
+    },
+    {
+        "Num":  20,
+        "Name":  "Repositories funcionando",
+        "Scenario":  "Interfaces JpaRepository presentes",
+        "Result":  "7 repositories encontrados",
+        "Status":  "Validado",
+        "Evidence":  "repository/*.java"
+    },
+    {
+        "Num":  21,
+        "Name":  "UsuarioService",
+        "Scenario":  "Cadastro e listagem de usuarios",
+        "Result":  "Service presente",
+        "Status":  "Validado",
+        "Evidence":  "UsuarioService.java"
+    },
+    {
+        "Num":  22,
+        "Name":  "EmprestimoService",
+        "Scenario":  "Registrar emprestimo e devolucao",
+        "Result":  "Service presente",
+        "Status":  "Validado",
+        "Evidence":  "EmprestimoService.java"
+    },
+    {
+        "Num":  23,
+        "Name":  "DashboardService",
+        "Scenario":  "Metricas reais do banco",
+        "Result":  "Service presente",
+        "Status":  "Validado",
+        "Evidence":  "DashboardService.java"
+    },
+    {
+        "Num":  24,
+        "Name":  "Login cliente",
+        "Scenario":  "POST /api/auth/login cliente.demo@biblioteca.com",
+        "Result":  "id=31 tipo=CLIENTE",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/auth/login"
+    },
+    {
+        "Num":  25,
+        "Name":  "Login funcionario",
+        "Scenario":  "POST /api/auth/login funcionario.demo@biblioteca.com",
+        "Result":  "id=32 tipo=FUNCIONARIO",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/auth/login"
+    },
+    {
+        "Num":  26,
+        "Name":  "Bloqueio de acesso por perfil",
+        "Scenario":  "ProtectedRoute redireciona perfil errado",
+        "Result":  "Rota protegida por role",
+        "Status":  "Validado",
+        "Evidence":  "ProtectedRoute.jsx"
+    },
+    {
+        "Num":  27,
+        "Name":  "Senha criptografada com BCrypt",
+        "Scenario":  "senha_hash no banco",
+        "Result":  "prefixo $2a$10$",
+        "Status":  "Validado",
+        "Evidence":  "SQL: SELECT senha_hash FROM usuario"
+    },
+    {
+        "Num":  28,
+        "Name":  "API /api/livros",
+        "Scenario":  "GET listagem",
+        "Result":  "HTTP 200 count=146",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/livros"
+    },
+    {
+        "Num":  29,
+        "Name":  "API /api/categorias",
+        "Scenario":  "GET categorias",
+        "Result":  "HTTP 200 total=18",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/categorias"
+    },
+    {
+        "Num":  30,
+        "Name":  "API /api/dashboard",
+        "Scenario":  "GET metricas",
+        "Result":  "livros=146 clientes=14",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/dashboard"
+    },
+    {
+        "Num":  31,
+        "Name":  "API /api/auth/login",
+        "Scenario":  "Login valido e invalido",
+        "Result":  "valido=200 invalido=400",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/auth/login"
+    },
+    {
+        "Num":  32,
+        "Name":  "API /api/emprestimos",
+        "Scenario":  "GET atrasados",
+        "Result":  "HTTP 200",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/emprestimos/atrasados"
+    },
+    {
+        "Num":  33,
+        "Name":  "API /api/clientes",
+        "Scenario":  "GET listagem",
+        "Result":  "count=14",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/clientes"
+    },
+    {
+        "Num":  34,
+        "Name":  "API /api/funcionarios",
+        "Scenario":  "GET listagem",
+        "Result":  "count=8",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/funcionarios"
+    },
+    {
+        "Num":  35,
+        "Name":  "Busca por texto sem erro bytea/lower",
+        "Scenario":  "GET /livros?busca=...",
+        "Result":  "titulo=1 autor=3 cat=18",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/livros?busca=1808"
+    },
+    {
+        "Num":  36,
+        "Name":  "Evitar recursao infinita JSON",
+        "Scenario":  "Profundidade JSON finita em /livros",
+        "Result":  "JSON serializado sem recursao infinita",
+        "Status":  "Validado",
+        "Evidence":  "GET /api/livros depth-check"
+    },
+    {
+        "Num":  37,
+        "Name":  "API sem dados fake/fallback falso",
+        "Scenario":  "Dashboard bate com COUNT do banco",
+        "Result":  "dashboard=146 banco=146",
+        "Status":  "Validado",
+        "Evidence":  "SQL COUNT vs GET /api/dashboard"
+    },
+    {
+        "Num":  38,
+        "Name":  "Emprestimo com livro disponivel",
+        "Scenario":  "livro=4 cliente=31",
+        "Result":  "id=20 status=ATIVO",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/emprestimos"
+    },
+    {
+        "Num":  39,
+        "Name":  "Confirmar indisponibilidade/quantidade",
+        "Scenario":  "qty diminui apos emprestimo",
+        "Result":  "antes=2 depois=1",
+        "Status":  "Validado",
+        "Evidence":  "SQL quantidade_disponivel"
+    },
+    {
+        "Num":  40,
+        "Name":  "Tentativa com livro indisponivel",
+        "Scenario":  "qty=0",
+        "Result":  "Livro indisponivel.",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/emprestimos livro indisponivel"
+    },
+    {
+        "Num":  41,
+        "Name":  "Cliente bloqueado por atraso",
+        "Scenario":  "emprestimo vencido ativo",
+        "Result":  "Cliente possui emprestimo em atraso.",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/emprestimos com atraso"
+    },
+    {
+        "Num":  42,
+        "Name":  "Limite/restricao usuario bloqueado",
+        "Scenario":  "usuario.bloqueado=true",
+        "Result":  "Cliente bloqueado.",
+        "Status":  "Validado",
+        "Evidence":  "SQL UPDATE bloqueado + POST emprestimo"
+    },
+    {
+        "Num":  43,
+        "Name":  "Historico sincronizado com banco real",
+        "Scenario":  "GET cliente vs COUNT SQL",
+        "Result":  "api_ativos=2 api_hist=4 sql=6",
+        "Status":  "Validado",
+        "Evidence":  "GET /api/emprestimos/cliente/{id}"
+    },
+    {
+        "Num":  44,
+        "Name":  "Devolucao no prazo",
+        "Scenario":  "emprestimo=20",
+        "Result":  "status=DEVOLVIDO sem multa",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/emprestimos/{id}/devolver"
+    },
+    {
+        "Num":  45,
+        "Name":  "Livro volta a ficar disponivel",
+        "Scenario":  "qty restaurada",
+        "Result":  "qty=2 esperado=2",
+        "Status":  "Validado",
+        "Evidence":  "SQL quantidade_disponivel pos-devolucao"
+    },
+    {
+        "Num":  46,
+        "Name":  "Devolucao com atraso",
+        "Scenario":  "emprestimo=21 (5 dias)",
+        "Result":  "fineApplied=True amount=10.00",
+        "Status":  "Validado",
+        "Evidence":  "curl POST devolver atrasado"
+    },
+    {
+        "Num":  47,
+        "Name":  "Calculo multa R$ 2,00 por dia",
+        "Scenario":  "5 dias = R$ 10,00",
+        "Result":  "R$ 10.00",
+        "Status":  "Validado",
+        "Evidence":  "SQL SELECT * FROM multa + API fineAmount"
+    },
+    {
+        "Num":  48,
+        "Name":  "Estatisticas reais do banco",
+        "Scenario":  "GET /api/dashboard vs SQL",
+        "Result":  "API responde com metricas",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/dashboard"
+    },
+    {
+        "Num":  49,
+        "Name":  "Livros no acervo",
+        "Scenario":  "GET /api/dashboard vs SQL",
+        "Result":  "api=146 sql=146",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/dashboard"
+    },
+    {
+        "Num":  50,
+        "Name":  "Clientes cadastrados",
+        "Scenario":  "GET /api/dashboard vs SQL",
+        "Result":  "api=14 sql=14",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/dashboard"
+    },
+    {
+        "Num":  51,
+        "Name":  "Funcionarios cadastrados",
+        "Scenario":  "GET /api/dashboard vs SQL",
+        "Result":  "api=8 sql=8",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/dashboard"
+    },
+    {
+        "Num":  52,
+        "Name":  "Emprestimos ativos",
+        "Scenario":  "GET /api/dashboard vs SQL",
+        "Result":  "api=4 sql=4",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/dashboard"
+    },
+    {
+        "Num":  53,
+        "Name":  "Atrasados",
+        "Scenario":  "emprestimosAtrasados",
+        "Result":  "api=0 sql=0",
+        "Status":  "Validado",
+        "Evidence":  "SQL emprestimos vencidos"
+    },
+    {
+        "Num":  54,
+        "Name":  "Multas pendentes",
+        "Scenario":  "multasPendentes",
+        "Result":  "api=30.00 sql=30.00",
+        "Status":  "Validado",
+        "Evidence":  "SQL SUM multa WHERE paga=false"
+    },
+    {
+        "Num":  55,
+        "Name":  "Livros indisponiveis",
+        "Scenario":  "livrosIndisponiveis",
+        "Result":  "api=1 sql=1",
+        "Status":  "Validado",
+        "Evidence":  "SQL livros qty\u003c=0"
+    },
+    {
+        "Num":  56,
+        "Name":  "Livros mais emprestados",
+        "Scenario":  "GET /dashboard/livros-mais-emprestados",
+        "Result":  "livros=10",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/dashboard/livros-mais-emprestados"
+    },
+    {
+        "Num":  57,
+        "Name":  "Generos mais consumidos",
+        "Scenario":  "GET /dashboard/generos-mais-consumidos",
+        "Result":  "pontos=6",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/dashboard/generos-mais-consumidos"
+    },
+    {
+        "Num":  58,
+        "Name":  "Cadastro livro dados validos",
+        "Scenario":  "POST /livros",
+        "Result":  "id=161",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/livros"
+    },
+    {
+        "Num":  59,
+        "Name":  "Cadastro livro campos obrigatorios vazios",
+        "Scenario":  "POST sem titulo/autor",
+        "Result":  "HTTP 400 rejeitado",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/livros campos vazios"
+    },
+    {
+        "Num":  60,
+        "Name":  "Edicao de livro",
+        "Scenario":  "PUT /livros/{id}",
+        "Result":  "titulo=Editado 20260609133422",
+        "Status":  "Validado",
+        "Evidence":  "curl PUT /api/livros/161"
+    },
+    {
+        "Num":  61,
+        "Name":  "Exclusao logica de livro",
+        "Scenario":  "DELETE soft delete",
+        "Result":  "ativo=false no banco",
+        "Status":  "Validado",
+        "Evidence":  "SQL SELECT ativo FROM livro"
+    },
+    {
+        "Num":  62,
+        "Name":  "Busca por titulo",
+        "Scenario":  "busca=1808",
+        "Result":  "found=1",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/livros?busca=1808"
+    },
+    {
+        "Num":  63,
+        "Name":  "Busca por autor",
+        "Scenario":  "busca=Laurentino",
+        "Result":  "found=3",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/livros?busca=Laurentino"
+    },
+    {
+        "Num":  64,
+        "Name":  "Busca por categoria",
+        "Scenario":  "busca=Hist",
+        "Result":  "found=18",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/livros?busca=Hist"
+    },
+    {
+        "Num":  65,
+        "Name":  "Busca inexistente",
+        "Scenario":  "sem resultado",
+        "Result":  "found=0",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/livros?busca=XYZINEXISTENTE999"
+    },
+    {
+        "Num":  66,
+        "Name":  "Disponibilidade correta",
+        "Scenario":  "livro=9",
+        "Result":  "disponivel=3",
+        "Status":  "Validado",
+        "Evidence":  "curl GET /api/livros/9"
+    },
+    {
+        "Num":  67,
+        "Name":  "Fluxo completo cadastro-consulta-emprestimo-devolucao",
+        "Scenario":  "Ciclo ponta a ponta",
+        "Result":  "cadastro=162 emprestimo=22 qty_antes=3 qty_pos_emp=2 qty_pos_dev=3",
+        "Status":  "Validado",
+        "Evidence":  "Sequencia POST livro/emprestimo/devolver + SQL qty"
+    },
+    {
+        "Num":  68,
+        "Name":  "Cadastro cliente",
+        "Scenario":  "POST /usuarios CLIENTE",
+        "Result":  "id=41",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/usuarios"
+    },
+    {
+        "Num":  69,
+        "Name":  "Cadastro funcionario",
+        "Scenario":  "POST /usuarios FUNCIONARIO codigo=DEMO-2026-001",
+        "Result":  "id=42",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/usuarios"
+    },
+    {
+        "Num":  70,
+        "Name":  "Atualizacao de dados do usuario",
+        "Scenario":  "ProfilePage updateProfile",
+        "Result":  "Edicao de perfil no front (localStorage)",
+        "Status":  "Pendente",
+        "Evidence":  "ProfilePage.jsx - persistencia no back-end nao implementada"
+    },
+    {
+        "Num":  71,
+        "Name":  "Login valido",
+        "Scenario":  "cliente e funcionario demo",
+        "Result":  "cliente=True funcionario=True",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/auth/login"
+    },
+    {
+        "Num":  72,
+        "Name":  "Login invalido",
+        "Scenario":  "senha errada",
+        "Result":  "HTTP 400",
+        "Status":  "Validado",
+        "Evidence":  "curl POST /api/auth/login senha errada"
+    },
+    {
+        "Num":  73,
+        "Name":  "Frontend sobe",
+        "Scenario":  "Vite :5173",
+        "Result":  "HTTP 200",
+        "Status":  "Validado",
+        "Evidence":  "curl http://localhost:5173/"
+    },
+    {
+        "Num":  74,
+        "Name":  "Build backend",
+        "Scenario":  "mvnw package",
+        "Result":  "jar=True",
+        "Status":  "Validado",
+        "Evidence":  "backend_java/target/*.jar"
+    },
+    {
+        "Num":  75,
+        "Name":  "Build frontend",
+        "Scenario":  "npm run build",
+        "Result":  "dist=True",
+        "Status":  "Validado",
+        "Evidence":  "frontend/dist/index.html"
+    },
+    {
+        "Num":  76,
+        "Name":  "Screenshots Playwright 16 telas",
+        "Scenario":  "frontend/test-results/screenshots/",
+        "Result":  "16/16 geradas",
+        "Status":  "Validado",
+        "Evidence":  "frontend/test-results/screenshots/*.png"
+    }
+]

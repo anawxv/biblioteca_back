@@ -1,0 +1,62 @@
+﻿[
+    {
+        "Name":  "Frontend ngrok acessivel",
+        "Status":  "OK",
+        "Detail":  "HTTP 200 https://zoraida-prejuvenile-hyperflexibly.ngrok-free.dev/"
+    },
+    {
+        "Name":  "CORS preflight ngrok",
+        "Status":  "OK",
+        "Detail":  "N/A same-origin (proxy /api no tunel unico)"
+    },
+    {
+        "Name":  "GET /api/livros",
+        "Status":  "OK",
+        "Detail":  "HTTP 200 count=147"
+    },
+    {
+        "Name":  "GET /api/dashboard",
+        "Status":  "OK",
+        "Detail":  "HTTP 200 livros=147"
+    },
+    {
+        "Name":  "GET /api/categorias",
+        "Status":  "OK",
+        "Detail":  "HTTP 200"
+    },
+    {
+        "Name":  "POST /api/auth/login cliente",
+        "Status":  "OK",
+        "Detail":  "HTTP 200 id=31"
+    },
+    {
+        "Name":  "POST /api/auth/login funcionario",
+        "Status":  "OK",
+        "Detail":  "HTTP 200"
+    },
+    {
+        "Name":  "GET /api/clientes",
+        "Status":  "OK",
+        "Detail":  "HTTP 200 count=15"
+    },
+    {
+        "Name":  "GET /api/funcionarios",
+        "Status":  "OK",
+        "Detail":  "HTTP 200"
+    },
+    {
+        "Name":  "GET /api/emprestimos/atrasados",
+        "Status":  "OK",
+        "Detail":  "HTTP 200"
+    },
+    {
+        "Name":  "POST /api/usuarios cliente",
+        "Status":  "OK",
+        "Detail":  "HTTP 201"
+    },
+    {
+        "Name":  "POST /api/usuarios funcionario",
+        "Status":  "PENDENTE",
+        "Detail":  "Sem codigo_funcionario disponivel"
+    }
+]

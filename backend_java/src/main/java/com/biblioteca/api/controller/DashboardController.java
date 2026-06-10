@@ -38,4 +38,24 @@ public class DashboardController {
     public ResponseEntity<List<ApiDtos.ChartPointResponse>> generosMaisConsumidos() {
         return ResponseEntity.ok(dashboardService.listarGenerosMaisConsumidos());
     }
+
+    @GetMapping("/emprestimos-por-mes")
+    public ResponseEntity<List<ApiDtos.ChartPointResponse>> emprestimosPorMes() {
+        return ResponseEntity.ok(dashboardService.listarEmprestimosPorMes());
+    }
+
+    @GetMapping("/devolucoes-prazo-atrasadas")
+    public ResponseEntity<ApiDtos.ReturnsStats> devolucoesPrazoAtrasadas() {
+        return ResponseEntity.ok(dashboardService.listarDevolucoesPrazoAtrasadas());
+    }
+
+    @GetMapping("/atrasos")
+    public ResponseEntity<List<ApiDtos.LoanItemResponse>> atrasos() {
+        return ResponseEntity.ok(dashboardService.listarAtrasos());
+    }
+
+    @GetMapping("/multas-pendentes")
+    public ResponseEntity<List<ApiDtos.FineResponse>> multasPendentes() {
+        return ResponseEntity.ok(dashboardService.listarMultasPendentes());
+    }
 }

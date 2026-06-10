@@ -42,7 +42,7 @@ export function BookDetailsPage() {
 
   if (!book) {
     return (
-      <main className="page">
+      <main className="page page-with-nav">
         <TopBar title="Detalhes do livro" />
         <section className="panel">Carregando detalhes...</section>
       </main>
@@ -53,7 +53,7 @@ export function BookDetailsPage() {
   const genres = getBookGenres(book);
 
   return (
-    <main className="page">
+    <main className="page page-with-nav">
       <TopBar title={book.title} />
 
       <section className="details-panel">

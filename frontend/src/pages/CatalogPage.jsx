@@ -8,8 +8,6 @@ import {
   buscarLivros,
   listarCategorias,
   listarLivros,
-  listarLivrosMaisEmprestados,
-  listarLivrosRecentes,
 } from "../services/api";
 import { bookMatchesSmartSearch, getBookGenres, normalizeSearchText } from "../utils/search";
 
@@ -42,16 +40,21 @@ export function CatalogPage() {
       setFeedback("");
 
       try {
-        const [categoriesResponse, booksResponse, popularResponse, recentResponse] = await Promise.all([
+        const [categoriesResponse, booksResponse] = await Promise.all([
           listarCategorias(),
           listarLivros(),
-          listarLivrosMaisEmprestados(),
-          listarLivrosRecentes(),
         ]);
+        const popularBooks = [...booksResponse]
+          .sort((a, b) => Number(b.loanCount || 0) - Number(a.loanCount || 0))
+          .slice(0, 10);
+        const recentBooksResponse = [...booksResponse]
+          .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+          .slice(0, 10);
+
         setCategories(categoriesResponse);
         setBooks(booksResponse);
-        setMostBorrowed(popularResponse);
-        setRecentBooks(recentResponse);
+        setMostBorrowed(popularBooks);
+        setRecentBooks(recentBooksResponse);
       } catch (error) {
         setFeedback(error.message);
       } finally {

@@ -1,12 +1,14 @@
 package com.biblioteca.api.repository;
 
 import com.biblioteca.api.model.Multa;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.List;
 
 public interface MultaRepository extends JpaRepository<Multa, Integer> {
 
@@ -23,4 +25,15 @@ public interface MultaRepository extends JpaRepository<Multa, Integer> {
               and m.paga = false
             """)
     BigDecimal sumPendingFinesByClientId(@Param("clientId") Integer clientId);
+
+    @EntityGraph(attributePaths = {
+            "emprestimo",
+            "emprestimo.cliente",
+            "emprestimo.cliente.usuario",
+            "emprestimo.livro",
+            "emprestimo.livro.categoria",
+            "emprestimo.funcionario",
+            "emprestimo.funcionario.usuario"
+    })
+    List<Multa> findByPagaFalseOrderByCriadaEmDesc();
 }

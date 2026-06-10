@@ -15,15 +15,21 @@ import java.util.Optional;
 
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, Integer> {
 
-    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario"})
+    List<StatusEmprestimo> EXCLUDED_OPEN_STATUSES = List.of(
+            StatusEmprestimo.CANCELADO,
+            StatusEmprestimo.PENDENTE,
+            StatusEmprestimo.RECUSADA
+    );
+
+    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario", "exemplar"})
     @Query("select e from Emprestimo e where e.cliente.idCliente = :clientId order by e.dataEmprestimo desc")
     List<Emprestimo> findDetailedByClientId(@Param("clientId") Integer clientId);
 
-    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario"})
+    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario", "exemplar"})
     @Query("select e from Emprestimo e where e.idEmprestimo = :id")
     Optional<Emprestimo> findDetailedById(@Param("id") Integer id);
 
-    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario"})
+    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario", "exemplar"})
     Page<Emprestimo> findAllByOrderByDataEmprestimoDesc(Pageable pageable);
 
     List<Emprestimo> findAllByOrderByDataEmprestimoAsc();
@@ -33,44 +39,163 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, Integer>
             from Emprestimo e
             where e.cliente.idCliente = :clientId
               and e.dataDevolucao is null
-              and e.status <> :cancelled
+              and e.status not in :excluded
             """)
-    long countOpenLoansByClientId(@Param("clientId") Integer clientId, @Param("cancelled") StatusEmprestimo cancelled);
+    long countOpenLoansByClientId(
+            @Param("clientId") Integer clientId,
+            @Param("excluded") List<StatusEmprestimo> excluded
+    );
 
     @Query("""
             select count(e)
             from Emprestimo e
             where e.dataDevolucao is null
-              and e.status <> :cancelled
+              and e.status not in :excluded
             """)
-    long countActiveOpenLoans(@Param("cancelled") StatusEmprestimo cancelled);
+    long countActiveOpenLoans(@Param("excluded") List<StatusEmprestimo> excluded);
 
     @Query("""
             select count(e)
             from Emprestimo e
             where e.dataDevolucao is null
               and e.dataPrevistaDevolucao < :today
-              and e.status <> :cancelled
+              and e.status not in :excluded
             """)
-    long countOverdueOpenLoans(@Param("today") LocalDate today, @Param("cancelled") StatusEmprestimo cancelled);
+    long countOverdueOpenLoans(
+            @Param("today") LocalDate today,
+            @Param("excluded") List<StatusEmprestimo> excluded
+    );
+
+    @Query("""
+            select count(e)
+            from Emprestimo e
+            where e.cliente.idCliente = :clientId
+              and e.dataDevolucao is null
+              and e.dataPrevistaDevolucao < :today
+              and e.status not in :excluded
+            """)
+    long countOverdueLoansByClientId(
+            @Param("clientId") Integer clientId,
+            @Param("today") LocalDate today,
+            @Param("excluded") List<StatusEmprestimo> excluded
+    );
+
+    long countByStatus(StatusEmprestimo status);
+
+    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario", "exemplar"})
+    @Query("""
+            select e
+            from Emprestimo e
+            where e.dataDevolucao is null
+              and e.status not in :excluded
+              and (
+                :search is null
+                or lower(e.cliente.usuario.nome) like lower(concat('%', :search, '%'))
+                or lower(e.cliente.usuario.email) like lower(concat('%', :search, '%'))
+                or lower(e.livro.titulo) like lower(concat('%', :search, '%'))
+                or lower(e.livro.autor) like lower(concat('%', :search, '%'))
+              )
+            order by e.dataEmprestimo desc
+            """)
+    List<Emprestimo> findActiveDetailed(
+            @Param("excluded") List<StatusEmprestimo> excluded,
+            @Param("search") String search
+    );
+
+    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario", "exemplar"})
+    @Query("""
+            select e
+            from Emprestimo e
+            where e.dataDevolucao is null
+              and e.status not in :excluded
+            order by e.dataEmprestimo desc
+            """)
+    List<Emprestimo> findActiveDetailed(@Param("excluded") List<StatusEmprestimo> excluded);
+
+    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario", "exemplar"})
+    @Query("""
+            select e
+            from Emprestimo e
+            where e.status = :status
+            order by e.dataEmprestimo desc
+            """)
+    List<Emprestimo> findDetailedByStatus(@Param("status") StatusEmprestimo status);
+
+    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario", "exemplar"})
+    @Query("""
+            select e
+            from Emprestimo e
+            where e.cliente.idCliente = :clientId
+              and e.livro.idLivro = :livroId
+              and e.status = :status
+            """)
+    Optional<Emprestimo> findByClientIdAndLivroIdAndStatus(
+            @Param("clientId") Integer clientId,
+            @Param("livroId") Integer livroId,
+            @Param("status") StatusEmprestimo status
+    );
+
+    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario", "exemplar"})
+    @Query("""
+            select e
+            from Emprestimo e
+            where e.dataDevolucao is null
+              and e.dataPrevistaDevolucao < :today
+              and e.status not in :excluded
+              and (
+                :search is null
+                or lower(e.cliente.usuario.nome) like lower(concat('%', :search, '%'))
+                or lower(e.cliente.usuario.email) like lower(concat('%', :search, '%'))
+                or lower(e.livro.titulo) like lower(concat('%', :search, '%'))
+                or lower(e.livro.autor) like lower(concat('%', :search, '%'))
+              )
+            order by e.dataPrevistaDevolucao asc
+            """)
+    List<Emprestimo> findOverdueDetailed(
+            @Param("today") LocalDate today,
+            @Param("excluded") List<StatusEmprestimo> excluded,
+            @Param("search") String search
+    );
+
+    @EntityGraph(attributePaths = {"cliente", "cliente.usuario", "livro", "livro.categoria", "funcionario", "funcionario.usuario", "exemplar"})
+    @Query("""
+            select e
+            from Emprestimo e
+            where e.dataDevolucao is null
+              and e.dataPrevistaDevolucao < :today
+              and e.status not in :excluded
+            order by e.dataPrevistaDevolucao asc
+            """)
+    List<Emprestimo> findOverdueDetailed(
+            @Param("today") LocalDate today,
+            @Param("excluded") List<StatusEmprestimo> excluded
+    );
 
     @Query("""
             select e.livro.idLivro as livroId, count(e.idEmprestimo) as total
             from Emprestimo e
             where e.livro.ativo = true
+              and e.status not in :excluded
             group by e.livro.idLivro
             order by count(e.idEmprestimo) desc
             """)
-    List<BookLoanCountProjection> findTopBorrowedBooks(Pageable pageable);
+    List<BookLoanCountProjection> findTopBorrowedBooks(
+            @Param("excluded") List<StatusEmprestimo> excluded,
+            Pageable pageable
+    );
 
     @Query("""
             select e.livro.categoria.nome as label, count(e.idEmprestimo) as total
             from Emprestimo e
             where e.livro.ativo = true
+              and e.status not in :excluded
             group by e.livro.categoria.nome
             order by count(e.idEmprestimo) desc
             """)
-    List<CategoryConsumptionProjection> findTopGenres(Pageable pageable);
+    List<CategoryConsumptionProjection> findTopGenres(
+            @Param("excluded") List<StatusEmprestimo> excluded,
+            Pageable pageable
+    );
 
     interface BookLoanCountProjection {
         Integer getLivroId();

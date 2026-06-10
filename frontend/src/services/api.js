@@ -1,6 +1,19 @@
 import { mockServer } from "../mocks/mockServer";
 
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+export const API_URL = import.meta.env.VITE_API_URL || "/api";
+
+function buildRequestHeaders(extraHeaders = {}) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...extraHeaders,
+  };
+
+  if (/ngrok/i.test(API_URL)) {
+    headers["ngrok-skip-browser-warning"] = "true";
+  }
+
+  return headers;
+}
 
 export const CATEGORY_NAMES = [
   "Romance",
@@ -48,10 +61,7 @@ function friendlyError(error) {
 async function request(path, options = {}, fallback, fallbackOnStatuses = [404, 500, 502, 503]) {
   try {
     const response = await fetch(`${API_URL}${path}`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
+      headers: buildRequestHeaders(options.headers || {}),
       ...options,
     });
 
@@ -143,27 +153,52 @@ export function normalizeBook(book = {}) {
     coverImage: book.coverImage ?? book.imagemCapa ?? "",
     active: book.active ?? book.ativo ?? true,
     createdAt: book.createdAt ?? book.criadoEm ?? null,
-    loanCount: Number(book.loanCount ?? book.totalEmprestimos ?? 0),
+    loanCount: Number(book.loanCount ?? book.totalEmprestimos ?? book.quantidadeEmprestimos ?? 0),
     status,
     coverColors: book.coverColors || ["#FF66B3", "#FF4DA6"],
   };
 }
 
 function normalizeLoan(loan = {}) {
+  const technicalStatus = loan.status ?? loan.statusTecnico;
+  const visualStatus =
+    loan.statusVisual ||
+    (technicalStatus === "PENDENTE"
+      ? "Pendente"
+      : technicalStatus === "RECUSADA"
+        ? "Recusada"
+        : technicalStatus === "DEVOLVIDO"
+      ? "Devolvido"
+      : technicalStatus === "ATRASADO"
+        ? "Atrasado"
+        : "Dentro do prazo");
+
   return {
-    id: loan.id ?? loan.idEmprestimo,
+    id: loan.idEmprestimo ?? loan.id,
     client: normalizeUser(loan.client ?? loan.cliente ?? {}),
-    book: normalizeBook(loan.book ?? loan.livro ?? {}),
+    book: normalizeBook(loan.book ?? loan.livro ?? {
+      idLivro: loan.idLivro,
+      titulo: loan.tituloLivro,
+      autor: loan.autorLivro,
+      imagemCapa: loan.imagemCapa,
+    }),
     funcionarioId: loan.funcionarioId ?? loan.idFuncionario ?? null,
     borrowedAt: loan.borrowedAt ?? loan.dataEmprestimo,
     dueDate: loan.dueDate ?? loan.dataPrevistaDevolucao,
     returnedAt: loan.returnedAt ?? loan.dataDevolucao ?? null,
-    status: loan.status || "Dentro do prazo",
+    status: visualStatus,
+    technicalStatus,
     observacao: loan.observacao ?? "",
     fineApplied: loan.fineApplied ?? false,
     fineAmount: loan.fineAmount ?? 0,
     message: loan.message,
+    idExemplar: loan.idExemplar ?? loan.exemplarId ?? null,
+    codigoTombo: loan.codigoTombo ?? loan.codigo_tombo ?? null,
   };
+}
+
+export function formatExemplarLabel(loan = {}) {
+  return loan.codigoTombo || "Sem tombo";
 }
 
 function normalizeFine(fine = {}) {
@@ -206,8 +241,10 @@ function normalizeDashboard(payload = {}) {
     metrics: {
       totalBooks: Number(metrics.totalBooks ?? metrics.livrosNoAcervo ?? 0),
       totalClients: Number(metrics.totalClients ?? metrics.clientesCadastrados ?? 0),
+      totalEmployees: Number(metrics.totalEmployees ?? metrics.funcionariosCadastrados ?? 0),
       activeLoans: Number(metrics.activeLoans ?? metrics.emprestimosAtivos ?? 0),
       overdueLoans: Number(metrics.overdueLoans ?? metrics.emprestimosAtrasados ?? 0),
+      returnedLoans: Number(metrics.returnedLoans ?? metrics.emprestimosDevolvidos ?? 0),
       pendingFines: Number(metrics.pendingFines ?? metrics.multasPendentes ?? 0),
       unavailableBooks: Number(metrics.unavailableBooks ?? metrics.livrosIndisponiveis ?? 0),
     },
@@ -217,6 +254,7 @@ function normalizeDashboard(payload = {}) {
       onTime: Number(payload.returnsStats?.onTime ?? payload.devolucoesNoPrazo ?? 0),
       late: Number(payload.returnsStats?.late ?? payload.devolucoesAtrasadas ?? 0),
     },
+    alerts: payload.alerts ?? payload.alertas ?? [],
   };
 }
 
@@ -365,6 +403,21 @@ export async function detalharLivro(id) {
   return normalizeBook(response);
 }
 
+export async function listarExemplaresLivro(idLivro) {
+  const response = await request(`/livros/${idLivro}/exemplares`, {}, () => []);
+  return asArray(response, ["exemplares", "items", "content"]).map((item) => ({
+    id: item.idExemplar ?? item.id,
+    codigoTombo: item.codigoTombo ?? item.codigo_tombo,
+    status: item.status,
+    ativo: item.ativo ?? true,
+  }));
+}
+
+export async function obterProximoExemplarDisponivel(idLivro) {
+  const exemplares = await listarExemplaresLivro(idLivro);
+  return exemplares.find((item) => item.ativo && item.status === "DISPONIVEL") || null;
+}
+
 export async function listarCategorias() {
   const response = await request("/categorias", {}, () => mockServer.listarCategorias());
   const categories = (asArray(response, ["categorias", "items", "content"]).length
@@ -420,9 +473,14 @@ export async function listarMeusEmprestimos(idCliente) {
     () => mockServer.listarMeusEmprestimos(idCliente),
   );
 
+  const allLoans = [
+    ...asArray(response?.ativos ?? response, ["ativos"]),
+    ...asArray(response?.historico, ["historico"]),
+  ].map(normalizeLoan);
+
   return {
-    ativos: asArray(response?.ativos ?? response, ["ativos"]).map(normalizeLoan),
-    historico: asArray(response?.historico, ["historico"]).map(normalizeLoan),
+    ativos: allLoans.filter((loan) => !loan.returnedAt),
+    historico: allLoans.filter((loan) => loan.returnedAt),
   };
 }
 
@@ -484,7 +542,20 @@ export async function excluirLivro(idLivro) {
 }
 
 export function registrarEmprestimo(dados) {
-  return solicitarEmprestimo(dados);
+  return request(
+    "/emprestimos/registrar",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        clienteId: dados.clienteId ?? dados.idCliente,
+        livroId: dados.livroId ?? dados.idLivro,
+        funcionarioId: dados.funcionarioId ?? dados.idFuncionario,
+        observacao: dados.observacao,
+      }),
+    },
+    null,
+    [],
+  ).then(normalizeLoan);
 }
 
 export function registrarDevolucao(idEmprestimo) {

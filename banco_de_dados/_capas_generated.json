@@ -1,0 +1,727 @@
+{
+  "openlibrary": [
+    [
+      "É Assim que Acaba",
+      "Colleen Hoover",
+      "https://covers.openlibrary.org/b/isbn/9788501112514-L.jpg"
+    ],
+    [
+      "Como Eu Era Antes de Você",
+      "Jojo Moyes",
+      "https://covers.openlibrary.org/b/isbn/9788580573299-L.jpg"
+    ],
+    [
+      "Harry Potter e a Pedra Filosofal",
+      "J. K. Rowling",
+      "https://covers.openlibrary.org/b/isbn/9788532530783-L.jpg"
+    ],
+    [
+      "O Hobbit",
+      "J. R. R. Tolkien",
+      "https://covers.openlibrary.org/b/isbn/9788595084742-L.jpg"
+    ],
+    [
+      "A Sociedade do Anel",
+      "J. R. R. Tolkien",
+      "https://covers.openlibrary.org/b/isbn/9788595084759-L.jpg"
+    ],
+    [
+      "As Crônicas de Nárnia",
+      "C. S. Lewis",
+      "https://covers.openlibrary.org/b/isbn/9788578270698-L.jpg"
+    ],
+    [
+      "A Guerra dos Tronos",
+      "George R. R. Martin",
+      "https://covers.openlibrary.org/b/isbn/9788556510785-L.jpg"
+    ],
+    [
+      "As Minas do Rei Salomão",
+      "H. Rider Haggard",
+      "https://covers.openlibrary.org/b/isbn/9788537812785-L.jpg"
+    ],
+    [
+      "Duna",
+      "Frank Herbert",
+      "https://covers.openlibrary.org/b/isbn/9788576573135-L.jpg"
+    ],
+    [
+      "1984",
+      "George Orwell",
+      "https://covers.openlibrary.org/b/isbn/9788535914849-L.jpg"
+    ],
+    [
+      "Fahrenheit 451",
+      "Ray Bradbury",
+      "https://covers.openlibrary.org/b/isbn/9788525052247-L.jpg"
+    ],
+    [
+      "Eu, Robô",
+      "Isaac Asimov",
+      "https://covers.openlibrary.org/b/isbn/9788576572008-L.jpg"
+    ],
+    [
+      "Neuromancer",
+      "William Gibson",
+      "https://covers.openlibrary.org/b/isbn/9788576573005-L.jpg"
+    ],
+    [
+      "O Guia do Mochileiro das Galáxias",
+      "Douglas Adams",
+      "https://covers.openlibrary.org/b/isbn/9788599296578-L.jpg"
+    ],
+    [
+      "Garota Exemplar",
+      "Gillian Flynn",
+      "https://covers.openlibrary.org/b/isbn/9788580572902-L.jpg"
+    ],
+    [
+      "O Colecionador",
+      "John Fowles",
+      "https://covers.openlibrary.org/b/isbn/9788594318602-L.jpg"
+    ],
+    [
+      "Caixa de Pássaros",
+      "Josh Malerman",
+      "https://covers.openlibrary.org/b/isbn/9788581052144-L.jpg"
+    ],
+    [
+      "A Paciente Silenciosa",
+      "Alex Michaelides",
+      "https://covers.openlibrary.org/b/isbn/9788501116437-L.jpg"
+    ],
+    [
+      "E Não Sobrou Nenhum",
+      "Agatha Christie",
+      "https://covers.openlibrary.org/b/isbn/9788525432186-L.jpg"
+    ],
+    [
+      "O Código Da Vinci",
+      "Dan Brown",
+      "https://covers.openlibrary.org/b/isbn/9788575421130-L.jpg"
+    ],
+    [
+      "It: A Coisa",
+      "Stephen King",
+      "https://covers.openlibrary.org/b/isbn/9788560280940-L.jpg"
+    ],
+    [
+      "Drácula",
+      "Bram Stoker",
+      "https://covers.openlibrary.org/b/isbn/9788537811221-L.jpg"
+    ],
+    [
+      "Steve Jobs",
+      "Walter Isaacson",
+      "https://covers.openlibrary.org/b/isbn/9788535919714-L.jpg"
+    ],
+    [
+      "Minha História",
+      "Michelle Obama",
+      "https://covers.openlibrary.org/b/isbn/9788547000646-L.jpg"
+    ],
+    [
+      "Eu Sou Malala",
+      "Malala Yousafzai",
+      "https://covers.openlibrary.org/b/isbn/9788535923438-L.jpg"
+    ],
+    [
+      "O Diário de Anne Frank",
+      "Anne Frank",
+      "https://covers.openlibrary.org/b/isbn/9788501044457-L.jpg"
+    ],
+    [
+      "Elon Musk",
+      "Ashlee Vance",
+      "https://covers.openlibrary.org/b/isbn/9788580578287-L.jpg"
+    ],
+    [
+      "Becoming",
+      "Michelle Obama",
+      "https://covers.openlibrary.org/b/isbn/9781524763138-L.jpg"
+    ],
+    [
+      "Homo Deus",
+      "Yuval Noah Harari",
+      "https://covers.openlibrary.org/b/isbn/9788535928198-L.jpg"
+    ],
+    [
+      "Brasil: Uma Biografia",
+      "Lilia M. Schwarcz e Heloisa M. Starling",
+      "https://covers.openlibrary.org/b/isbn/9788535925661-L.jpg"
+    ],
+    [
+      "1889",
+      "Laurentino Gomes",
+      "https://covers.openlibrary.org/b/isbn/9788525057518-L.jpg"
+    ],
+    [
+      "O Príncipe",
+      "Nicolau Maquiavel",
+      "https://covers.openlibrary.org/b/isbn/9788544001851-L.jpg"
+    ],
+    [
+      "Rápido e Devagar",
+      "Daniel Kahneman",
+      "https://covers.openlibrary.org/b/isbn/9788539003839-L.jpg"
+    ],
+    [
+      "O Poder do Hábito",
+      "Charles Duhigg",
+      "https://covers.openlibrary.org/b/isbn/9788539004119-L.jpg"
+    ],
+    [
+      "Mindset",
+      "Carol S. Dweck",
+      "https://covers.openlibrary.org/b/isbn/9788547000240-L.jpg"
+    ],
+    [
+      "O Corpo Fala",
+      "Pierre Weil e Roland Tompakow",
+      "https://covers.openlibrary.org/b/isbn/9788532602084-L.jpg"
+    ],
+    [
+      "Psicologia das Massas",
+      "Gustave Le Bon",
+      "https://covers.openlibrary.org/b/isbn/9788544001868-L.jpg"
+    ],
+    [
+      "Hábitos Atômicos",
+      "James Clear",
+      "https://covers.openlibrary.org/b/isbn/9788550807560-L.jpg"
+    ],
+    [
+      "O Milagre da Manhã",
+      "Hal Elrod",
+      "https://covers.openlibrary.org/b/isbn/9788576849940-L.jpg"
+    ],
+    [
+      "Pai Rico, Pai Pobre",
+      "Robert T. Kiyosaki",
+      "https://covers.openlibrary.org/b/isbn/9788550801483-L.jpg"
+    ],
+    [
+      "Os 7 Hábitos das Pessoas Altamente Eficazes",
+      "Stephen R. Covey",
+      "https://covers.openlibrary.org/b/isbn/9788576840626-L.jpg"
+    ],
+    [
+      "Essencialismo",
+      "Greg McKeown",
+      "https://covers.openlibrary.org/b/isbn/9788543102146-L.jpg"
+    ],
+    [
+      "A Sutil Arte de Ligar o Foda-se",
+      "Mark Manson",
+      "https://covers.openlibrary.org/b/isbn/9788551002490-L.jpg"
+    ],
+    [
+      "Entendendo Algoritmos",
+      "Aditya Y. Bhargava",
+      "https://covers.openlibrary.org/b/isbn/9788575225639-L.jpg"
+    ],
+    [
+      "Código Limpo",
+      "Robert C. Martin",
+      "https://covers.openlibrary.org/b/isbn/9788576082675-L.jpg"
+    ],
+    [
+      "Use a Cabeça Java",
+      "Kathy Sierra e Bert Bates",
+      "https://covers.openlibrary.org/b/isbn/9788576081739-L.jpg"
+    ],
+    [
+      "Java: Como Programar",
+      "Paul Deitel e Harvey Deitel",
+      "https://covers.openlibrary.org/b/isbn/9788543004792-L.jpg"
+    ],
+    [
+      "Diário de um Banana",
+      "Jeff Kinney",
+      "https://covers.openlibrary.org/b/isbn/9788576831303-L.jpg"
+    ],
+    [
+      "A Menina que Roubava Livros",
+      "Markus Zusak",
+      "https://covers.openlibrary.org/b/isbn/9788598078175-L.jpg"
+    ],
+    [
+      "O Caçador de Pipas",
+      "Khaled Hosseini",
+      "https://covers.openlibrary.org/b/isbn/9788520917671-L.jpg"
+    ],
+    [
+      "Extraordinário",
+      "R. J. Palacio",
+      "https://covers.openlibrary.org/b/isbn/9788580573015-L.jpg"
+    ],
+    [
+      "Torto Arado",
+      "Itamar Vieira Junior",
+      "https://covers.openlibrary.org/b/isbn/9786580309313-L.jpg"
+    ],
+    [
+      "Quarto de Despejo",
+      "Carolina Maria de Jesus",
+      "https://covers.openlibrary.org/b/isbn/9788508171279-L.jpg"
+    ],
+    [
+      "Diário de um Banana: Rodrick é o Cara",
+      "Jeff Kinney",
+      "https://covers.openlibrary.org/b/isbn/9788576832294-L.jpg"
+    ],
+    [
+      "Como Ser Brasileiro",
+      "Matthew Shirts",
+      "https://covers.openlibrary.org/b/isbn/9788573029505-L.jpg"
+    ],
+    [
+      "Vidas Secas",
+      "Graciliano Ramos",
+      "https://covers.openlibrary.org/b/isbn/9788501067340-L.jpg"
+    ],
+    [
+      "Iracema",
+      "José de Alencar",
+      "https://covers.openlibrary.org/b/isbn/9788525406385-L.jpg"
+    ]
+  ],
+  "google": [],
+  "fallback": [
+    [
+      "Vermelho, Branco e Sangue Azul",
+      "Casey McQuiston",
+      "9788555340940"
+    ],
+    [
+      "Orgulho e Preconceito",
+      "Jane Austen",
+      "9788544001820"
+    ],
+    [
+      "A Culpa é das Estrelas",
+      "John Green",
+      "9788580573466"
+    ],
+    [
+      "Um Dia",
+      "David Nicholls",
+      "9788580570458"
+    ],
+    [
+      "Teto Para Dois",
+      "Beth OLeary",
+      "9788551005416"
+    ],
+    [
+      "O Morro dos Ventos Uivantes",
+      "Emily Brontë",
+      "9788544001639"
+    ],
+    [
+      "O Cálice dos Deuses",
+      "Rick Riordan",
+      "9786555607890"
+    ],
+    [
+      "O Nome do Vento",
+      "Patrick Rothfuss",
+      "9788599296493"
+    ],
+    [
+      "Percy Jackson e o Ladrão de Raios",
+      "Rick Riordan",
+      "9788598078355"
+    ],
+    [
+      "A Ilha do Tesouro",
+      "Robert Louis Stevenson",
+      "9788537816066"
+    ],
+    [
+      "Robinson Crusoé",
+      "Daniel Defoe",
+      "9788537811139"
+    ],
+    [
+      "Viagem ao Centro da Terra",
+      "Júlio Verne",
+      "9788537816059"
+    ],
+    [
+      "A Volta ao Mundo em 80 Dias",
+      "Júlio Verne",
+      "9788537816073"
+    ],
+    [
+      "Moby Dick",
+      "Herman Melville",
+      "9788544001821"
+    ],
+    [
+      "O Conde de Monte Cristo",
+      "Alexandre Dumas",
+      "9788537811016"
+    ],
+    [
+      "O Chamado da Selva",
+      "Jack London",
+      "9788525418272"
+    ],
+    [
+      "Fundação",
+      "Isaac Asimov",
+      "9788576570554"
+    ],
+    [
+      "Admirável Mundo Novo",
+      "Aldous Huxley",
+      "9788525056009"
+    ],
+    [
+      "A Empregada",
+      "Freida McFadden",
+      "9786555606008"
+    ],
+    [
+      "A Garota no Trem",
+      "Paula Hawkins",
+      "9788501104656"
+    ],
+    [
+      "O Silêncio dos Inocentes",
+      "Thomas Harris",
+      "9788501110237"
+    ],
+    [
+      "Jantar Secreto",
+      "Raphael Montes",
+      "9788535928310"
+    ],
+    [
+      "O Homem de Giz",
+      "C. J. Tudor",
+      "9788551002934"
+    ],
+    [
+      "Assassinato no Expresso do Oriente",
+      "Agatha Christie",
+      "9788525421012"
+    ],
+    [
+      "Sherlock Holmes: Um Estudo em Vermelho",
+      "Arthur Conan Doyle",
+      "9788537810460"
+    ],
+    [
+      "O Nome da Rosa",
+      "Umberto Eco",
+      "9788501021403"
+    ],
+    [
+      "A Mulher na Janela",
+      "A. J. Finn",
+      "9788580418293"
+    ],
+    [
+      "O Chamado do Cuco",
+      "Robert Galbraith",
+      "9788532528940"
+    ],
+    [
+      "Morte no Nilo",
+      "Agatha Christie",
+      "9788525426130"
+    ],
+    [
+      "O Iluminado",
+      "Stephen King",
+      "9788556510464"
+    ],
+    [
+      "Frankenstein",
+      "Mary Shelley",
+      "9788537811245"
+    ],
+    [
+      "Coraline",
+      "Neil Gaiman",
+      "9788579801860"
+    ],
+    [
+      "O Exorcista",
+      "William Peter Blatty",
+      "9788594540591"
+    ],
+    [
+      "A Assombração da Casa da Colina",
+      "Shirley Jackson",
+      "9788581053707"
+    ],
+    [
+      "Misery",
+      "Stephen King",
+      "9788556510440"
+    ],
+    [
+      "Longa Caminhada até a Liberdade",
+      "Nelson Mandela",
+      "9788560280650"
+    ],
+    [
+      "Rita Lee: Uma Autobiografia",
+      "Rita Lee",
+      "9788525065308"
+    ],
+    [
+      "Sapiens",
+      "Yuval Noah Harari",
+      "9788525432407"
+    ],
+    [
+      "1808",
+      "Laurentino Gomes",
+      "9788573029444"
+    ],
+    [
+      "1822",
+      "Laurentino Gomes",
+      "9788525051431"
+    ],
+    [
+      "A Segunda Guerra Mundial",
+      "Antony Beevor",
+      "9788501094704"
+    ],
+    [
+      "Uma Breve História do Mundo",
+      "Geoffrey Blainey",
+      "9788573029116"
+    ],
+    [
+      "O Mundo de Sofia",
+      "Jostein Gaarder",
+      "9788535908060"
+    ],
+    [
+      "Meditações",
+      "Marco Aurélio",
+      "9788544001837"
+    ],
+    [
+      "A República",
+      "Platão",
+      "9788572839044"
+    ],
+    [
+      "Ética a Nicômaco",
+      "Aristóteles",
+      "9788572839907"
+    ],
+    [
+      "Além do Bem e do Mal",
+      "Friedrich Nietzsche",
+      "9788544001844"
+    ],
+    [
+      "O Mito de Sísifo",
+      "Albert Camus",
+      "9788501116475"
+    ],
+    [
+      "Convite à Filosofia",
+      "Marilena Chaui",
+      "9788508134694"
+    ],
+    [
+      "Inteligência Emocional",
+      "Daniel Goleman",
+      "9788573020809"
+    ],
+    [
+      "Talvez Você Deva Conversar com Alguém",
+      "Lori Gottlieb",
+      "9786580634309"
+    ],
+    [
+      "A Coragem de Ser Imperfeito",
+      "Brené Brown",
+      "9788543102313"
+    ],
+    [
+      "Como Fazer Amigos e Influenciar Pessoas",
+      "Dale Carnegie",
+      "9788504018021"
+    ],
+    [
+      "O Poder do Agora",
+      "Eckhart Tolle",
+      "9788575420270"
+    ],
+    [
+      "Aprendendo SQL",
+      "Alan Beaulieu",
+      "9788575222102"
+    ],
+    [
+      "Sistema de Banco de Dados",
+      "Abraham Silberschatz",
+      "9788535245356"
+    ],
+    [
+      "Algoritmos",
+      "Thomas H. Cormen",
+      "9788535236996"
+    ],
+    [
+      "Lógica de Programação e Algoritmos com JavaScript",
+      "Edécio Fernando Iepsen",
+      "9788575226568"
+    ],
+    [
+      "O Pequeno Príncipe",
+      "Antoine de Saint-Exupéry",
+      "9788595081512"
+    ],
+    [
+      "Alice no País das Maravilhas",
+      "Lewis Carroll",
+      "9788537811726"
+    ],
+    [
+      "O Menino Maluquinho",
+      "Ziraldo",
+      "9788506055045"
+    ],
+    [
+      "Marcelo, Marmelo, Martelo",
+      "Ruth Rocha",
+      "9788516071493"
+    ],
+    [
+      "Reinações de Narizinho",
+      "Monteiro Lobato",
+      "9788525061232"
+    ],
+    [
+      "O Gato Malhado e a Andorinha Sinhá",
+      "Jorge Amado",
+      "9788535911268"
+    ],
+    [
+      "A Bolsa Amarela",
+      "Lygia Bojunga",
+      "9788520932964"
+    ],
+    [
+      "Matilda",
+      "Roald Dahl",
+      "9788574064389"
+    ],
+    [
+      "Sentimento do Mundo",
+      "Carlos Drummond de Andrade",
+      "9788535924626"
+    ],
+    [
+      "A Rosa do Povo",
+      "Carlos Drummond de Andrade",
+      "9788535924633"
+    ],
+    [
+      "Antologia Poética",
+      "Vinicius de Moraes",
+      "9788532508294"
+    ],
+    [
+      "Toda Poesia",
+      "Paulo Leminski",
+      "9788535923780"
+    ],
+    [
+      "Livro do Desassossego",
+      "Fernando Pessoa",
+      "9788535914962"
+    ],
+    [
+      "Poemas Completos de Alberto Caeiro",
+      "Fernando Pessoa",
+      "9788525413833"
+    ],
+    [
+      "Melhores Poemas de Cecília Meireles",
+      "Cecília Meireles",
+      "9788526007413"
+    ],
+    [
+      "Eu",
+      "Augusto dos Anjos",
+      "9788572327817"
+    ],
+    [
+      "O Sol é Para Todos",
+      "Harper Lee",
+      "9788503009499"
+    ],
+    [
+      "A Lista de Schindler",
+      "Thomas Keneally",
+      "9788528613346"
+    ],
+    [
+      "As Vantagens de Ser Invisível",
+      "Stephen Chbosky",
+      "9788532522337"
+    ],
+    [
+      "O Auto da Compadecida",
+      "Ariano Suassuna",
+      "9788520931707"
+    ],
+    [
+      "Feliz Ano Velho",
+      "Marcelo Rubens Paiva",
+      "9788573026375"
+    ],
+    [
+      "Memórias Póstumas de Brás Cubas",
+      "Machado de Assis",
+      "9788525406958"
+    ],
+    [
+      "O Analista de Bagé",
+      "Luis Fernando Verissimo",
+      "9788525410450"
+    ],
+    [
+      "Comédias da Vida Privada",
+      "Luis Fernando Verissimo",
+      "9788525410665"
+    ],
+    [
+      "Dom Casmurro",
+      "Machado de Assis",
+      "9788525406064"
+    ],
+    [
+      "Capitães da Areia",
+      "Jorge Amado",
+      "9788535914061"
+    ],
+    [
+      "Grande Sertão: Veredas",
+      "João Guimarães Rosa",
+      "9788520923252"
+    ],
+    [
+      "O Cortiço",
+      "Aluísio Azevedo",
+      "9788525406347"
+    ],
+    [
+      "Macunaíma",
+      "Mário de Andrade",
+      "9788520926093"
+    ]
+  ]
+}
